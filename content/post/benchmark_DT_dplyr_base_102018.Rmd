@@ -1,0 +1,248 @@
+---
+title: "Comparaisons entre dplyr, data.table et base R"
+author: "Antoine Sireyjol"
+date: '`r format(Sys.Date(), "%d %B, %Y")`'
+categories: ["R"]
+tags: ["dplyr", "tidyverse", "data.table", "microbenchmark", "benchmark", "data science"]
+output: 
+  html_document: 
+    number_sections: yes
+    toc: yes
+    toc_depth: 2
+    toc_float: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE)
+```
+
+La richesse de R, alimentée par une communauté de développeurs très active, rend le choix d'une méthode adaptée à une problématique donnée difficile, et c'est tant mieux. Vous trouverez ici une modeste participation au débat qui oppose les deux packages d'analyse des données les plus en vue dans la communauté R : `data.table` et `dplyr`. Après un rappel de la syntaxe de ces packages, on les compare entre eux et avec les fonctions de R base sur un traitement tout simple issu des données du package `nycflights13`. On présente une comparaison des vitesses d'exécutions de ce traitement avec le package `microbenchmark`. On fournit ensuite un autre benchmark entre `data.table` et `dplyr` sur des statistiques par groupe en faisant varier le nombre d'observations et le nombre de groupes.
+
+# Rappels sur dplyr et data.table
+Si vous connaissez déjà la syntaxe de ces packages, vous pouvez directement aller à la partie [Comparaisons sur une étude de cas simple ][Comparaisons sur une étude de cas simple]. On rappelle ici très rapidement les syntaxes de ces packages mais si vous voulez vous former à leur utilisation on peut se référer à l'excellent [cours de perfectionnement de Martin Chevalier](https://teaching.slmc.fr/perf/presentation_handout.pdf). Pour une exploration de ce qu'englobe le `tidyverse` et notamment une présentation des commandes de `dplyr`, vous pouvez jeter un oeil à [l'introduction à R et au tidyverse](https://juba.github.io/tidyverse/index.html) de J. Barnier. Enfin pour data.table, j'ai trouvé des informations utiles sur le cours [Manipulations avancée avec data.table](http://larmarange.github.io/analyse-R/manipulations-avancees-avec-data-table.html) de J. Larmarange.
+
+## dplyr et le tidyverse
+Le `tidyverse` (contraction de "tidy" et "universe") est un concept initié par Hadley Wickham, chef statisticien de RStudio. Il regroupe un ensemble de packages utiles au traitement statistique et au nettoyage de bases de données. On va s'intéresser ici presque seulement au package `dplyr` (dont les instructions seront appliquées aux `tibbles`, un format de data.frame issu du `tidyverse`), mais vous pouvez parcourir les packages proposés dans le tidyverse sur [le site officiel](https://www.tidyverse.org/).  
+`dplyr` propose un ensemble d'opérations de traitement de données sous une syntaxe différente de celle utilisée dans les fonctions de base de R. Ce langage présente le double avantage d'être à la fois lisible pour quelqu'un habitué aux langages tels que SAS ou SQL et de proposer des fonctions optimisées qui présentent de bonnes performances en termes de temps d'exécution. La grammaire `dplyr` s'appuie en effet sur des fonctions au nom explicite :  
+
+* mutate(data, newvar1=fonction(var1,var2...)) crée de nouvelles variables
+* filter(data, condition) sélectionne au sein d'une table certaines observations, à la manière de `where` dans SAS.
+* arrange(data, var1, descending var2,...) trie une base selon une ou plusieurs variables (l'équivalent d'une `proc sort`).
+* select(data, var1 : varX) sélectionne certaines variables dans une base, à la manière de `keep` dans SAS. 
+* summarise(data, newvar1=mean(var1), newvar2=sum(var2)) réalise toute sorte d'opérations statistiques sur une table.
+* group_by(data, var) regroupe une table par une variable
+* et bien d'autres...
+
+Un aspect pratique de ce langage est que toutes ces opérations peuvent être chaînées à l'aide de l'opérateur `%>%` ("pipe") dont la syntaxe est la suivante : `data %>% fonction(...)` est équivalent à `fonction(data, ...)`. Cette syntaxe permet de chaîner un grand nombre d'opérations sur une base commune, en limitant le nombre de fois où l'on écrit des tables intermédiaires tout en conservant une grande lisibilité du code. Ce petit exemple vous en convaincra peut-être :
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+library(tidyverse) # On aurait aussi pu charger seulement le package dplyr
+# on crée un data frame avec 100 lignes, chaque individu appartenant à un des 50 groupes
+df <- data.frame(id1 = c(1:100), idgpe = sample(50), replace = TRUE)
+
+# on y applique les instructions de dplyr
+df %>% as_tibble() %>% mutate(var = rnorm(100)) %>% 
+  group_by(idgpe) %>% summarise(var_mean = mean(var)) -> output_tibble
+```
+Un regard peu habitué contesterait peut-être l'aspect très lisible de l'instruction, mais ça l'est réellement. Je décris ici le déroulé :  
+1) on transforme notre data.frame en tibble (pour rappel : format optimisé de data.frame pour dplyr) avec `as_tibble`  
+2) on crée une variable `var` avec `mutate`  
+3) on agrège par  `idgpe` avec `group_by`   
+4) on calcule la moyenne de `var` avec `summarise`, que l'on stocke dans `var_mean`. Comme cette instruction suit un group_by, elle est réalisée à l'intérieur de chaque groupe (défini par `idgpe`), sinon elle aurait été réalisé sur l'ensemble de la table.     
+Tout cela est stocké dans une table output_tibble, qui est (si vous avez suivi) un tibble agrégé par `idgpe` et qui a donc 50 lignes.
+
+## Data.table
+Le package `data.table` ne prétend pas, contrairement au `tidyverse`, proposer une syntaxe concurrente à base R mais enrichir celle-ci. Il est axé autour d'un nouveau format d'objet, le data.table, qui est un type de data.frame qui permet une utilisation optimisée de l'opérateur `[`.  
+Tout data.frame peut être converti en data.table grâce à la fonction `as.data.table`, ou, de manière plus optimale pour l'utilisation de la mémoire, grâce à la fonction `setDT` qui permet de directement transformer la nature de l'objet sans avoir à en écrire un autre. Il est important d'avoir en tête qu'un data.frame converti en data.table conserve les caractéristiques d'un data.frame. Cependant, l'opérateur `[` appliqué au data.table change de signification et devient : 
+
+```
+DT[i,j,by]
+```
+Avec `i` qui permet de sélectionner des observations (sans avoir besoin de répéter le nom du tableau dans lequel on se trouve), `j` qui permet de créer ou sélectionner des variables et `by` de regrouper les traitement selon les modalités d'une variable définie. Comme dans `dplyr`, il est possible de chaîner les opérations réalisées comme le montre l'exemple suivant, qui reprend le même cas de figure que celui illustrant le package `dplyr` :
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+library(data.table) 
+# on convertit notre data frame précédemment créé en data.table
+dt <- as.data.table(df)
+
+# on y applique les même instructions
+dt[, list(var_mean = mean(rnorm(100))), by = list(idgpe = idgpe)] -> output_dt
+```
+Le fait de renseigner mes variables au sein de `list()` me permet d'avoir une table en sortie au niveau de `idgpe` (donc 50 observations), sans cela ma variable est bien moyennée par groupe mais la table en sortie est toujours au niveau `id1` (100 observations).  
+
+## Vitesses d'exécution
+Voilà donc pour les présentations! Allez, on montre le résultat d'un petit `microbenchmark` des deux juste pour voir : 
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+library(microbenchmark)
+microbenchmark(times=100L, dplyr = df %>% as_tibble() %>% mutate(var = rnorm(100)) %>% 
+  group_by(idgpe) %>% summarise(var_mean = mean(var)), data.table = dt[, list(var_mean = mean(rnorm(100))), by = list(idgpe = idgpe)])
+```
+Sur cet exemple, avantage data.table! Mais on est sur une toute petite table en entrée. On va essayer de se rapprocher de cas plus concrets en s'intéressant à un exemple sur des bases plus importantes.
+
+# Comparaisons sur une étude de cas simple
+Les avantages et inconvénients de ces deux packages sont à l'origine de nombreux débats. Vous pouvez vous en convaincre en suivant [cette discussion sur stackoverflow](https://stackoverflow.com/questions/21435339/data-table-vs-dplyr-can-one-do-something-well-the-other-cant-or-does-poorly). On peut quand même dégager deux compromis :   
+
+* Le choix de l'un ou l'autre des packages dépend beaucoup de ce que l'on va en faire (types d'analyses, taille des données, profils des utilisateurs du code...).   
+* Les deux packages sont plus intéressants que base R pour l'analyse de données, que ce soit en termes de facilité d'écriture ou de performances.   
+
+Pour ce deuxième point, on va essayer de s'en convaincre ensemble avec ce petit exemple.
+
+## Notre étude de cas
+Pour cet exemple, on utilise les données du package de Hadley Wickham (oui, le même qui est à l'origine du `tidyverse`, mais ça n'entamera pas notre indépendance) que l'on trouve dans `nycflights13`. En particulier, la base `flights` donne toutes les heures de départ et d'arrivée selon les aéroports de départ et d'arrivée ainsi que les retards au départ et à l'arrivée. La base `weather` donne elle des indications météo, heure par heure, dans chaque aéroport. Tout bon statisticien qui se respecte devrait commencer à se dire qu'il y a quelque chose à faire pour tenter d'expliquer les retards des avions (*spoiler alert* : on ne va pas le faire).  
+Commençons par charger nos packages (n'oubliez pas de faire `install.packages("nom_pck")` avant si vous ne l'avez jamais fait) et nos données :
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+# Les packages nécessaires
+library(tidyverse) # Regroupe différents packages, voir https://www.tidyverse.org/ 
+library(data.table)
+library(microbenchmark) # Pour les calculs de vitesse d'exécution
+library(nycflights13) # Pour les données
+
+# data frame classiques pour tests en base R
+flights <- as.data.frame(flights)
+weather <- as.data.frame(weather)
+# data.table pour tests avec data.table
+flightsdt <- as.data.table(flights)
+weatherdt <- as.data.table(weather)
+# tibbles pour instructions en dplyR (tournent aussi sur data.frame et data.table)
+flightstib <- as_tibble(flights)
+weathertib <- as_tibble(weather)
+```
+Notez que l'on n'est pas obligés de faire du dplyr sur des tibbles plutôt que des data frame et que l'auteur de ces lignes n'a jamais noté que ça améliorait les performances, mais on suit ici les recommandations d'Hadley Wickham.  
+
+## Moyenne des retards et fusion des tables
+Un rapide examen des bases vous montre que la première étape avant toute analyse est comme souvent de regrouper les éléments de flights par heure et aéroport de départ (ou aurait aussi pu prendre aéroport d'arrivée) pour pouvoir les fusionner avec la table weather, qui donnent les indications météo minute par minute. On écrit cette instruction de  manières différentes :  
+
+__En base R__
+```{r}
+flights_time_hour <- aggregate.data.frame(list(arr_delay = flights$arr_delay, 
+                                    dep_delay = flights$dep_delay), 
+                                      list(time_hour = flights$time_hour, origin = flights$origin), 
+                                      mean)
+output_base <- merge(weather, flights_time_hour, by = c("time_hour", "origin"), sort = FALSE)
+```
+(J'ai utilisé `aggregate.data.frame` et pas `tapply` pour avoir directement un data.frame en sortie)
+
+__En dplyr__
+```{r}
+flightstib %>% group_by(time_hour, origin) %>% 
+  summarise(arr_delay = mean(arr_delay),
+            dep_delay = mean(dep_delay)) %>% 
+  inner_join(weathertib, by = c("time_hour", "origin")) -> output_dplyr 
+```
+
+__En data.table__
+```{r}
+output_DT <- merge(flightsdt[, list(arr_perc_delay = mean(arr_delay),
+                       dep_perc_delay = mean(dep_delay)), by = c("time_hour", "origin")],
+      weatherdt, by = c("time_hour", "origin"))
+```
+J'ai utilisé la fonction `merge` plutôt que ```DT1[DT2, on = c("time_hour", "origin"), nomatch = 0] ``` car j'ai constaté qu'elle était plus rapide, conformément à ce que montre bien cet [article de Jozef's Rblog](https://jozefhajnala.gitlab.io/r/r006-merge/).
+
+## Comparaisons des vitesses d'exécution
+Je vous laisse juger de la lisibilité de chacune de ces instructions, qui font toutes la même chose, car c'est finalement assez subjectif. On donne ici les résultats d'un `microbenchmark` de ces instructions : 
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+microbenchmark::microbenchmark(times = 10L, unit = "ms", Base={
+  flights_time_hour <- aggregate.data.frame(list(arr_delay = flights$arr_delay, 
+                                      dep_delay = flights$dep_delay), 
+                                 list(time_hour = flights$time_hour, origin = flights$origin), 
+                                 mean)
+  output_base <- merge(weather, flights_time_hour, by = c("time_hour", "origin"), sort = FALSE)
+}, DplyR = {
+  flightstib %>% group_by(time_hour, origin) %>% 
+    summarise(arr_delay = mean(arr_delay),
+              dep_delay = mean(dep_delay)) %>% 
+    inner_join(weathertib, by = c("time_hour", "origin")) -> output_dplyr 
+}, DT = {
+  output_DT <- merge(flightsdt[, list(arr_perc_delay = mean(arr_delay),
+                                      dep_perc_delay = mean(dep_delay)), by = c("time_hour", "origin")],
+                     weatherdt, by = c("time_hour", "origin"))
+}
+)
+```
+
+Les résultats sont très nettement en faveur des packages `dplyr` et `data.table`, ce dernier ayant l'avantage. Sans doute existe-t-il des moyens de plus optimiser l'instruction en base R, mais là n'est pas vraiment la question. On voit qu'avec une syntaxe simple et lisible, `dplyr` et `data.table` font beaucoup mieux que l'instruction qui viendrait à l'esprit d'un statisticien *lambda* (bien que chacun soit unique évidemment) qui n'utiliserait que base R. 
+
+# Tests complémentaires sur les vitesse d'aggrégation
+Comme on l'a vu dans notre petit exemple, l'aggrégation est souvent utilisée en statistiques. Il est donc intéressant de comparer le sperformances de `data.table` et `dplyr` de ce point de vue. Des benchamrks ont déjà été faits, et on peut les trouver dans la [discussion sur stackoverflow](https://stackoverflow.com/questions/21435339/data-table-vs-dplyr-can-one-do-something-well-the-other-cant-or-does-poorly) évoquée plus haut. On propose ici quelques tests comparatifs sur un cas de groupement d'une base fictive de `nbrow` lignes appartenant à `nbgpe` groupes. La fonction est la suivante :
+```{r}
+test_group_by <- function(nbrow, nbgpe){
+  test <- as_tibble(data.frame(x = rnorm(nbrow), y = sample(floor(nbgpe), replace = TRUE)))
+  testDT <- as.data.table(test)
+  
+  return(autoplot(
+    microbenchmark::microbenchmark(times = 10, unit="ms", 
+                                   DplyR = test %>% group_by(y) %>% summarise(x = mean(x)),
+                                   data.table = testDT[, x:= mean(x), by = y]),
+    title = paste0("Benchmark avec table de ", nbrow, " observations (100 itérations)")))
+}
+```
+Notez qu'on en profite pour se faire mousser facilement avec `autoplot` de  `ggplot2` qui sort les résultats de `microbenchmark` sous forme d'un joli graphique.  
+
+Il n'y a plus qu'à tester! On propose des tests sur 10 000, 100 000 et 1 000 000 de lignes avec à chaque fois peu (1/1000e du nombre de lignes) ou beaucoup (la moitié de lignes) de groupes.
+
+## 10 000 lignes pour 10 groupes
+```{r}
+test_group_by(10000, 10)
+```
+
+## 10 000 lignes pour 5 000 groupes
+```{r}
+test_group_by(10000, 5000)
+```
+
+## 100 000 lignes pour 100 groupes
+```{r}
+test_group_by(100000, 100)
+```
+
+## 100 000 lignes pour 50 000 groupes
+```{r}
+test_group_by(100000, 50000)
+```
+
+## 1 000 000 lignes pour 1 000 groupes
+```{r}
+test_group_by(1000000, 1000)
+```
+
+## 1 000 000 lignes pour 500 000 groupes
+```{r}
+test_group_by(1000000, 500000)
+```
+
+# Bonus : une propriété étonnante de dplyr
+Je partage ici un aspect qui m'a semblé étonnant de dplyr. Si je reprends l'exemple donné en première partie de cet article, vous avez pu remarquer que :
+```{r eval=FALSE}
+# Rappel : df <- data.frame(id1 = c(1:100), idgpe = sample(50), replace = TRUE)
+  df %>% as_tibble() %>% mutate(var = rnorm(100)) %>% 
+    group_by(idgpe) %>% summarise(var_mean = mean(var)) -> output_tibble
+```
+pouvait se réécrire de manière plus directe (comme le fait d'ailleurs la partie sur data.table) ainsi : 
+```{r eval=FALSE}
+  df %>% as_tibble() %>%  group_by(idgpe) %>% 
+  summarise(var_mean = mean(rnorm(100))) -> output_tibble
+```
+c'est-à-dire en se passant du `mutate` pour remplacer `var` par sa valeur dans `summarise`.  
+Et bien, je n'ai pas seulement écrit cette instruction ainsi pour le plaisir de vous montrer la fonction `mutate`, mais aussi parce que la première option est bien plus rapide que la seconde, comme le montre `microbenchmark` :
+```{r}
+microbenchmark::microbenchmark(times=100L, dplyr1 = {
+  df %>% as_tibble() %>% mutate(var = rnorm(100)) %>% 
+    group_by(idgpe) %>% summarise(var_mean = mean(var)) -> output_tibble
+}, dplyr2 = {
+  df %>% as_tibble() %>% group_by(idgpe) %>% 
+    summarise(var_mean = mean(rnorm(100))) -> output_tibble
+})
+```
+Ca peut sembler secondaire pour cet exemple, mais sur des grosses tables la différence va vraiment peser. Regardons par exemple les différences de performance de deux instructions `dplyr` agrégeant par heure une variable égale au pourcentage de retard à l'arrivée par rapport à la durée du vol : 
+```{r}
+microbenchmark::microbenchmark(times=10L, dplyr_mutate = {
+  flightstib %>% mutate(propor_delay = arr_delay / air_time) %>% 
+    group_by(time_hour) %>% 
+    summarise(propor_delay = mean(propor_delay)) -> output_dplyr 
+}, dplyr_sans_mutate = {
+  flightstib %>% group_by(time_hour) %>% 
+    summarise(propor_delay = mean(arr_delay / air_time)) -> output_dplyr 
+})
+```
+Les performances changent du tout au tout. Je n'ai pas d'explications à cela et je n'étais pas conscient de cette propriété de `summarise`, mais cela montre visiblement que cela doit être une mauvais pratique de définir une variable au sein d'un summarise. Cela semble être un aspect important à avoir en tête quand on code en `dplyr`!
+
+

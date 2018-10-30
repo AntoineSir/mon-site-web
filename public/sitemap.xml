@@ -127,6 +127,13 @@
     
     <url>
     
+      <loc>/post/benchmark_dt_dplyr_base_102018/</loc>
+    </url>
+    
+  
+    
+    <url>
+    
       <loc>/tags/deep-learning/</loc>
       <lastmod>2016-04-27T00:00:00+02:00</lastmod>
       <priority>0</priority>
@@ -139,13 +146,6 @@
       <loc>/tags/demo/</loc>
       <lastmod>2016-04-27T00:00:00+02:00</lastmod>
       <priority>0</priority>
-    </url>
-    
-  
-    
-    <url>
-    
-      <loc>/post/2015-07-23-r-rmarkdown/</loc>
     </url>
     
   
@@ -178,14 +178,6 @@
     
     <url>
     
-      <loc>/tags/r-markdown/</loc>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    <url>
-    
       <loc>/slides/</loc>
       <priority>0</priority>
     </url>
@@ -210,7 +202,7 @@
     
     <url>
     
-      <loc>/tags/plot/</loc>
+      <loc>/tags/benchmark/</loc>
       <priority>0</priority>
     </url>
     
@@ -218,7 +210,39 @@
     
     <url>
     
-      <loc>/tags/regression/</loc>
+      <loc>/tags/data-science/</loc>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    <url>
+    
+      <loc>/tags/data.table/</loc>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    <url>
+    
+      <loc>/tags/dplyr/</loc>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    <url>
+    
+      <loc>/tags/microbenchmark/</loc>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    <url>
+    
+      <loc>/tags/tidyverse/</loc>
       <priority>0</priority>
     </url>
     
