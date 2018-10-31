@@ -15,10 +15,10 @@
     <item>
       <title>Comparaisons entre dplyr, data.table et base R</title>
       <link>/post/benchmark_dt_dplyr_base_102018/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 01 Nov 2018 00:00:00 +0000</pubDate>
       
       <guid>/post/benchmark_dt_dplyr_base_102018/</guid>
-      <description>Rappels sur dplyr et data.tabledplyr et le tidyverseData.tableVitesses d’exécutionComparaisons sur une étude de cas simpleNotre étude de casMoyenne des retards et fusion des tablesComparaisons des vitesses d’exécutionTests complémentaires sur les vitesse d’aggrégation10 000 lignes pour 10 groupes10 000 lignes pour 5 000 groupes100 000 lignes pour 100 groupes100 000 lignes pour 50 000 groupes1 000 000 lignes pour 1 000 groupes1 000 000 lignes pour 500 000 groupesBonus : une propriété étonnante de dplyrLa richesse de R, alimentée par une communauté de développeurs très active, rend le choix d’une méthode adaptée à une problématique donnée difficile, et c’est tant mieux.</description>
+      <description>La richesse de R, alimentée par une communauté de développeurs très active, rend le choix d’une méthode adaptée à une problématique donnée difficile, et c’est tant mieux. Vous trouverez ici une modeste participation au débat qui oppose les deux packages d’analyse des données les plus en vue dans la communauté R : data.table et dplyr. Après un rappel de la syntaxe de ces packages, on les compare entre eux et avec les fonctions de R base sur un traitement tout simple issu des données du package nycflights13.</description>
     </item>
     
   </channel>
