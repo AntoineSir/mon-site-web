@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>microbenchmark on Antoine Sireyjol</title>
+    <link>/tags/microbenchmark/</link>
+    <description>Recent content in microbenchmark on Antoine Sireyjol</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>fr</language>
+    <copyright>&amp;copy; 2018</copyright>
+    <lastBuildDate>Thu, 01 Nov 2018 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/microbenchmark/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Comparaisons entre dplyr, data.table et base R</title>
+      <link>/post/benchmark_dt_dplyr_base_102018/</link>
+      <pubDate>Thu, 01 Nov 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/post/benchmark_dt_dplyr_base_102018/</guid>
+      <description>La richesse de R, alimentée par une communauté de développeurs très active, rend le choix d’une méthode adaptée à une problématique donnée difficile, et c’est tant mieux. Vous trouverez ici une modeste participation au débat qui oppose les deux packages d’analyse des données les plus en vue dans la communauté R : data.table et dplyr. Après un rappel de la syntaxe de ces packages, on les compare entre eux et avec les fonctions de R base sur un traitement tout simple issu des données du package nycflights13.</description>
+    </item>
+    
+  </channel>
+</rss>
