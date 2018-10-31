@@ -16,7 +16,24 @@
       <pubDate>Thu, 01 Nov 2018 00:00:00 +0000</pubDate>
       
       <guid>/post/benchmark_dt_dplyr_base_102018/</guid>
-      <description>&lt;p&gt;La richesse de R, alimentée par une communauté de développeurs très active, rend le choix d’une méthode adaptée à une problématique donnée difficile, et c’est tant mieux. Vous trouverez ici une modeste participation au débat qui oppose les deux packages d’analyse des données les plus en vue dans la communauté R : &lt;code&gt;data.table&lt;/code&gt; et &lt;code&gt;dplyr&lt;/code&gt;. Après un rappel de la syntaxe de ces packages, on les compare entre eux et avec les fonctions de R base sur un traitement tout simple issu des données du package &lt;code&gt;nycflights13&lt;/code&gt;. On présente une comparaison des vitesses d’exécutions de ce traitement avec le package &lt;code&gt;microbenchmark&lt;/code&gt;. On fournit ensuite un autre benchmark de &lt;code&gt;data.table&lt;/code&gt; et &lt;code&gt;dplyr&lt;/code&gt; sur des statistiques par groupe en faisant varier le nombre d’observations et le nombre de groupes.&lt;/p&gt;
+      <description>&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#rappels-sur-dplyr-et-data.table&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;1&lt;/span&gt; Rappels sur dplyr et data.table&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#dplyr-et-le-tidyverse&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;1.1&lt;/span&gt; dplyr et le tidyverse&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#data.table&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;1.2&lt;/span&gt; Data.table&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#vitesses-dexecution&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;1.3&lt;/span&gt; Vitesses d’exécution&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#comparaisons-sur-une-etude-de-cas-simple&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2&lt;/span&gt; Comparaisons sur une étude de cas simple&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#notre-etude-de-cas&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2.1&lt;/span&gt; Notre étude de cas&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#moyenne-des-retards-et-fusion-des-tables&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2.2&lt;/span&gt; Moyenne des retards et fusion des tables&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#comparaisons-des-vitesses-dexecution&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2.3&lt;/span&gt; Comparaisons des vitesses d’exécution&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#tests-complementaires-sur-les-vitesse-daggregation&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;3&lt;/span&gt; Tests complémentaires sur les vitesse d’aggrégation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#bonus-une-propriete-etonnante-de-dplyr&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4&lt;/span&gt; Bonus : une propriété étonnante de dplyr&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;p&gt;La richesse de R, alimentée par une communauté de développeurs très active, rend le choix d’une méthode adaptée à une problématique donnée difficile, et c’est tant mieux. Vous trouverez ici une modeste participation au débat qui oppose les deux packages d’analyse des données les plus en vue dans la communauté R : &lt;code&gt;data.table&lt;/code&gt; et &lt;code&gt;dplyr&lt;/code&gt;. Après un rappel de la syntaxe de ces packages, on les compare entre eux et avec les fonctions de R base sur un traitement tout simple issu des données du package &lt;code&gt;nycflights13&lt;/code&gt;. On présente une comparaison des vitesses d’exécutions de ce traitement avec le package &lt;code&gt;microbenchmark&lt;/code&gt;. On fournit ensuite un autre benchmark de &lt;code&gt;data.table&lt;/code&gt; et &lt;code&gt;dplyr&lt;/code&gt; sur des statistiques par groupe en faisant varier le nombre d’observations et le nombre de groupes.&lt;/p&gt;
 &lt;div id=&#34;rappels-sur-dplyr-et-data.table&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;1&lt;/span&gt; Rappels sur dplyr et data.table&lt;/h1&gt;
 &lt;p&gt;Si vous connaissez déjà la syntaxe de ces packages, vous pouvez directement aller à la partie &lt;a href=&#34;#comparaisons-sur-une-etude-de-cas-simple&#34;&gt;Comparaisons sur une étude de cas simple&lt;/a&gt;. On rappelle ici les principales caractéristiques de ces packages mais pour se former à leur utilisation on peut se référer à l’excellent &lt;a href=&#34;https://teaching.slmc.fr/perf/presentation_handout.pdf&#34;&gt;cours de perfectionnement de Martin Chevalier&lt;/a&gt;. Pour une exploration de ce qu’englobe le &lt;code&gt;tidyverse&lt;/code&gt; et notamment une présentation des commandes de &lt;code&gt;dplyr&lt;/code&gt;, vous pouvez jeter un oeil à &lt;a href=&#34;https://juba.github.io/tidyverse/index.html&#34;&gt;l’introduction à R et au tidyverse&lt;/a&gt; de J. Barnier. Enfin pour data.table, on trouve des informations utiles sur le cours &lt;a href=&#34;http://larmarange.github.io/analyse-R/manipulations-avancees-avec-data-table.html&#34;&gt;Manipulations avancée avec data.table&lt;/a&gt; de J. Larmarange.&lt;/p&gt;
@@ -71,9 +88,12 @@ dt[, list(var_mean = mean(rnorm(100))), by = list(idgpe = idgpe)] -&amp;gt; outp
 &lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;1.3&lt;/span&gt; Vitesses d’exécution&lt;/h2&gt;
 &lt;p&gt;Voilà donc pour les présentations! Allez, on montre le résultat d’un petit &lt;code&gt;microbenchmark&lt;/code&gt; des deux juste pour voir :&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;## Unit: microseconds
-##        expr      min        lq      mean   median        uq      max neval
-##       dplyr 1542.825 1573.8300 1779.8640 1631.857 1944.1760 4416.279   100
-##  data.table  816.355  851.0575  906.8654  898.844  940.6575 1106.488   100&lt;/code&gt;&lt;/pre&gt;
+##        expr      min        lq      mean    median        uq      max
+##       dplyr 1563.879 1599.7190 1770.8408 1627.8790 1812.4835 4440.754
+##  data.table  823.185  846.5085  916.2376  884.9085  989.0155 1256.110
+##  neval
+##    100
+##    100&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Sur cet exemple, on voit un avantage clair à data.table! Mais on est sur une toute petite table en entrée. On va essayer de se rapprocher de cas plus concrets en s’intéressant à un exemple sur des bases plus importantes.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -133,9 +153,9 @@ output_base &amp;lt;- merge(weather, flights_time_hour, by = c(&amp;quot;time_ho
 &lt;p&gt;Je vous laisse juger de la lisibilité de chacune de ces instructions, qui font toutes la même chose, car c’est finalement assez subjectif. On donne ici les résultats d’un &lt;code&gt;microbenchmark&lt;/code&gt; de ces instructions :&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;## Unit: milliseconds
 ##   expr        min         lq       mean     median         uq        max
-##   Base 2283.69823 2318.91638 2357.66409 2350.05533 2363.52347 2495.92136
-##  DplyR   56.07416   56.58389   56.90923   56.92636   57.35018   57.68184
-##     DT   32.77763   32.88230   33.01718   32.93322   33.18552   33.36756
+##   Base 2315.94825 2348.88355 2403.49992 2402.69967 2455.93039 2496.03655
+##  DplyR   56.12780   56.30586   57.22655   57.10714   58.27934   58.90910
+##     DT   32.79023   32.97285   35.22099   33.22344   33.85235   52.62116
 ##  neval
 ##     10
 ##     10
@@ -184,9 +204,9 @@ Et bien, je n’ai pas seulement écrit cette instruction ainsi pour le plaisir 
     summarise(var_mean = mean(rnorm(100))) -&amp;gt; output_tibble
 })
 ## Unit: milliseconds
-##    expr      min       lq     mean   median       uq       max neval
-##  dplyr1 1.552497 1.614221 2.040995 1.850878 2.256495  4.697879   100
-##  dplyr2 2.647037 2.732086 3.315452 3.009135 3.554130 10.451613   100&lt;/code&gt;&lt;/pre&gt;
+##    expr      min       lq     mean   median       uq      max neval
+##  dplyr1 1.547381 1.564164 1.783237 1.584642 1.652057 7.260741   100
+##  dplyr2 2.627133 2.646760 2.731053 2.682031 2.738067 3.645446   100&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Ca peut sembler secondaire pour cet exemple, mais sur des grosses tables la différence va vraiment peser. Regardons par exemple les différences de performance de deux instructions &lt;code&gt;dplyr&lt;/code&gt; agrégeant par heure une variable égale au pourcentage de retard à l’arrivée par rapport à la durée du vol :&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;microbenchmark::microbenchmark(times=10L, dplyr_mutate = {
   flightstib %&amp;gt;% mutate(propor_delay = arr_delay / air_time) %&amp;gt;% 
@@ -198,11 +218,11 @@ Et bien, je n’ai pas seulement écrit cette instruction ainsi pour le plaisir 
 })
 ## Unit: milliseconds
 ##               expr       min        lq      mean    median        uq
-##       dplyr_mutate  24.13735  24.14816  26.72938  25.48988  28.45863
-##  dplyr_sans_mutate 212.18388 217.85171 225.99301 226.76306 233.29531
+##       dplyr_mutate  24.30695  24.75524  26.28822  25.38443  26.76342
+##  dplyr_sans_mutate 220.76675 222.62304 225.37140 223.67719 226.90336
 ##        max neval
-##   35.42409    10
-##  237.79863    10&lt;/code&gt;&lt;/pre&gt;
+##   33.95305    10
+##  239.39675    10&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Les performances changent du tout au tout. Je n’ai pas d’explications à cela et je n’étais pas conscient de cette propriété de &lt;code&gt;summarise&lt;/code&gt;, mais cela montre visiblement que cela doit être une mauvais pratique de définir une variable au sein d’un summarise. Cela semble être un aspect important à avoir en tête quand on code en &lt;code&gt;dplyr&lt;/code&gt;!&lt;/p&gt;
 &lt;/div&gt;
 </description>
@@ -214,7 +234,24 @@ Et bien, je n’ai pas seulement écrit cette instruction ainsi pour le plaisir 
       <pubDate>Wed, 31 Oct 2018 00:00:00 +0000</pubDate>
       
       <guid>/post/comparaisons-dplyr-data-table-base-r/</guid>
-      <description>&lt;p&gt;La richesse de R, alimentée par une communauté de développeurs très active, rend le choix d’une méthode adaptée à une problématique donnée difficile, et c’est tant mieux. Vous trouverez ici une modeste participation au débat qui oppose les deux packages d’analyse des données les plus en vue dans la communauté R : &lt;code&gt;data.table&lt;/code&gt; et &lt;code&gt;dplyr&lt;/code&gt;. Après un rappel de la syntaxe de ces packages, on les compare entre eux et avec les fonctions de R base sur un traitement tout simple issu des données du package &lt;code&gt;nycflights13&lt;/code&gt;. On présente une comparaison des vitesses d’exécutions de ce traitement avec le package &lt;code&gt;microbenchmark&lt;/code&gt;. On fournit ensuite un autre benchmark de &lt;code&gt;data.table&lt;/code&gt; et &lt;code&gt;dplyr&lt;/code&gt; sur des statistiques par groupe en faisant varier le nombre d’observations et le nombre de groupes.&lt;/p&gt;
+      <description>&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#rappels-sur-dplyr-et-data.table&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;1&lt;/span&gt; Rappels sur dplyr et data.table&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#dplyr-et-le-tidyverse&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;1.1&lt;/span&gt; dplyr et le tidyverse&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#data.table&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;1.2&lt;/span&gt; Data.table&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#vitesses-dexecution&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;1.3&lt;/span&gt; Vitesses d’exécution&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#comparaisons-sur-une-etude-de-cas-simple&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2&lt;/span&gt; Comparaisons sur une étude de cas simple&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#notre-etude-de-cas&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2.1&lt;/span&gt; Notre étude de cas&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#moyenne-des-retards-et-fusion-des-tables&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2.2&lt;/span&gt; Moyenne des retards et fusion des tables&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#comparaisons-des-vitesses-dexecution&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2.3&lt;/span&gt; Comparaisons des vitesses d’exécution&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#tests-complementaires-sur-les-vitesse-daggregation&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;3&lt;/span&gt; Tests complémentaires sur les vitesse d’aggrégation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#bonus-une-propriete-etonnante-de-dplyr&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4&lt;/span&gt; Bonus : une propriété étonnante de dplyr&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;p&gt;La richesse de R, alimentée par une communauté de développeurs très active, rend le choix d’une méthode adaptée à une problématique donnée difficile, et c’est tant mieux. Vous trouverez ici une modeste participation au débat qui oppose les deux packages d’analyse des données les plus en vue dans la communauté R : &lt;code&gt;data.table&lt;/code&gt; et &lt;code&gt;dplyr&lt;/code&gt;. Après un rappel de la syntaxe de ces packages, on les compare entre eux et avec les fonctions de R base sur un traitement tout simple issu des données du package &lt;code&gt;nycflights13&lt;/code&gt;. On présente une comparaison des vitesses d’exécutions de ce traitement avec le package &lt;code&gt;microbenchmark&lt;/code&gt;. On fournit ensuite un autre benchmark de &lt;code&gt;data.table&lt;/code&gt; et &lt;code&gt;dplyr&lt;/code&gt; sur des statistiques par groupe en faisant varier le nombre d’observations et le nombre de groupes.&lt;/p&gt;
 &lt;div id=&#34;rappels-sur-dplyr-et-data.table&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;1&lt;/span&gt; Rappels sur dplyr et data.table&lt;/h1&gt;
 &lt;p&gt;Si vous connaissez déjà la syntaxe de ces packages, vous pouvez directement aller à la partie &lt;a href=&#34;#comparaisons-sur-une-etude-de-cas-simple&#34;&gt;Comparaisons sur une étude de cas simple&lt;/a&gt;. On rappelle ici les principales caractéristiques de ces packages mais pour se former à leur utilisation on peut se référer à l’excellent &lt;a href=&#34;https://teaching.slmc.fr/perf/presentation_handout.pdf&#34;&gt;cours de perfectionnement de Martin Chevalier&lt;/a&gt;. Pour une exploration de ce qu’englobe le &lt;code&gt;tidyverse&lt;/code&gt; et notamment une présentation des commandes de &lt;code&gt;dplyr&lt;/code&gt;, vous pouvez jeter un oeil à &lt;a href=&#34;https://juba.github.io/tidyverse/index.html&#34;&gt;l’introduction à R et au tidyverse&lt;/a&gt; de J. Barnier. Enfin pour data.table, on trouve des informations utiles sur le cours &lt;a href=&#34;http://larmarange.github.io/analyse-R/manipulations-avancees-avec-data-table.html&#34;&gt;Manipulations avancée avec data.table&lt;/a&gt; de J. Larmarange.&lt;/p&gt;
@@ -269,9 +306,9 @@ dt[, list(var_mean = mean(rnorm(100))), by = list(idgpe = idgpe)] -&amp;gt; outp
 &lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;1.3&lt;/span&gt; Vitesses d’exécution&lt;/h2&gt;
 &lt;p&gt;Voilà donc pour les présentations! Allez, on montre le résultat d’un petit &lt;code&gt;microbenchmark&lt;/code&gt; des deux juste pour voir :&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;## Unit: microseconds
-##        expr      min       lq     mean   median       uq      max neval
-##       dplyr 1786.315 1890.706 2151.445 2035.773 2255.933 5072.222   100
-##  data.table  962.562 1031.398 1115.082 1108.482 1188.411 1629.301   100&lt;/code&gt;&lt;/pre&gt;
+##        expr      min        lq     mean   median       uq      max neval
+##       dplyr 1574.687 1677.6565 2080.334 1888.146 2250.244 5383.973   100
+##  data.table  841.958  909.6555 1183.064 1014.616 1256.394 6463.725   100&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Sur cet exemple, on voit un avantage clair à data.table! Mais on est sur une toute petite table en entrée. On va essayer de se rapprocher de cas plus concrets en s’intéressant à un exemple sur des bases plus importantes.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -331,9 +368,9 @@ output_base &amp;lt;- merge(weather, flights_time_hour, by = c(&amp;quot;time_ho
 &lt;p&gt;Je vous laisse juger de la lisibilité de chacune de ces instructions, qui font toutes la même chose, car c’est finalement assez subjectif. On donne ici les résultats d’un &lt;code&gt;microbenchmark&lt;/code&gt; de ces instructions :&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;## Unit: milliseconds
 ##   expr        min         lq       mean     median         uq        max
-##   Base 2741.11593 2862.03458 3284.97938 3006.96918 3064.25040 5739.63512
-##  DplyR   65.22150   66.98506   79.01941   68.24856   93.82186  105.25199
-##     DT   37.93129   38.34601   47.64781   42.14847   50.78308   70.54175
+##   Base 2762.56421 2788.56816 2889.57988 2901.98173 2976.58564 3014.96863
+##  DplyR   67.18872   67.42424   75.34978   72.22737   78.19105  104.46863
+##     DT   34.94064   36.79920   38.46866   37.37634   40.09649   45.03274
 ##  neval
 ##     10
 ##     10
@@ -382,9 +419,9 @@ Et bien, je n’ai pas seulement écrit cette instruction ainsi pour le plaisir 
     summarise(var_mean = mean(rnorm(100))) -&amp;gt; output_tibble
 })
 ## Unit: milliseconds
-##    expr      min       lq     mean   median       uq       max neval
-##  dplyr1 1.875062 1.960964 2.231909 2.042315 2.216679  9.209187   100
-##  dplyr2 3.172699 3.293019 3.720215 3.417606 3.746424 10.484638   100&lt;/code&gt;&lt;/pre&gt;
+##    expr      min       lq     mean   median       uq      max neval
+##  dplyr1 1.564448 1.606829 1.819492 1.651487 1.834670  4.15574   100
+##  dplyr2 2.659560 2.703365 3.205717 2.791258 3.224752 10.40556   100&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Ca peut sembler secondaire pour cet exemple, mais sur des grosses tables la différence va vraiment peser. Regardons par exemple les différences de performance de deux instructions &lt;code&gt;dplyr&lt;/code&gt; agrégeant par heure une variable égale au pourcentage de retard à l’arrivée par rapport à la durée du vol :&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;microbenchmark::microbenchmark(times=10L, dplyr_mutate = {
   flightstib %&amp;gt;% mutate(propor_delay = arr_delay / air_time) %&amp;gt;% 
@@ -396,11 +433,11 @@ Et bien, je n’ai pas seulement écrit cette instruction ainsi pour le plaisir 
 })
 ## Unit: milliseconds
 ##               expr       min        lq      mean    median        uq
-##       dplyr_mutate  28.26984  28.91723  30.28706  30.76413  31.62401
-##  dplyr_sans_mutate 249.75339 259.97349 276.79169 269.59683 275.72832
+##       dplyr_mutate  25.18759  25.77696  26.71347  26.55008  26.88345
+##  dplyr_sans_mutate 230.49533 233.77157 241.32859 236.51276 241.43849
 ##        max neval
-##   31.71105    10
-##  366.08735    10&lt;/code&gt;&lt;/pre&gt;
+##   29.73814    10
+##  278.43055    10&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Les performances changent du tout au tout. Je n’ai pas d’explications à cela et je n’étais pas conscient de cette propriété de &lt;code&gt;summarise&lt;/code&gt;, mais cela montre visiblement que cela doit être une mauvais pratique de définir une variable au sein d’un summarise. Cela semble être un aspect important à avoir en tête quand on code en &lt;code&gt;dplyr&lt;/code&gt;!&lt;/p&gt;
 &lt;/div&gt;
 </description>
