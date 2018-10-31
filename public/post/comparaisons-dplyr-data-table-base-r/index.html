@@ -18,7 +18,7 @@
   <meta name="description" content="La richesse de R, alimentée par une communauté de développeurs très active, rend le choix d’une méthode adaptée à une problématique donnée difficile, et c’est tant mieux. Vous trouverez ici une modeste participation au débat qui oppose les deux packages d’analyse des données les plus en vue dans la communauté R : data.table et dplyr. Après un rappel de la syntaxe de ces packages, on les compare entre eux et avec les fonctions de R base sur un traitement tout simple issu des données du package nycflights13.">
 
   
-  <link rel="alternate" hreflang="fr" href="/post/benchmark_dt_dplyr_base_102018/">
+  <link rel="alternate" hreflang="fr" href="/post/comparaisons-dplyr-data-table-base-r/">
 
   
 
@@ -82,13 +82,13 @@
   <link rel="icon" type="image/png" href="/img/icon.png">
   <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
 
-  <link rel="canonical" href="/post/benchmark_dt_dplyr_base_102018/">
+  <link rel="canonical" href="/post/comparaisons-dplyr-data-table-base-r/">
 
   <meta property="twitter:card" content="summary_large_image">
   
   <meta property="og:site_name" content="Antoine Sireyjol">
-  <meta property="og:url" content="/post/benchmark_dt_dplyr_base_102018/">
-  <meta property="og:title" content="Comparaisons entre dplyr, data.table et base R | Antoine Sireyjol">
+  <meta property="og:url" content="/post/comparaisons-dplyr-data-table-base-r/">
+  <meta property="og:title" content="Comparaisons dplyr - data.table - base R | Antoine Sireyjol">
   <meta property="og:description" content="La richesse de R, alimentée par une communauté de développeurs très active, rend le choix d’une méthode adaptée à une problématique donnée difficile, et c’est tant mieux. Vous trouverez ici une modeste participation au débat qui oppose les deux packages d’analyse des données les plus en vue dans la communauté R : data.table et dplyr. Après un rappel de la syntaxe de ces packages, on les compare entre eux et avec les fonctions de R base sur un traitement tout simple issu des données du package nycflights13.">
   
   
@@ -96,16 +96,16 @@
   <meta property="og:image" content="/img/icon-192.png">
   <meta property="og:locale" content="fr">
   
-  <meta property="article:published_time" content="2018-11-01T00:00:00&#43;00:00">
+  <meta property="article:published_time" content="2018-10-31T00:00:00&#43;00:00">
   
-  <meta property="article:modified_time" content="2018-11-01T00:00:00&#43;00:00">
-  
-
+  <meta property="article:modified_time" content="2018-10-31T00:00:00&#43;00:00">
   
 
   
 
-  <title>Comparaisons entre dplyr, data.table et base R | Antoine Sireyjol</title>
+  
+
+  <title>Comparaisons dplyr - data.table - base R | Antoine Sireyjol</title>
 
 </head>
 <body id="top" data-spy="scroll" data-target="#TableOfContents" data-offset="71" >
@@ -224,7 +224,7 @@
 
 
   <div class="article-container">
-    <h1 itemprop="name">Comparaisons entre dplyr, data.table et base R</h1>
+    <h1 itemprop="name">Comparaisons dplyr - data.table - base R</h1>
 
     
 
@@ -239,9 +239,9 @@
 
   <span class="article-date">
     
-    <meta content="2018-11-01 00:00:00 &#43;0000 UTC" itemprop="datePublished">
-    <time datetime="2018-11-01 00:00:00 &#43;0000 UTC" itemprop="dateModified">
-      Nov 1, 2018
+    <meta content="2018-10-31 00:00:00 &#43;0000 UTC" itemprop="datePublished">
+    <time datetime="2018-10-31 00:00:00 &#43;0000 UTC" itemprop="dateModified">
+      Oct 31, 2018
     </time>
   </span>
   <span itemscope itemprop="publisher" itemtype="http://schema.org/Person">
@@ -277,35 +277,35 @@
   <ul class="share">
     <li>
       <a class="twitter"
-         href="https://twitter.com/intent/tweet?text=Comparaisons%20entre%20dplyr%2c%20data.table%20et%20base%20R&amp;url=%2fpost%2fbenchmark_dt_dplyr_base_102018%2f"
+         href="https://twitter.com/intent/tweet?text=Comparaisons%20dplyr%20-%20data.table%20-%20base%20R&amp;url=%2fpost%2fcomparaisons-dplyr-data-table-base-r%2f"
          target="_blank" rel="noopener">
         <i class="fab fa-twitter"></i>
       </a>
     </li>
     <li>
       <a class="facebook"
-         href="https://www.facebook.com/sharer.php?u=%2fpost%2fbenchmark_dt_dplyr_base_102018%2f"
+         href="https://www.facebook.com/sharer.php?u=%2fpost%2fcomparaisons-dplyr-data-table-base-r%2f"
          target="_blank" rel="noopener">
         <i class="fab fa-facebook-f"></i>
       </a>
     </li>
     <li>
       <a class="linkedin"
-         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2fbenchmark_dt_dplyr_base_102018%2f&amp;title=Comparaisons%20entre%20dplyr%2c%20data.table%20et%20base%20R"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2fcomparaisons-dplyr-data-table-base-r%2f&amp;title=Comparaisons%20dplyr%20-%20data.table%20-%20base%20R"
          target="_blank" rel="noopener">
         <i class="fab fa-linkedin-in"></i>
       </a>
     </li>
     <li>
       <a class="weibo"
-         href="http://service.weibo.com/share/share.php?url=%2fpost%2fbenchmark_dt_dplyr_base_102018%2f&amp;title=Comparaisons%20entre%20dplyr%2c%20data.table%20et%20base%20R"
+         href="http://service.weibo.com/share/share.php?url=%2fpost%2fcomparaisons-dplyr-data-table-base-r%2f&amp;title=Comparaisons%20dplyr%20-%20data.table%20-%20base%20R"
          target="_blank" rel="noopener">
         <i class="fab fa-weibo"></i>
       </a>
     </li>
     <li>
       <a class="email"
-         href="mailto:?subject=Comparaisons%20entre%20dplyr%2c%20data.table%20et%20base%20R&amp;body=%2fpost%2fbenchmark_dt_dplyr_base_102018%2f">
+         href="mailto:?subject=Comparaisons%20dplyr%20-%20data.table%20-%20base%20R&amp;body=%2fpost%2fcomparaisons-dplyr-data-table-base-r%2f">
         <i class="fas fa-envelope"></i>
       </a>
     </li>
@@ -374,9 +374,9 @@ dt[, list(var_mean = mean(rnorm(100))), by = list(idgpe = idgpe)] -&gt; output_d
 <h2><span class="header-section-number">1.3</span> Vitesses d’exécution</h2>
 <p>Voilà donc pour les présentations! Allez, on montre le résultat d’un petit <code>microbenchmark</code> des deux juste pour voir :</p>
 <pre><code>## Unit: microseconds
-##        expr      min        lq      mean   median        uq      max neval
-##       dplyr 1542.825 1573.8300 1779.8640 1631.857 1944.1760 4416.279   100
-##  data.table  816.355  851.0575  906.8654  898.844  940.6575 1106.488   100</code></pre>
+##        expr      min       lq     mean   median       uq      max neval
+##       dplyr 1786.315 1890.706 2151.445 2035.773 2255.933 5072.222   100
+##  data.table  962.562 1031.398 1115.082 1108.482 1188.411 1629.301   100</code></pre>
 <p>Sur cet exemple, on voit un avantage clair à data.table! Mais on est sur une toute petite table en entrée. On va essayer de se rapprocher de cas plus concrets en s’intéressant à un exemple sur des bases plus importantes.</p>
 </div>
 </div>
@@ -436,9 +436,9 @@ output_base &lt;- merge(weather, flights_time_hour, by = c(&quot;time_hour&quot;
 <p>Je vous laisse juger de la lisibilité de chacune de ces instructions, qui font toutes la même chose, car c’est finalement assez subjectif. On donne ici les résultats d’un <code>microbenchmark</code> de ces instructions :</p>
 <pre><code>## Unit: milliseconds
 ##   expr        min         lq       mean     median         uq        max
-##   Base 2283.69823 2318.91638 2357.66409 2350.05533 2363.52347 2495.92136
-##  DplyR   56.07416   56.58389   56.90923   56.92636   57.35018   57.68184
-##     DT   32.77763   32.88230   33.01718   32.93322   33.18552   33.36756
+##   Base 2741.11593 2862.03458 3284.97938 3006.96918 3064.25040 5739.63512
+##  DplyR   65.22150   66.98506   79.01941   68.24856   93.82186  105.25199
+##     DT   37.93129   38.34601   47.64781   42.14847   50.78308   70.54175
 ##  neval
 ##     10
 ##     10
@@ -461,12 +461,12 @@ output_base &lt;- merge(weather, flights_time_hour, by = c(&quot;time_hour&quot;
 }</code></pre>
 <p>Notez qu’on en profite pour se faire mousser facilement avec <code>autoplot</code> de <code>ggplot2</code> qui sort les résultats de <code>microbenchmark</code> sous forme d’un joli graphique.</p>
 <p>Il n’y a plus qu’à tester! On propose des tests sur 10 000, 100 000 et 1 million de lignes avec à chaque fois peu (1/1000e du nombre de lignes) ou beaucoup (la moitié du nombre de lignes) de groupes.</p>
-<p><strong>10 000 lignes pour 10 groupes</strong> <img src="/post/benchmark_DT_dplyr_base_102018_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
-<p><strong>10 000 lignes pour 5 000 groupes</strong> <img src="/post/benchmark_DT_dplyr_base_102018_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
-<p><strong>100 000 lignes pour 100 groupes</strong> <img src="/post/benchmark_DT_dplyr_base_102018_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
-<p><strong>100 000 lignes pour 50 000 groupes</strong> <img src="/post/benchmark_DT_dplyr_base_102018_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
-<p><strong>1 million de lignes pour 1 000 groupes</strong> <img src="/post/benchmark_DT_dplyr_base_102018_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
-<p><strong>1 million de lignes pour 500 000 groupes</strong> <img src="/post/benchmark_DT_dplyr_base_102018_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<p><strong>10 000 lignes pour 10 groupes</strong> <img src="/post/2018-10-31-comparaisons-dplyr-data-table-base-r_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p><strong>10 000 lignes pour 5 000 groupes</strong> <img src="/post/2018-10-31-comparaisons-dplyr-data-table-base-r_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p><strong>100 000 lignes pour 100 groupes</strong> <img src="/post/2018-10-31-comparaisons-dplyr-data-table-base-r_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p><strong>100 000 lignes pour 50 000 groupes</strong> <img src="/post/2018-10-31-comparaisons-dplyr-data-table-base-r_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p><strong>1 million de lignes pour 1 000 groupes</strong> <img src="/post/2018-10-31-comparaisons-dplyr-data-table-base-r_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p><strong>1 million de lignes pour 500 000 groupes</strong> <img src="/post/2018-10-31-comparaisons-dplyr-data-table-base-r_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
 </div>
 <div id="bonus-une-propriete-etonnante-de-dplyr" class="section level1">
 <h1><span class="header-section-number">4</span> Bonus : une propriété étonnante de dplyr</h1>
@@ -488,8 +488,8 @@ Et bien, je n’ai pas seulement écrit cette instruction ainsi pour le plaisir 
 })
 ## Unit: milliseconds
 ##    expr      min       lq     mean   median       uq       max neval
-##  dplyr1 1.552497 1.614221 2.040995 1.850878 2.256495  4.697879   100
-##  dplyr2 2.647037 2.732086 3.315452 3.009135 3.554130 10.451613   100</code></pre>
+##  dplyr1 1.875062 1.960964 2.231909 2.042315 2.216679  9.209187   100
+##  dplyr2 3.172699 3.293019 3.720215 3.417606 3.746424 10.484638   100</code></pre>
 <p>Ca peut sembler secondaire pour cet exemple, mais sur des grosses tables la différence va vraiment peser. Regardons par exemple les différences de performance de deux instructions <code>dplyr</code> agrégeant par heure une variable égale au pourcentage de retard à l’arrivée par rapport à la durée du vol :</p>
 <pre class="r"><code>microbenchmark::microbenchmark(times=10L, dplyr_mutate = {
   flightstib %&gt;% mutate(propor_delay = arr_delay / air_time) %&gt;% 
@@ -501,11 +501,11 @@ Et bien, je n’ai pas seulement écrit cette instruction ainsi pour le plaisir 
 })
 ## Unit: milliseconds
 ##               expr       min        lq      mean    median        uq
-##       dplyr_mutate  24.13735  24.14816  26.72938  25.48988  28.45863
-##  dplyr_sans_mutate 212.18388 217.85171 225.99301 226.76306 233.29531
+##       dplyr_mutate  28.26984  28.91723  30.28706  30.76413  31.62401
+##  dplyr_sans_mutate 249.75339 259.97349 276.79169 269.59683 275.72832
 ##        max neval
-##   35.42409    10
-##  237.79863    10</code></pre>
+##   31.71105    10
+##  366.08735    10</code></pre>
 <p>Les performances changent du tout au tout. Je n’ai pas d’explications à cela et je n’étais pas conscient de cette propriété de <code>summarise</code>, mais cela montre visiblement que cela doit être une mauvais pratique de définir une variable au sein d’un summarise. Cela semble être un aspect important à avoir en tête quand on code en <code>dplyr</code>!</p>
 </div>
 
@@ -516,17 +516,17 @@ Et bien, je n’ai pas seulement écrit cette instruction ainsi pour le plaisir 
 
 <div class="article-tags">
   
-  <a class="badge badge-light" href="/tags/dplyr/">dplyr</a>
-  
-  <a class="badge badge-light" href="/tags/tidyverse/">tidyverse</a>
-  
-  <a class="badge badge-light" href="/tags/data.table/">data.table</a>
-  
-  <a class="badge badge-light" href="/tags/microbenchmark/">microbenchmark</a>
-  
   <a class="badge badge-light" href="/tags/benchmark/">benchmark</a>
   
   <a class="badge badge-light" href="/tags/data-science/">data science</a>
+  
+  <a class="badge badge-light" href="/tags/data.table/">data.table</a>
+  
+  <a class="badge badge-light" href="/tags/dplyr/">dplyr</a>
+  
+  <a class="badge badge-light" href="/tags/microbenchmark/">microbenchmark</a>
+  
+  <a class="badge badge-light" href="/tags/tidyverse/">tidyverse</a>
   
 </div>
 
@@ -534,16 +534,6 @@ Et bien, je n’ai pas seulement écrit cette instruction ainsi pour le plaisir 
 
 
     
-    
-    <div class="article-widget">
-      <div class="hr-light"></div>
-      <h3>Sur le même sujet</h3>
-      <ul>
-        
-        <li><a href="/post/comparaisons-dplyr-data-table-base-r/">Comparaisons dplyr - data.table - base R</a></li>
-        
-      </ul>
-    </div>
     
 
     

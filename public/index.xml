@@ -209,6 +209,204 @@ Et bien, je n’ai pas seulement écrit cette instruction ainsi pour le plaisir 
     </item>
     
     <item>
+      <title>Comparaisons dplyr - data.table - base R</title>
+      <link>/post/comparaisons-dplyr-data-table-base-r/</link>
+      <pubDate>Wed, 31 Oct 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/post/comparaisons-dplyr-data-table-base-r/</guid>
+      <description>&lt;p&gt;La richesse de R, alimentée par une communauté de développeurs très active, rend le choix d’une méthode adaptée à une problématique donnée difficile, et c’est tant mieux. Vous trouverez ici une modeste participation au débat qui oppose les deux packages d’analyse des données les plus en vue dans la communauté R : &lt;code&gt;data.table&lt;/code&gt; et &lt;code&gt;dplyr&lt;/code&gt;. Après un rappel de la syntaxe de ces packages, on les compare entre eux et avec les fonctions de R base sur un traitement tout simple issu des données du package &lt;code&gt;nycflights13&lt;/code&gt;. On présente une comparaison des vitesses d’exécutions de ce traitement avec le package &lt;code&gt;microbenchmark&lt;/code&gt;. On fournit ensuite un autre benchmark de &lt;code&gt;data.table&lt;/code&gt; et &lt;code&gt;dplyr&lt;/code&gt; sur des statistiques par groupe en faisant varier le nombre d’observations et le nombre de groupes.&lt;/p&gt;
+&lt;div id=&#34;rappels-sur-dplyr-et-data.table&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;1&lt;/span&gt; Rappels sur dplyr et data.table&lt;/h1&gt;
+&lt;p&gt;Si vous connaissez déjà la syntaxe de ces packages, vous pouvez directement aller à la partie &lt;a href=&#34;#comparaisons-sur-une-etude-de-cas-simple&#34;&gt;Comparaisons sur une étude de cas simple&lt;/a&gt;. On rappelle ici les principales caractéristiques de ces packages mais pour se former à leur utilisation on peut se référer à l’excellent &lt;a href=&#34;https://teaching.slmc.fr/perf/presentation_handout.pdf&#34;&gt;cours de perfectionnement de Martin Chevalier&lt;/a&gt;. Pour une exploration de ce qu’englobe le &lt;code&gt;tidyverse&lt;/code&gt; et notamment une présentation des commandes de &lt;code&gt;dplyr&lt;/code&gt;, vous pouvez jeter un oeil à &lt;a href=&#34;https://juba.github.io/tidyverse/index.html&#34;&gt;l’introduction à R et au tidyverse&lt;/a&gt; de J. Barnier. Enfin pour data.table, on trouve des informations utiles sur le cours &lt;a href=&#34;http://larmarange.github.io/analyse-R/manipulations-avancees-avec-data-table.html&#34;&gt;Manipulations avancée avec data.table&lt;/a&gt; de J. Larmarange.&lt;/p&gt;
+&lt;div id=&#34;dplyr-et-le-tidyverse&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;1.1&lt;/span&gt; dplyr et le tidyverse&lt;/h2&gt;
+&lt;p&gt;Le &lt;code&gt;tidyverse&lt;/code&gt; (contraction de “tidy” et “universe”) est un concept initié par Hadley Wickham, chef statisticien de RStudio. Il regroupe un ensemble de packages utiles au traitement statistique et au nettoyage de bases de données. On va s’intéresser ici presque seulement au package &lt;code&gt;dplyr&lt;/code&gt; (dont les instructions seront appliquées aux &lt;code&gt;tibbles&lt;/code&gt;, un format de data.frame issu du &lt;code&gt;tidyverse&lt;/code&gt;), mais vous pouvez parcourir les packages proposés dans le tidyverse sur &lt;a href=&#34;https://www.tidyverse.org/&#34;&gt;le site officiel&lt;/a&gt;.&lt;br /&gt;
+&lt;code&gt;dplyr&lt;/code&gt; propose un ensemble d’opérations de traitement de données sous une syntaxe différente de celle utilisée dans les fonctions de base de R. Ce langage présente le double avantage d’être à la fois lisible pour quelqu’un habitué aux langages tels que SAS ou SQL et de proposer des fonctions optimisées qui présentent de bonnes performances en termes de temps d’exécution. La grammaire &lt;code&gt;dplyr&lt;/code&gt; s’appuie en effet sur des fonctions au nom explicite :&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;mutate(data, newvar1=fonction(var1,var2…)) crée de nouvelles variables&lt;/li&gt;
+&lt;li&gt;filter(data, condition) sélectionne au sein d’une table certaines observations, à la manière de &lt;code&gt;where&lt;/code&gt; dans SAS.&lt;/li&gt;
+&lt;li&gt;arrange(data, var1, descending var2,…) trie une base selon une ou plusieurs variables (l’équivalent d’une &lt;code&gt;proc sort&lt;/code&gt;).&lt;/li&gt;
+&lt;li&gt;select(data, var1 : varX) sélectionne certaines variables dans une base, à la manière de &lt;code&gt;keep&lt;/code&gt; dans SAS.&lt;/li&gt;
+&lt;li&gt;summarise(data, newvar1=mean(var1), newvar2=sum(var2)) réalise toute sorte d’opérations statistiques sur une table.&lt;/li&gt;
+&lt;li&gt;group_by(data, var) regroupe une table par une variable&lt;/li&gt;
+&lt;li&gt;et bien d’autres…&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Un aspect pratique de ce langage est que toutes ces opérations peuvent être chaînées à l’aide de l’opérateur &lt;code&gt;%&amp;gt;%&lt;/code&gt; (“pipe”) dont la syntaxe est la suivante : &lt;code&gt;data %&amp;gt;% fonction(...)&lt;/code&gt; est équivalent à &lt;code&gt;fonction(data, ...)&lt;/code&gt;. Cette syntaxe permet de chaîner un grand nombre d’opérations sur une base commune, en limitant le nombre de fois où l’on écrit des tables intermédiaires tout en conservant une grande lisibilité du code. Ce petit exemple vous en convaincra peut-être :&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse) # On aurait aussi pu charger seulement le package dplyr
+# on crée un data frame avec 100 lignes, chaque individu appartenant à un des 50 groupes
+df &amp;lt;- data.frame(id1 = c(1:100), idgpe = sample(50), replace = TRUE)
+
+# on y applique les instructions de dplyr
+df %&amp;gt;% as_tibble() %&amp;gt;% mutate(var = rnorm(100)) %&amp;gt;% 
+  group_by(idgpe) %&amp;gt;% summarise(var_mean = mean(var)) -&amp;gt; output_tibble&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Un regard peu habitué contesterait peut-être l’aspect très lisible de l’instruction, mais ça l’est réellement. Le déroulé est le suivant :&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;on transforme notre data.frame en tibble (pour rappel : format optimisé de data.frame pour dplyr) avec &lt;code&gt;as_tibble&lt;/code&gt;&lt;br /&gt;
+&lt;/li&gt;
+&lt;li&gt;on crée une variable &lt;code&gt;var&lt;/code&gt; avec &lt;code&gt;mutate&lt;/code&gt;&lt;br /&gt;
+&lt;/li&gt;
+&lt;li&gt;on agrège par &lt;code&gt;idgpe&lt;/code&gt; avec &lt;code&gt;group_by&lt;/code&gt;&lt;br /&gt;
+&lt;/li&gt;
+&lt;li&gt;on calcule la moyenne de &lt;code&gt;var&lt;/code&gt; avec &lt;code&gt;summarise&lt;/code&gt;, que l’on stocke dans &lt;code&gt;var_mean&lt;/code&gt;. Comme cette instruction suit un group_by, elle est réalisée à l’intérieur de chaque groupe (défini par &lt;code&gt;idgpe&lt;/code&gt;), sinon elle aurait été réalisé sur l’ensemble de la table.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Tout cela est stocké dans une table output_tibble, qui est (si vous avez suivi) un tibble agrégé par &lt;code&gt;idgpe&lt;/code&gt; et qui a donc 50 lignes.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;data.table&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;1.2&lt;/span&gt; Data.table&lt;/h2&gt;
+&lt;p&gt;Le package &lt;code&gt;data.table&lt;/code&gt; ne prétend pas, contrairement au &lt;code&gt;tidyverse&lt;/code&gt;, proposer une syntaxe concurrente à base R mais enrichir celle-ci. Il est axé autour d’un nouveau format d’objet, le data.table, qui est un type de data.frame qui permet une utilisation optimisée de l’opérateur &lt;code&gt;[&lt;/code&gt;.&lt;br /&gt;
+Tout data.frame peut être converti en data.table grâce à la fonction &lt;code&gt;as.data.table&lt;/code&gt;, ou, de manière plus optimale pour l’utilisation de la mémoire, grâce à la fonction &lt;code&gt;setDT&lt;/code&gt; qui permet de directement transformer la nature de l’objet sans avoir à en écrire un autre. Il est important d’avoir en tête qu’un data.frame converti en data.table conserve les caractéristiques d’un data.frame. Cependant, l’opérateur &lt;code&gt;[&lt;/code&gt; appliqué au data.table change de signification et devient :&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;DT[i,j,by]&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Avec &lt;code&gt;i&lt;/code&gt; qui permet de sélectionner des observations (sans avoir besoin de répéter le nom de la base dans laquelle on se trouve), &lt;code&gt;j&lt;/code&gt; qui permet de créer ou sélectionner des variables et &lt;code&gt;by&lt;/code&gt; de regrouper les traitement selon les modalités d’une variable définie. Comme dans &lt;code&gt;dplyr&lt;/code&gt;, il est possible de chaîner les opérations réalisées comme le montre l’exemple suivant, qui reprend le même cas de figure que celui illustrant le package &lt;code&gt;dplyr&lt;/code&gt; :&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(data.table) 
+# on convertit notre data frame précédemment créé en data.table
+dt &amp;lt;- as.data.table(df)
+
+# on y applique les même instructions
+dt[, list(var_mean = mean(rnorm(100))), by = list(idgpe = idgpe)] -&amp;gt; output_dt&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Le fait de renseigner mes variables au sein de &lt;code&gt;list()&lt;/code&gt; me permet d’avoir une table en sortie au niveau de &lt;code&gt;idgpe&lt;/code&gt; (donc 50 observations), sans cela ma variable est bien moyennée par groupe mais la table en sortie est toujours au niveau &lt;code&gt;id1&lt;/code&gt; (100 observations).&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;vitesses-dexecution&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;1.3&lt;/span&gt; Vitesses d’exécution&lt;/h2&gt;
+&lt;p&gt;Voilà donc pour les présentations! Allez, on montre le résultat d’un petit &lt;code&gt;microbenchmark&lt;/code&gt; des deux juste pour voir :&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;## Unit: microseconds
+##        expr      min       lq     mean   median       uq      max neval
+##       dplyr 1786.315 1890.706 2151.445 2035.773 2255.933 5072.222   100
+##  data.table  962.562 1031.398 1115.082 1108.482 1188.411 1629.301   100&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Sur cet exemple, on voit un avantage clair à data.table! Mais on est sur une toute petite table en entrée. On va essayer de se rapprocher de cas plus concrets en s’intéressant à un exemple sur des bases plus importantes.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;comparaisons-sur-une-etude-de-cas-simple&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;2&lt;/span&gt; Comparaisons sur une étude de cas simple&lt;/h1&gt;
+&lt;p&gt;Les avantages et inconvénients de ces deux packages sont à l’origine de nombreux débats. Vous pouvez vous en convaincre en suivant &lt;a href=&#34;https://stackoverflow.com/questions/21435339/data-table-vs-dplyr-can-one-do-something-well-the-other-cant-or-does-poorly&#34;&gt;cette discussion sur stackoverflow&lt;/a&gt;. On peut quand même dégager deux compromis :&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Le choix de l’un ou l’autre des packages dépend beaucoup de ce que l’on va en faire (types d’analyses, taille des données, profils des utilisateurs du code…).&lt;br /&gt;
+&lt;/li&gt;
+&lt;li&gt;Les deux packages sont plus intéressants que base R pour l’analyse de données, que ce soit en termes de facilité d’écriture ou de performances.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Pour ce deuxième point, on va essayer de s’en convaincre ensemble avec ce petit exemple.&lt;/p&gt;
+&lt;div id=&#34;notre-etude-de-cas&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;2.1&lt;/span&gt; Notre étude de cas&lt;/h2&gt;
+&lt;p&gt;Pour cet exemple, on utilise les données du package de Hadley Wickham (oui, le même qui est à l’origine du &lt;code&gt;tidyverse&lt;/code&gt;, mais ça n’entamera pas notre indépendance) que l’on trouve dans &lt;code&gt;nycflights13&lt;/code&gt;. En particulier, la base &lt;code&gt;flights&lt;/code&gt; donne toutes les heures de départ et d’arrivée selon les aéroports de départ et d’arrivée ainsi que les retards au départ et à l’arrivée. La base &lt;code&gt;weather&lt;/code&gt; donne elle des indications météo, heure par heure, dans chaque aéroport. Tout bon statisticien qui se respecte devrait commencer à se dire qu’il y a quelque chose à faire pour tenter d’expliquer les retards des avions (&lt;em&gt;spoiler alert&lt;/em&gt; : on ne va pas le faire).&lt;br /&gt;
+Commençons par charger nos packages (n’oubliez pas de faire &lt;code&gt;install.packages(&amp;quot;nom_pck&amp;quot;)&lt;/code&gt; avant si vous ne l’avez jamais fait) et nos données :&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Les packages nécessaires
+library(tidyverse) # Regroupe différents packages, voir https://www.tidyverse.org/ 
+library(data.table)
+library(microbenchmark) # Pour les calculs de vitesse d&amp;#39;exécution
+library(nycflights13) # Pour les données
+
+# data frame classiques pour tests en base R
+flights &amp;lt;- as.data.frame(flights)
+weather &amp;lt;- as.data.frame(weather)
+# data.table pour tests avec data.table
+flightsdt &amp;lt;- as.data.table(flights)
+weatherdt &amp;lt;- as.data.table(weather)
+# tibbles pour instructions en dplyR (tournent aussi sur data.frame et data.table)
+flightstib &amp;lt;- as_tibble(flights)
+weathertib &amp;lt;- as_tibble(weather)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Notez que l’on n’est pas obligés de faire du dplyr sur des tibbles plutôt que des data frame, mais on suit ici les recommandations d’Hadley Wickham.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;moyenne-des-retards-et-fusion-des-tables&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;2.2&lt;/span&gt; Moyenne des retards et fusion des tables&lt;/h2&gt;
+&lt;p&gt;Un rapide examen des bases vous montre que la première étape avant toute analyse est comme souvent de regrouper les éléments de flights par heure et aéroport de départ (ou aurait aussi pu prendre aéroport d’arrivée) pour pouvoir les fusionner avec la table weather, qui donnent les indications météo minute par minute. On écrit cette instruction de manières différentes :&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;En base R&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;flights_time_hour &amp;lt;- aggregate.data.frame(list(arr_delay = flights$arr_delay, 
+                                    dep_delay = flights$dep_delay), 
+                                      list(time_hour = flights$time_hour, origin = flights$origin), 
+                                      mean)
+output_base &amp;lt;- merge(weather, flights_time_hour, by = c(&amp;quot;time_hour&amp;quot;, &amp;quot;origin&amp;quot;), sort = FALSE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;(J’ai utilisé &lt;code&gt;aggregate.data.frame&lt;/code&gt; et pas &lt;code&gt;tapply&lt;/code&gt; pour avoir directement un data.frame en sortie)&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;En dplyr&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;flightstib %&amp;gt;% group_by(time_hour, origin) %&amp;gt;% 
+  summarise(arr_delay = mean(arr_delay),
+            dep_delay = mean(dep_delay)) %&amp;gt;% 
+  inner_join(weathertib, by = c(&amp;quot;time_hour&amp;quot;, &amp;quot;origin&amp;quot;)) -&amp;gt; output_dplyr &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;En data.table&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;output_DT &amp;lt;- merge(flightsdt[, list(arr_perc_delay = mean(arr_delay),
+                       dep_perc_delay = mean(dep_delay)), by = c(&amp;quot;time_hour&amp;quot;, &amp;quot;origin&amp;quot;)],
+      weatherdt, by = c(&amp;quot;time_hour&amp;quot;, &amp;quot;origin&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;J’ai utilisé la fonction &lt;code&gt;merge&lt;/code&gt; plutôt que &lt;code&gt;DT1[DT2, on = c(&amp;quot;time_hour&amp;quot;, &amp;quot;origin&amp;quot;), nomatch = 0]&lt;/code&gt; car j’ai constaté qu’elle était plus rapide, conformément à ce que montre bien cet &lt;a href=&#34;https://jozefhajnala.gitlab.io/r/r006-merge/&#34;&gt;article du Jozef’s Rblog&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;comparaisons-des-vitesses-dexecution&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;2.3&lt;/span&gt; Comparaisons des vitesses d’exécution&lt;/h2&gt;
+&lt;p&gt;Je vous laisse juger de la lisibilité de chacune de ces instructions, qui font toutes la même chose, car c’est finalement assez subjectif. On donne ici les résultats d’un &lt;code&gt;microbenchmark&lt;/code&gt; de ces instructions :&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;## Unit: milliseconds
+##   expr        min         lq       mean     median         uq        max
+##   Base 2741.11593 2862.03458 3284.97938 3006.96918 3064.25040 5739.63512
+##  DplyR   65.22150   66.98506   79.01941   68.24856   93.82186  105.25199
+##     DT   37.93129   38.34601   47.64781   42.14847   50.78308   70.54175
+##  neval
+##     10
+##     10
+##     10&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Les résultats sont très nettement en faveur des packages &lt;code&gt;dplyr&lt;/code&gt; et &lt;code&gt;data.table&lt;/code&gt;, ce dernier ayant l’avantage. Sans doute existe-t-il des moyens de plus optimiser l’instruction en base R, mais là n’est pas vraiment la question. On voit qu’avec une syntaxe simple et lisible, &lt;code&gt;dplyr&lt;/code&gt; et &lt;code&gt;data.table&lt;/code&gt; font beaucoup mieux que l’instruction qui viendrait à l’esprit d’un statisticien qui n’utiliserait que les premières fonctions venues de base R.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;tests-complementaires-sur-les-vitesse-daggregation&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;3&lt;/span&gt; Tests complémentaires sur les vitesse d’aggrégation&lt;/h1&gt;
+&lt;p&gt;Comme on l’a vu dans notre petit exemple, l’aggrégation est souvent utilisée en statistiques. Il est donc intéressant de comparer les performances de &lt;code&gt;data.table&lt;/code&gt; et &lt;code&gt;dplyr&lt;/code&gt; de ce point de vue. Des benchamrks ont déjà été faits, et on peut les trouver dans la &lt;a href=&#34;https://stackoverflow.com/questions/21435339/data-table-vs-dplyr-can-one-do-something-well-the-other-cant-or-does-poorly&#34;&gt;discussion sur stackoverflow&lt;/a&gt; évoquée plus haut. On propose ici quelques tests comparatifs sur un cas de groupement d’une base fictive de &lt;code&gt;nbrow&lt;/code&gt; lignes appartenant à &lt;code&gt;nbgpe&lt;/code&gt; groupes. La fonction est la suivante :&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;test_group_by &amp;lt;- function(nbrow, nbgpe){
+  test &amp;lt;- as_tibble(data.frame(x = rnorm(nbrow), y = sample(floor(nbgpe), replace = TRUE)))
+  testDT &amp;lt;- as.data.table(test)
+  
+  return(autoplot(
+    microbenchmark::microbenchmark(times = 10, unit=&amp;quot;ms&amp;quot;, 
+                                   DplyR = test %&amp;gt;% group_by(y) %&amp;gt;% summarise(x = mean(x)),
+                                   data.table = testDT[, x:= mean(x), by = y]),
+    title = paste0(&amp;quot;Benchmark avec table de &amp;quot;, nbrow, &amp;quot; observations (100 itérations)&amp;quot;)))
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Notez qu’on en profite pour se faire mousser facilement avec &lt;code&gt;autoplot&lt;/code&gt; de &lt;code&gt;ggplot2&lt;/code&gt; qui sort les résultats de &lt;code&gt;microbenchmark&lt;/code&gt; sous forme d’un joli graphique.&lt;/p&gt;
+&lt;p&gt;Il n’y a plus qu’à tester! On propose des tests sur 10 000, 100 000 et 1 million de lignes avec à chaque fois peu (1/1000e du nombre de lignes) ou beaucoup (la moitié du nombre de lignes) de groupes.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;10 000 lignes pour 10 groupes&lt;/strong&gt; &lt;img src=&#34;/post/2018-10-31-comparaisons-dplyr-data-table-base-r_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;10 000 lignes pour 5 000 groupes&lt;/strong&gt; &lt;img src=&#34;/post/2018-10-31-comparaisons-dplyr-data-table-base-r_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;100 000 lignes pour 100 groupes&lt;/strong&gt; &lt;img src=&#34;/post/2018-10-31-comparaisons-dplyr-data-table-base-r_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;100 000 lignes pour 50 000 groupes&lt;/strong&gt; &lt;img src=&#34;/post/2018-10-31-comparaisons-dplyr-data-table-base-r_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;1 million de lignes pour 1 000 groupes&lt;/strong&gt; &lt;img src=&#34;/post/2018-10-31-comparaisons-dplyr-data-table-base-r_files/figure-html/unnamed-chunk-14-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;1 million de lignes pour 500 000 groupes&lt;/strong&gt; &lt;img src=&#34;/post/2018-10-31-comparaisons-dplyr-data-table-base-r_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;bonus-une-propriete-etonnante-de-dplyr&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;4&lt;/span&gt; Bonus : une propriété étonnante de dplyr&lt;/h1&gt;
+&lt;p&gt;Je partage ici un aspect qui m’a semblé étonnant de dplyr. Si je reprends l’exemple donné en première partie de cet article, vous avez pu remarquer que :&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Rappel : df &amp;lt;- data.frame(id1 = c(1:100), idgpe = sample(50), replace = TRUE)
+  df %&amp;gt;% as_tibble() %&amp;gt;% mutate(var = rnorm(100)) %&amp;gt;% 
+    group_by(idgpe) %&amp;gt;% summarise(var_mean = mean(var)) -&amp;gt; output_tibble&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;pouvait se réécrire de manière plus directe (comme le fait d’ailleurs la partie sur data.table) ainsi :&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;  df %&amp;gt;% as_tibble() %&amp;gt;%  group_by(idgpe) %&amp;gt;% 
+  summarise(var_mean = mean(rnorm(100))) -&amp;gt; output_tibble&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;c’est-à-dire en se passant du &lt;code&gt;mutate&lt;/code&gt; pour remplacer &lt;code&gt;var&lt;/code&gt; par sa valeur dans &lt;code&gt;summarise&lt;/code&gt;.&lt;br /&gt;
+Et bien, je n’ai pas seulement écrit cette instruction ainsi pour le plaisir de vous montrer la fonction &lt;code&gt;mutate&lt;/code&gt;, mais aussi parce que la première option est bien plus rapide que la seconde, comme le montre &lt;code&gt;microbenchmark&lt;/code&gt; :&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;microbenchmark::microbenchmark(times=100L, dplyr1 = {
+  df %&amp;gt;% as_tibble() %&amp;gt;% mutate(var = rnorm(100)) %&amp;gt;% 
+    group_by(idgpe) %&amp;gt;% summarise(var_mean = mean(var)) -&amp;gt; output_tibble
+}, dplyr2 = {
+  df %&amp;gt;% as_tibble() %&amp;gt;% group_by(idgpe) %&amp;gt;% 
+    summarise(var_mean = mean(rnorm(100))) -&amp;gt; output_tibble
+})
+## Unit: milliseconds
+##    expr      min       lq     mean   median       uq       max neval
+##  dplyr1 1.875062 1.960964 2.231909 2.042315 2.216679  9.209187   100
+##  dplyr2 3.172699 3.293019 3.720215 3.417606 3.746424 10.484638   100&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Ca peut sembler secondaire pour cet exemple, mais sur des grosses tables la différence va vraiment peser. Regardons par exemple les différences de performance de deux instructions &lt;code&gt;dplyr&lt;/code&gt; agrégeant par heure une variable égale au pourcentage de retard à l’arrivée par rapport à la durée du vol :&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;microbenchmark::microbenchmark(times=10L, dplyr_mutate = {
+  flightstib %&amp;gt;% mutate(propor_delay = arr_delay / air_time) %&amp;gt;% 
+    group_by(time_hour) %&amp;gt;% 
+    summarise(propor_delay = mean(propor_delay)) -&amp;gt; output_dplyr 
+}, dplyr_sans_mutate = {
+  flightstib %&amp;gt;% group_by(time_hour) %&amp;gt;% 
+    summarise(propor_delay = mean(arr_delay / air_time)) -&amp;gt; output_dplyr 
+})
+## Unit: milliseconds
+##               expr       min        lq      mean    median        uq
+##       dplyr_mutate  28.26984  28.91723  30.28706  30.76413  31.62401
+##  dplyr_sans_mutate 249.75339 259.97349 276.79169 269.59683 275.72832
+##        max neval
+##   31.71105    10
+##  366.08735    10&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Les performances changent du tout au tout. Je n’ai pas d’explications à cela et je n’étais pas conscient de cette propriété de &lt;code&gt;summarise&lt;/code&gt;, mais cela montre visiblement que cela doit être une mauvais pratique de définir une variable au sein d’un summarise. Cela semble être un aspect important à avoir en tête quand on code en &lt;code&gt;dplyr&lt;/code&gt;!&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Example Page</title>
       <link>/tutorial/example/</link>
       <pubDate>Sun, 09 Sep 2018 00:00:00 +0200</pubDate>
