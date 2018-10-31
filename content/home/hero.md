@@ -22,5 +22,5 @@ weight = 3
 
 +++
 
-Site regroupant mes projets professionnels et personnels
+Site personnel autour de la programmation et de l'analyse statistiques
 

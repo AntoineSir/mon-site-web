@@ -10,7 +10,11 @@ weight = 8
 # List your academic interests.
 [interests]
   interests = [
-    "Statistiques"
+    "Statistiques",
+    "R",
+    "Python",
+    "Machine Learning",
+    "Migrations de langage"
   ]
 
 # List your qualifications (such as academic degrees).
@@ -18,10 +22,12 @@ weight = 8
   course = "Diplôme d'Économiste-Statisticien"
   institution = "Ensae ParisTech"
   year = 2014
+[[education.courses]]
+  course = "CPGE B/L (Lettres et sciences sociales)"
+  institution = "Michel Montaigne"
+  year = 2011
 
  
 +++
 
-# Biographie
 
-Je suis Antoine!

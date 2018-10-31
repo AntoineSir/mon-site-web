@@ -39,19 +39,24 @@ df &lt;- data.frame(id1 = c(1:100), idgpe = sample(50), replace = TRUE)
 # on y applique les instructions de dplyr
 df %&gt;% as_tibble() %&gt;% mutate(var = rnorm(100)) %&gt;% 
   group_by(idgpe) %&gt;% summarise(var_mean = mean(var)) -&gt; output_tibble</code></pre>
-<p>Un regard peu habitué contesterait peut-être l’aspect très lisible de l’instruction, mais ça l’est réellement. Je décris ici le déroulé :<br />
-1) on transforme notre data.frame en tibble (pour rappel : format optimisé de data.frame pour dplyr) avec <code>as_tibble</code><br />
-2) on crée une variable <code>var</code> avec <code>mutate</code><br />
-3) on agrège par <code>idgpe</code> avec <code>group_by</code><br />
-4) on calcule la moyenne de <code>var</code> avec <code>summarise</code>, que l’on stocke dans <code>var_mean</code>. Comme cette instruction suit un group_by, elle est réalisée à l’intérieur de chaque groupe (défini par <code>idgpe</code>), sinon elle aurait été réalisé sur l’ensemble de la table.<br />
-Tout cela est stocké dans une table output_tibble, qui est (si vous avez suivi) un tibble agrégé par <code>idgpe</code> et qui a donc 50 lignes.</p>
+<p>Un regard peu habitué contesterait peut-être l’aspect très lisible de l’instruction, mais ça l’est réellement. Le déroulé est le suivant :</p>
+<ol style="list-style-type: decimal">
+<li>on transforme notre data.frame en tibble (pour rappel : format optimisé de data.frame pour dplyr) avec <code>as_tibble</code><br />
+</li>
+<li>on crée une variable <code>var</code> avec <code>mutate</code><br />
+</li>
+<li>on agrège par <code>idgpe</code> avec <code>group_by</code><br />
+</li>
+<li>on calcule la moyenne de <code>var</code> avec <code>summarise</code>, que l’on stocke dans <code>var_mean</code>. Comme cette instruction suit un group_by, elle est réalisée à l’intérieur de chaque groupe (défini par <code>idgpe</code>), sinon elle aurait été réalisé sur l’ensemble de la table.</li>
+</ol>
+<p>Tout cela est stocké dans une table output_tibble, qui est (si vous avez suivi) un tibble agrégé par <code>idgpe</code> et qui a donc 50 lignes.</p>
 </div>
 <div id="data.table" class="section level2">
 <h2>Data.table</h2>
 <p>Le package <code>data.table</code> ne prétend pas, contrairement au <code>tidyverse</code>, proposer une syntaxe concurrente à base R mais enrichir celle-ci. Il est axé autour d’un nouveau format d’objet, le data.table, qui est un type de data.frame qui permet une utilisation optimisée de l’opérateur <code>[</code>.<br />
 Tout data.frame peut être converti en data.table grâce à la fonction <code>as.data.table</code>, ou, de manière plus optimale pour l’utilisation de la mémoire, grâce à la fonction <code>setDT</code> qui permet de directement transformer la nature de l’objet sans avoir à en écrire un autre. Il est important d’avoir en tête qu’un data.frame converti en data.table conserve les caractéristiques d’un data.frame. Cependant, l’opérateur <code>[</code> appliqué au data.table change de signification et devient :</p>
 <pre><code>DT[i,j,by]</code></pre>
-<p>Avec <code>i</code> qui permet de sélectionner des observations (sans avoir besoin de répéter le nom du tableau dans lequel on se trouve), <code>j</code> qui permet de créer ou sélectionner des variables et <code>by</code> de regrouper les traitement selon les modalités d’une variable définie. Comme dans <code>dplyr</code>, il est possible de chaîner les opérations réalisées comme le montre l’exemple suivant, qui reprend le même cas de figure que celui illustrant le package <code>dplyr</code> :</p>
+<p>Avec <code>i</code> qui permet de sélectionner des observations (sans avoir besoin de répéter le nom de la base dans laquelle on se trouve), <code>j</code> qui permet de créer ou sélectionner des variables et <code>by</code> de regrouper les traitement selon les modalités d’une variable définie. Comme dans <code>dplyr</code>, il est possible de chaîner les opérations réalisées comme le montre l’exemple suivant, qui reprend le même cas de figure que celui illustrant le package <code>dplyr</code> :</p>
 <pre class="r"><code>library(data.table) 
 # on convertit notre data frame précédemment créé en data.table
 dt &lt;- as.data.table(df)
@@ -64,10 +69,10 @@ dt[, list(var_mean = mean(rnorm(100))), by = list(idgpe = idgpe)] -&gt; output_d
 <h2>Vitesses d’exécution</h2>
 <p>Voilà donc pour les présentations! Allez, on montre le résultat d’un petit <code>microbenchmark</code> des deux juste pour voir :</p>
 <pre><code>## Unit: microseconds
-##        expr      min       lq      mean    median       uq      max neval
-##       dplyr 1555.342 1620.479 1814.8914 1673.9550 1901.510 4642.700   100
-##  data.table  836.836  876.658  938.0637  910.5065  983.894 1353.386   100</code></pre>
-<p>Sur cet exemple, avantage data.table! Mais on est sur une toute petite table en entrée. On va essayer de se rapprocher de cas plus concrets en s’intéressant à un exemple sur des bases plus importantes.</p>
+##        expr      min        lq     mean   median       uq      max neval
+##       dplyr 1539.984 1607.3980 2068.602 1726.296 2302.012 4465.782   100
+##  data.table  826.028  865.8505 1034.651  935.255 1063.539 3582.866   100</code></pre>
+<p>Sur cet exemple, on voit un avantage clair à data.table! Mais on est sur une toute petite table en entrée. On va essayer de se rapprocher de cas plus concrets en s’intéressant à un exemple sur des bases plus importantes.</p>
 </div>
 </div>
 <div id="comparaisons-sur-une-etude-de-cas-simple" class="section level1">
@@ -98,7 +103,7 @@ weatherdt &lt;- as.data.table(weather)
 # tibbles pour instructions en dplyR (tournent aussi sur data.frame et data.table)
 flightstib &lt;- as_tibble(flights)
 weathertib &lt;- as_tibble(weather)</code></pre>
-<p>Notez que l’on n’est pas obligés de faire du dplyr sur des tibbles plutôt que des data frame et que l’auteur de ces lignes n’a jamais noté que ça améliorait les performances, mais on suit ici les recommandations d’Hadley Wickham.</p>
+<p>Notez que l’on n’est pas obligés de faire du dplyr sur des tibbles plutôt que des data frame, mais on suit ici les recommandations d’Hadley Wickham.</p>
 </div>
 <div id="moyenne-des-retards-et-fusion-des-tables" class="section level2">
 <h2>Moyenne des retards et fusion des tables</h2>
@@ -119,26 +124,26 @@ output_base &lt;- merge(weather, flights_time_hour, by = c(&quot;time_hour&quot;
 <pre class="r"><code>output_DT &lt;- merge(flightsdt[, list(arr_perc_delay = mean(arr_delay),
                        dep_perc_delay = mean(dep_delay)), by = c(&quot;time_hour&quot;, &quot;origin&quot;)],
       weatherdt, by = c(&quot;time_hour&quot;, &quot;origin&quot;))</code></pre>
-<p>J’ai utilisé la fonction <code>merge</code> plutôt que <code>DT1[DT2, on = c(&quot;time_hour&quot;, &quot;origin&quot;), nomatch = 0]</code> car j’ai constaté qu’elle était plus rapide, conformément à ce que montre bien cet <a href="https://jozefhajnala.gitlab.io/r/r006-merge/">article de Jozef’s Rblog</a>.</p>
+<p>J’ai utilisé la fonction <code>merge</code> plutôt que <code>DT1[DT2, on = c(&quot;time_hour&quot;, &quot;origin&quot;), nomatch = 0]</code> car j’ai constaté qu’elle était plus rapide, conformément à ce que montre bien cet <a href="https://jozefhajnala.gitlab.io/r/r006-merge/">article du Jozef’s Rblog</a>.</p>
 </div>
 <div id="comparaisons-des-vitesses-dexecution" class="section level2">
 <h2>Comparaisons des vitesses d’exécution</h2>
 <p>Je vous laisse juger de la lisibilité de chacune de ces instructions, qui font toutes la même chose, car c’est finalement assez subjectif. On donne ici les résultats d’un <code>microbenchmark</code> de ces instructions :</p>
 <pre><code>## Unit: milliseconds
 ##   expr        min         lq       mean     median         uq        max
-##   Base 2362.85864 2467.79352 2521.21641 2531.50589 2601.98235 2616.28762
-##  DplyR   57.51974   59.64681   68.48734   60.77008   65.60706  126.69543
-##     DT   33.37156   33.72427   35.56542   34.62255   36.28598   43.31232
+##   Base 2340.25444 2530.58605 2544.03710 2567.87334 2580.75754 2659.17553
+##  DplyR   57.31390   58.20080   61.20294   58.59874   59.48649   73.48458
+##     DT   33.10538   33.32156   38.93496   35.09706   39.28807   66.43433
 ##  neval
 ##     10
 ##     10
 ##     10</code></pre>
-<p>Les résultats sont très nettement en faveur des packages <code>dplyr</code> et <code>data.table</code>, ce dernier ayant l’avantage. Sans doute existe-t-il des moyens de plus optimiser l’instruction en base R, mais là n’est pas vraiment la question. On voit qu’avec une syntaxe simple et lisible, <code>dplyr</code> et <code>data.table</code> font beaucoup mieux que l’instruction qui viendrait à l’esprit d’un statisticien <em>lambda</em> (bien que chacun soit unique évidemment) qui n’utiliserait que base R.</p>
+<p>Les résultats sont très nettement en faveur des packages <code>dplyr</code> et <code>data.table</code>, ce dernier ayant l’avantage. Sans doute existe-t-il des moyens de plus optimiser l’instruction en base R, mais là n’est pas vraiment la question. On voit qu’avec une syntaxe simple et lisible, <code>dplyr</code> et <code>data.table</code> font beaucoup mieux que l’instruction qui viendrait à l’esprit d’un statisticien qui n’utiliserait que les premières fonctions venues de base R.</p>
 </div>
 </div>
 <div id="tests-complementaires-sur-les-vitesse-daggregation" class="section level1">
 <h1>Tests complémentaires sur les vitesse d’aggrégation</h1>
-<p>Comme on l’a vu dans notre petit exemple, l’aggrégation est souvent utilisée en statistiques. Il est donc intéressant de comparer le sperformances de <code>data.table</code> et <code>dplyr</code> de ce point de vue. Des benchamrks ont déjà été faits, et on peut les trouver dans la <a href="https://stackoverflow.com/questions/21435339/data-table-vs-dplyr-can-one-do-something-well-the-other-cant-or-does-poorly">discussion sur stackoverflow</a> évoquée plus haut. On propose ici quelques tests comparatifs sur un cas de groupement d’une base fictive de <code>nbrow</code> lignes appartenant à <code>nbgpe</code> groupes. La fonction est la suivante :</p>
+<p>Comme on l’a vu dans notre petit exemple, l’aggrégation est souvent utilisée en statistiques. Il est donc intéressant de comparer les performances de <code>data.table</code> et <code>dplyr</code> de ce point de vue. Des benchamrks ont déjà été faits, et on peut les trouver dans la <a href="https://stackoverflow.com/questions/21435339/data-table-vs-dplyr-can-one-do-something-well-the-other-cant-or-does-poorly">discussion sur stackoverflow</a> évoquée plus haut. On propose ici quelques tests comparatifs sur un cas de groupement d’une base fictive de <code>nbrow</code> lignes appartenant à <code>nbgpe</code> groupes. La fonction est la suivante :</p>
 <pre class="r"><code>test_group_by &lt;- function(nbrow, nbgpe){
   test &lt;- as_tibble(data.frame(x = rnorm(nbrow), y = sample(floor(nbgpe), replace = TRUE)))
   testDT &lt;- as.data.table(test)
@@ -153,39 +158,33 @@ output_base &lt;- merge(weather, flights_time_hour, by = c(&quot;time_hour&quot;
 <p>Il n’y a plus qu’à tester! On propose des tests sur 10 000, 100 000 et 1 000 000 de lignes avec à chaque fois peu (1/1000e du nombre de lignes) ou beaucoup (la moitié de lignes) de groupes.</p>
 <div id="lignes-pour-10-groupes" class="section level2">
 <h2>10 000 lignes pour 10 groupes</h2>
-<pre class="r"><code>test_group_by(10000, 10)
-## Coordinate system already present. Adding new coordinate system, which will replace the existing one.</code></pre>
-<p><img src="/post/benchmark_DT_dplyr_base_102018_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<pre><code>## Coordinate system already present. Adding new coordinate system, which will replace the existing one.</code></pre>
+<p><img src="benchmark_DT_dplyr_base_102018_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 </div>
 <div id="lignes-pour-5-000-groupes" class="section level2">
 <h2>10 000 lignes pour 5 000 groupes</h2>
-<pre class="r"><code>test_group_by(10000, 5000)
-## Coordinate system already present. Adding new coordinate system, which will replace the existing one.</code></pre>
-<p><img src="/post/benchmark_DT_dplyr_base_102018_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<pre><code>## Coordinate system already present. Adding new coordinate system, which will replace the existing one.</code></pre>
+<p><img src="benchmark_DT_dplyr_base_102018_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 </div>
 <div id="lignes-pour-100-groupes" class="section level2">
 <h2>100 000 lignes pour 100 groupes</h2>
-<pre class="r"><code>test_group_by(100000, 100)
-## Coordinate system already present. Adding new coordinate system, which will replace the existing one.</code></pre>
-<p><img src="/post/benchmark_DT_dplyr_base_102018_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<pre><code>## Coordinate system already present. Adding new coordinate system, which will replace the existing one.</code></pre>
+<p><img src="benchmark_DT_dplyr_base_102018_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 </div>
 <div id="lignes-pour-50-000-groupes" class="section level2">
 <h2>100 000 lignes pour 50 000 groupes</h2>
-<pre class="r"><code>test_group_by(100000, 50000)
-## Coordinate system already present. Adding new coordinate system, which will replace the existing one.</code></pre>
-<p><img src="/post/benchmark_DT_dplyr_base_102018_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<pre><code>## Coordinate system already present. Adding new coordinate system, which will replace the existing one.</code></pre>
+<p><img src="benchmark_DT_dplyr_base_102018_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 </div>
 <div id="lignes-pour-1-000-groupes" class="section level2">
 <h2>1 000 000 lignes pour 1 000 groupes</h2>
-<pre class="r"><code>test_group_by(1000000, 1000)
-## Coordinate system already present. Adding new coordinate system, which will replace the existing one.</code></pre>
-<p><img src="/post/benchmark_DT_dplyr_base_102018_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<pre><code>## Coordinate system already present. Adding new coordinate system, which will replace the existing one.</code></pre>
+<p><img src="benchmark_DT_dplyr_base_102018_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 </div>
 <div id="lignes-pour-500-000-groupes" class="section level2">
 <h2>1 000 000 lignes pour 500 000 groupes</h2>
-<pre class="r"><code>test_group_by(1000000, 500000)
-## Coordinate system already present. Adding new coordinate system, which will replace the existing one.</code></pre>
-<p><img src="/post/benchmark_DT_dplyr_base_102018_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<pre><code>## Coordinate system already present. Adding new coordinate system, which will replace the existing one.</code></pre>
+<p><img src="benchmark_DT_dplyr_base_102018_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
 </div>
 </div>
 <div id="bonus-une-propriete-etonnante-de-dplyr" class="section level1">
@@ -208,8 +207,8 @@ Et bien, je n’ai pas seulement écrit cette instruction ainsi pour le plaisir 
 })
 ## Unit: milliseconds
 ##    expr      min       lq     mean   median       uq      max neval
-##  dplyr1 1.562168 1.629297 1.797973 1.656604 1.699270 7.693079   100
-##  dplyr2 2.673208 2.757403 2.824867 2.793527 2.870043 3.234701   100</code></pre>
+##  dplyr1 1.558757 1.619913 1.874292 1.654900 1.754171 8.092452   100
+##  dplyr2 2.634527 2.729247 2.883201 2.771061 2.846438 4.488538   100</code></pre>
 <p>Ca peut sembler secondaire pour cet exemple, mais sur des grosses tables la différence va vraiment peser. Regardons par exemple les différences de performance de deux instructions <code>dplyr</code> agrégeant par heure une variable égale au pourcentage de retard à l’arrivée par rapport à la durée du vol :</p>
 <pre class="r"><code>microbenchmark::microbenchmark(times=10L, dplyr_mutate = {
   flightstib %&gt;% mutate(propor_delay = arr_delay / air_time) %&gt;% 
@@ -221,10 +220,10 @@ Et bien, je n’ai pas seulement écrit cette instruction ainsi pour le plaisir 
 })
 ## Unit: milliseconds
 ##               expr       min        lq      mean    median        uq
-##       dplyr_mutate  24.35639  24.38768  25.24613  24.61552  25.14202
-##  dplyr_sans_mutate 207.96057 211.85404 215.96978 213.23957 218.97311
+##       dplyr_mutate  24.03615  24.20795  25.44517  24.51686  24.66477
+##  dplyr_sans_mutate 212.00687 216.12904 230.15148 218.33320 238.56433
 ##        max neval
-##   30.32574    10
-##  230.82704    10</code></pre>
+##   31.76223    10
+##  274.48457    10</code></pre>
 <p>Les performances changent du tout au tout. Je n’ai pas d’explications à cela et je n’étais pas conscient de cette propriété de <code>summarise</code>, mais cela montre visiblement que cela doit être une mauvais pratique de définir une variable au sein d’un summarise. Cela semble être un aspect important à avoir en tête quand on code en <code>dplyr</code>!</p>
 </div>

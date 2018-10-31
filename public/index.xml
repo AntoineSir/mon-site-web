@@ -142,19 +142,24 @@ df &amp;lt;- data.frame(id1 = c(1:100), idgpe = sample(50), replace = TRUE)
 # on y applique les instructions de dplyr
 df %&amp;gt;% as_tibble() %&amp;gt;% mutate(var = rnorm(100)) %&amp;gt;% 
   group_by(idgpe) %&amp;gt;% summarise(var_mean = mean(var)) -&amp;gt; output_tibble&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Un regard peu habitué contesterait peut-être l’aspect très lisible de l’instruction, mais ça l’est réellement. Je décris ici le déroulé :&lt;br /&gt;
-1) on transforme notre data.frame en tibble (pour rappel : format optimisé de data.frame pour dplyr) avec &lt;code&gt;as_tibble&lt;/code&gt;&lt;br /&gt;
-2) on crée une variable &lt;code&gt;var&lt;/code&gt; avec &lt;code&gt;mutate&lt;/code&gt;&lt;br /&gt;
-3) on agrège par &lt;code&gt;idgpe&lt;/code&gt; avec &lt;code&gt;group_by&lt;/code&gt;&lt;br /&gt;
-4) on calcule la moyenne de &lt;code&gt;var&lt;/code&gt; avec &lt;code&gt;summarise&lt;/code&gt;, que l’on stocke dans &lt;code&gt;var_mean&lt;/code&gt;. Comme cette instruction suit un group_by, elle est réalisée à l’intérieur de chaque groupe (défini par &lt;code&gt;idgpe&lt;/code&gt;), sinon elle aurait été réalisé sur l’ensemble de la table.&lt;br /&gt;
-Tout cela est stocké dans une table output_tibble, qui est (si vous avez suivi) un tibble agrégé par &lt;code&gt;idgpe&lt;/code&gt; et qui a donc 50 lignes.&lt;/p&gt;
+&lt;p&gt;Un regard peu habitué contesterait peut-être l’aspect très lisible de l’instruction, mais ça l’est réellement. Le déroulé est le suivant :&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;on transforme notre data.frame en tibble (pour rappel : format optimisé de data.frame pour dplyr) avec &lt;code&gt;as_tibble&lt;/code&gt;&lt;br /&gt;
+&lt;/li&gt;
+&lt;li&gt;on crée une variable &lt;code&gt;var&lt;/code&gt; avec &lt;code&gt;mutate&lt;/code&gt;&lt;br /&gt;
+&lt;/li&gt;
+&lt;li&gt;on agrège par &lt;code&gt;idgpe&lt;/code&gt; avec &lt;code&gt;group_by&lt;/code&gt;&lt;br /&gt;
+&lt;/li&gt;
+&lt;li&gt;on calcule la moyenne de &lt;code&gt;var&lt;/code&gt; avec &lt;code&gt;summarise&lt;/code&gt;, que l’on stocke dans &lt;code&gt;var_mean&lt;/code&gt;. Comme cette instruction suit un group_by, elle est réalisée à l’intérieur de chaque groupe (défini par &lt;code&gt;idgpe&lt;/code&gt;), sinon elle aurait été réalisé sur l’ensemble de la table.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Tout cela est stocké dans une table output_tibble, qui est (si vous avez suivi) un tibble agrégé par &lt;code&gt;idgpe&lt;/code&gt; et qui a donc 50 lignes.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;data.table&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Data.table&lt;/h2&gt;
 &lt;p&gt;Le package &lt;code&gt;data.table&lt;/code&gt; ne prétend pas, contrairement au &lt;code&gt;tidyverse&lt;/code&gt;, proposer une syntaxe concurrente à base R mais enrichir celle-ci. Il est axé autour d’un nouveau format d’objet, le data.table, qui est un type de data.frame qui permet une utilisation optimisée de l’opérateur &lt;code&gt;[&lt;/code&gt;.&lt;br /&gt;
 Tout data.frame peut être converti en data.table grâce à la fonction &lt;code&gt;as.data.table&lt;/code&gt;, ou, de manière plus optimale pour l’utilisation de la mémoire, grâce à la fonction &lt;code&gt;setDT&lt;/code&gt; qui permet de directement transformer la nature de l’objet sans avoir à en écrire un autre. Il est important d’avoir en tête qu’un data.frame converti en data.table conserve les caractéristiques d’un data.frame. Cependant, l’opérateur &lt;code&gt;[&lt;/code&gt; appliqué au data.table change de signification et devient :&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;DT[i,j,by]&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Avec &lt;code&gt;i&lt;/code&gt; qui permet de sélectionner des observations (sans avoir besoin de répéter le nom du tableau dans lequel on se trouve), &lt;code&gt;j&lt;/code&gt; qui permet de créer ou sélectionner des variables et &lt;code&gt;by&lt;/code&gt; de regrouper les traitement selon les modalités d’une variable définie. Comme dans &lt;code&gt;dplyr&lt;/code&gt;, il est possible de chaîner les opérations réalisées comme le montre l’exemple suivant, qui reprend le même cas de figure que celui illustrant le package &lt;code&gt;dplyr&lt;/code&gt; :&lt;/p&gt;
+&lt;p&gt;Avec &lt;code&gt;i&lt;/code&gt; qui permet de sélectionner des observations (sans avoir besoin de répéter le nom de la base dans laquelle on se trouve), &lt;code&gt;j&lt;/code&gt; qui permet de créer ou sélectionner des variables et &lt;code&gt;by&lt;/code&gt; de regrouper les traitement selon les modalités d’une variable définie. Comme dans &lt;code&gt;dplyr&lt;/code&gt;, il est possible de chaîner les opérations réalisées comme le montre l’exemple suivant, qui reprend le même cas de figure que celui illustrant le package &lt;code&gt;dplyr&lt;/code&gt; :&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(data.table) 
 # on convertit notre data frame précédemment créé en data.table
 dt &amp;lt;- as.data.table(df)
@@ -167,10 +172,10 @@ dt[, list(var_mean = mean(rnorm(100))), by = list(idgpe = idgpe)] -&amp;gt; outp
 &lt;h2&gt;Vitesses d’exécution&lt;/h2&gt;
 &lt;p&gt;Voilà donc pour les présentations! Allez, on montre le résultat d’un petit &lt;code&gt;microbenchmark&lt;/code&gt; des deux juste pour voir :&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;## Unit: microseconds
-##        expr      min       lq      mean    median       uq      max neval
-##       dplyr 1555.342 1620.479 1814.8914 1673.9550 1901.510 4642.700   100
-##  data.table  836.836  876.658  938.0637  910.5065  983.894 1353.386   100&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Sur cet exemple, avantage data.table! Mais on est sur une toute petite table en entrée. On va essayer de se rapprocher de cas plus concrets en s’intéressant à un exemple sur des bases plus importantes.&lt;/p&gt;
+##        expr      min        lq     mean   median       uq      max neval
+##       dplyr 1539.984 1607.3980 2068.602 1726.296 2302.012 4465.782   100
+##  data.table  826.028  865.8505 1034.651  935.255 1063.539 3582.866   100&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Sur cet exemple, on voit un avantage clair à data.table! Mais on est sur une toute petite table en entrée. On va essayer de se rapprocher de cas plus concrets en s’intéressant à un exemple sur des bases plus importantes.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div id=&#34;comparaisons-sur-une-etude-de-cas-simple&#34; class=&#34;section level1&#34;&gt;
@@ -201,7 +206,7 @@ weatherdt &amp;lt;- as.data.table(weather)
 # tibbles pour instructions en dplyR (tournent aussi sur data.frame et data.table)
 flightstib &amp;lt;- as_tibble(flights)
 weathertib &amp;lt;- as_tibble(weather)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Notez que l’on n’est pas obligés de faire du dplyr sur des tibbles plutôt que des data frame et que l’auteur de ces lignes n’a jamais noté que ça améliorait les performances, mais on suit ici les recommandations d’Hadley Wickham.&lt;/p&gt;
+&lt;p&gt;Notez que l’on n’est pas obligés de faire du dplyr sur des tibbles plutôt que des data frame, mais on suit ici les recommandations d’Hadley Wickham.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;moyenne-des-retards-et-fusion-des-tables&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Moyenne des retards et fusion des tables&lt;/h2&gt;
@@ -222,26 +227,26 @@ output_base &amp;lt;- merge(weather, flights_time_hour, by = c(&amp;quot;time_ho
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;output_DT &amp;lt;- merge(flightsdt[, list(arr_perc_delay = mean(arr_delay),
                        dep_perc_delay = mean(dep_delay)), by = c(&amp;quot;time_hour&amp;quot;, &amp;quot;origin&amp;quot;)],
       weatherdt, by = c(&amp;quot;time_hour&amp;quot;, &amp;quot;origin&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;J’ai utilisé la fonction &lt;code&gt;merge&lt;/code&gt; plutôt que &lt;code&gt;DT1[DT2, on = c(&amp;quot;time_hour&amp;quot;, &amp;quot;origin&amp;quot;), nomatch = 0]&lt;/code&gt; car j’ai constaté qu’elle était plus rapide, conformément à ce que montre bien cet &lt;a href=&#34;https://jozefhajnala.gitlab.io/r/r006-merge/&#34;&gt;article de Jozef’s Rblog&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;J’ai utilisé la fonction &lt;code&gt;merge&lt;/code&gt; plutôt que &lt;code&gt;DT1[DT2, on = c(&amp;quot;time_hour&amp;quot;, &amp;quot;origin&amp;quot;), nomatch = 0]&lt;/code&gt; car j’ai constaté qu’elle était plus rapide, conformément à ce que montre bien cet &lt;a href=&#34;https://jozefhajnala.gitlab.io/r/r006-merge/&#34;&gt;article du Jozef’s Rblog&lt;/a&gt;.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;comparaisons-des-vitesses-dexecution&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Comparaisons des vitesses d’exécution&lt;/h2&gt;
 &lt;p&gt;Je vous laisse juger de la lisibilité de chacune de ces instructions, qui font toutes la même chose, car c’est finalement assez subjectif. On donne ici les résultats d’un &lt;code&gt;microbenchmark&lt;/code&gt; de ces instructions :&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;## Unit: milliseconds
 ##   expr        min         lq       mean     median         uq        max
-##   Base 2362.85864 2467.79352 2521.21641 2531.50589 2601.98235 2616.28762
-##  DplyR   57.51974   59.64681   68.48734   60.77008   65.60706  126.69543
-##     DT   33.37156   33.72427   35.56542   34.62255   36.28598   43.31232
+##   Base 2340.25444 2530.58605 2544.03710 2567.87334 2580.75754 2659.17553
+##  DplyR   57.31390   58.20080   61.20294   58.59874   59.48649   73.48458
+##     DT   33.10538   33.32156   38.93496   35.09706   39.28807   66.43433
 ##  neval
 ##     10
 ##     10
 ##     10&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Les résultats sont très nettement en faveur des packages &lt;code&gt;dplyr&lt;/code&gt; et &lt;code&gt;data.table&lt;/code&gt;, ce dernier ayant l’avantage. Sans doute existe-t-il des moyens de plus optimiser l’instruction en base R, mais là n’est pas vraiment la question. On voit qu’avec une syntaxe simple et lisible, &lt;code&gt;dplyr&lt;/code&gt; et &lt;code&gt;data.table&lt;/code&gt; font beaucoup mieux que l’instruction qui viendrait à l’esprit d’un statisticien &lt;em&gt;lambda&lt;/em&gt; (bien que chacun soit unique évidemment) qui n’utiliserait que base R.&lt;/p&gt;
+&lt;p&gt;Les résultats sont très nettement en faveur des packages &lt;code&gt;dplyr&lt;/code&gt; et &lt;code&gt;data.table&lt;/code&gt;, ce dernier ayant l’avantage. Sans doute existe-t-il des moyens de plus optimiser l’instruction en base R, mais là n’est pas vraiment la question. On voit qu’avec une syntaxe simple et lisible, &lt;code&gt;dplyr&lt;/code&gt; et &lt;code&gt;data.table&lt;/code&gt; font beaucoup mieux que l’instruction qui viendrait à l’esprit d’un statisticien qui n’utiliserait que les premières fonctions venues de base R.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div id=&#34;tests-complementaires-sur-les-vitesse-daggregation&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;Tests complémentaires sur les vitesse d’aggrégation&lt;/h1&gt;
-&lt;p&gt;Comme on l’a vu dans notre petit exemple, l’aggrégation est souvent utilisée en statistiques. Il est donc intéressant de comparer le sperformances de &lt;code&gt;data.table&lt;/code&gt; et &lt;code&gt;dplyr&lt;/code&gt; de ce point de vue. Des benchamrks ont déjà été faits, et on peut les trouver dans la &lt;a href=&#34;https://stackoverflow.com/questions/21435339/data-table-vs-dplyr-can-one-do-something-well-the-other-cant-or-does-poorly&#34;&gt;discussion sur stackoverflow&lt;/a&gt; évoquée plus haut. On propose ici quelques tests comparatifs sur un cas de groupement d’une base fictive de &lt;code&gt;nbrow&lt;/code&gt; lignes appartenant à &lt;code&gt;nbgpe&lt;/code&gt; groupes. La fonction est la suivante :&lt;/p&gt;
+&lt;p&gt;Comme on l’a vu dans notre petit exemple, l’aggrégation est souvent utilisée en statistiques. Il est donc intéressant de comparer les performances de &lt;code&gt;data.table&lt;/code&gt; et &lt;code&gt;dplyr&lt;/code&gt; de ce point de vue. Des benchamrks ont déjà été faits, et on peut les trouver dans la &lt;a href=&#34;https://stackoverflow.com/questions/21435339/data-table-vs-dplyr-can-one-do-something-well-the-other-cant-or-does-poorly&#34;&gt;discussion sur stackoverflow&lt;/a&gt; évoquée plus haut. On propose ici quelques tests comparatifs sur un cas de groupement d’une base fictive de &lt;code&gt;nbrow&lt;/code&gt; lignes appartenant à &lt;code&gt;nbgpe&lt;/code&gt; groupes. La fonction est la suivante :&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;test_group_by &amp;lt;- function(nbrow, nbgpe){
   test &amp;lt;- as_tibble(data.frame(x = rnorm(nbrow), y = sample(floor(nbgpe), replace = TRUE)))
   testDT &amp;lt;- as.data.table(test)
@@ -256,39 +261,33 @@ output_base &amp;lt;- merge(weather, flights_time_hour, by = c(&amp;quot;time_ho
 &lt;p&gt;Il n’y a plus qu’à tester! On propose des tests sur 10 000, 100 000 et 1 000 000 de lignes avec à chaque fois peu (1/1000e du nombre de lignes) ou beaucoup (la moitié de lignes) de groupes.&lt;/p&gt;
 &lt;div id=&#34;lignes-pour-10-groupes&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;10 000 lignes pour 10 groupes&lt;/h2&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;test_group_by(10000, 10)
-## Coordinate system already present. Adding new coordinate system, which will replace the existing one.&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/benchmark_DT_dplyr_base_102018_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;## Coordinate system already present. Adding new coordinate system, which will replace the existing one.&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;benchmark_DT_dplyr_base_102018_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;lignes-pour-5-000-groupes&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;10 000 lignes pour 5 000 groupes&lt;/h2&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;test_group_by(10000, 5000)
-## Coordinate system already present. Adding new coordinate system, which will replace the existing one.&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/benchmark_DT_dplyr_base_102018_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;## Coordinate system already present. Adding new coordinate system, which will replace the existing one.&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;benchmark_DT_dplyr_base_102018_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;lignes-pour-100-groupes&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;100 000 lignes pour 100 groupes&lt;/h2&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;test_group_by(100000, 100)
-## Coordinate system already present. Adding new coordinate system, which will replace the existing one.&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/benchmark_DT_dplyr_base_102018_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;## Coordinate system already present. Adding new coordinate system, which will replace the existing one.&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;benchmark_DT_dplyr_base_102018_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;lignes-pour-50-000-groupes&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;100 000 lignes pour 50 000 groupes&lt;/h2&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;test_group_by(100000, 50000)
-## Coordinate system already present. Adding new coordinate system, which will replace the existing one.&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/benchmark_DT_dplyr_base_102018_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;## Coordinate system already present. Adding new coordinate system, which will replace the existing one.&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;benchmark_DT_dplyr_base_102018_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;lignes-pour-1-000-groupes&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;1 000 000 lignes pour 1 000 groupes&lt;/h2&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;test_group_by(1000000, 1000)
-## Coordinate system already present. Adding new coordinate system, which will replace the existing one.&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/benchmark_DT_dplyr_base_102018_files/figure-html/unnamed-chunk-14-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;## Coordinate system already present. Adding new coordinate system, which will replace the existing one.&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;benchmark_DT_dplyr_base_102018_files/figure-html/unnamed-chunk-14-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;lignes-pour-500-000-groupes&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;1 000 000 lignes pour 500 000 groupes&lt;/h2&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;test_group_by(1000000, 500000)
-## Coordinate system already present. Adding new coordinate system, which will replace the existing one.&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/benchmark_DT_dplyr_base_102018_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;## Coordinate system already present. Adding new coordinate system, which will replace the existing one.&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;benchmark_DT_dplyr_base_102018_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div id=&#34;bonus-une-propriete-etonnante-de-dplyr&#34; class=&#34;section level1&#34;&gt;
@@ -311,8 +310,8 @@ Et bien, je n’ai pas seulement écrit cette instruction ainsi pour le plaisir 
 })
 ## Unit: milliseconds
 ##    expr      min       lq     mean   median       uq      max neval
-##  dplyr1 1.562168 1.629297 1.797973 1.656604 1.699270 7.693079   100
-##  dplyr2 2.673208 2.757403 2.824867 2.793527 2.870043 3.234701   100&lt;/code&gt;&lt;/pre&gt;
+##  dplyr1 1.558757 1.619913 1.874292 1.654900 1.754171 8.092452   100
+##  dplyr2 2.634527 2.729247 2.883201 2.771061 2.846438 4.488538   100&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Ca peut sembler secondaire pour cet exemple, mais sur des grosses tables la différence va vraiment peser. Regardons par exemple les différences de performance de deux instructions &lt;code&gt;dplyr&lt;/code&gt; agrégeant par heure une variable égale au pourcentage de retard à l’arrivée par rapport à la durée du vol :&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;microbenchmark::microbenchmark(times=10L, dplyr_mutate = {
   flightstib %&amp;gt;% mutate(propor_delay = arr_delay / air_time) %&amp;gt;% 
@@ -324,11 +323,11 @@ Et bien, je n’ai pas seulement écrit cette instruction ainsi pour le plaisir 
 })
 ## Unit: milliseconds
 ##               expr       min        lq      mean    median        uq
-##       dplyr_mutate  24.35639  24.38768  25.24613  24.61552  25.14202
-##  dplyr_sans_mutate 207.96057 211.85404 215.96978 213.23957 218.97311
+##       dplyr_mutate  24.03615  24.20795  25.44517  24.51686  24.66477
+##  dplyr_sans_mutate 212.00687 216.12904 230.15148 218.33320 238.56433
 ##        max neval
-##   30.32574    10
-##  230.82704    10&lt;/code&gt;&lt;/pre&gt;
+##   31.76223    10
+##  274.48457    10&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Les performances changent du tout au tout. Je n’ai pas d’explications à cela et je n’étais pas conscient de cette propriété de &lt;code&gt;summarise&lt;/code&gt;, mais cela montre visiblement que cela doit être une mauvais pratique de définir une variable au sein d’un summarise. Cela semble être un aspect important à avoir en tête quand on code en &lt;code&gt;dplyr&lt;/code&gt;!&lt;/p&gt;
 &lt;/div&gt;
 </description>
