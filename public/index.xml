@@ -117,10 +117,34 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/post/benchmark_dt_dplyr_base_102018/</guid>
-      <description>&lt;p&gt;La richesse de R, alimentée par une communauté de développeurs très active, rend le choix d’une méthode adaptée à une problématique donnée difficile, et c’est tant mieux. Vous trouverez ici une modeste participation au débat qui oppose les deux packages d’analyse des données les plus en vue dans la communauté R : &lt;code&gt;data.table&lt;/code&gt; et &lt;code&gt;dplyr&lt;/code&gt;. Après un rappel de la syntaxe de ces packages, on les compare entre eux et avec les fonctions de R base sur un traitement tout simple issu des données du package &lt;code&gt;nycflights13&lt;/code&gt;. On présente une comparaison des vitesses d’exécutions de ce traitement avec le package &lt;code&gt;microbenchmark&lt;/code&gt;. On fournit ensuite un autre benchmark entre &lt;code&gt;data.table&lt;/code&gt; et &lt;code&gt;dplyr&lt;/code&gt; sur des statistiques par groupe en faisant varier le nombre d’observations et le nombre de groupes.&lt;/p&gt;
+      <description>&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#rappels-sur-dplyr-et-data.table&#34;&gt;Rappels sur dplyr et data.table&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#dplyr-et-le-tidyverse&#34;&gt;dplyr et le tidyverse&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#data.table&#34;&gt;Data.table&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#vitesses-dexecution&#34;&gt;Vitesses d’exécution&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#comparaisons-sur-une-etude-de-cas-simple&#34;&gt;Comparaisons sur une étude de cas simple&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#notre-etude-de-cas&#34;&gt;Notre étude de cas&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#moyenne-des-retards-et-fusion-des-tables&#34;&gt;Moyenne des retards et fusion des tables&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#comparaisons-des-vitesses-dexecution&#34;&gt;Comparaisons des vitesses d’exécution&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#tests-complementaires-sur-les-vitesse-daggregation&#34;&gt;Tests complémentaires sur les vitesse d’aggrégation&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#lignes-pour-10-groupes&#34;&gt;10 000 lignes pour 10 groupes&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#lignes-pour-5-000-groupes&#34;&gt;10 000 lignes pour 5 000 groupes&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#lignes-pour-100-groupes&#34;&gt;100 000 lignes pour 100 groupes&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#lignes-pour-50-000-groupes&#34;&gt;100 000 lignes pour 50 000 groupes&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#lignes-pour-1-000-groupes&#34;&gt;1 000 000 lignes pour 1 000 groupes&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#lignes-pour-500-000-groupes&#34;&gt;1 000 000 lignes pour 500 000 groupes&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#bonus-une-propriete-etonnante-de-dplyr&#34;&gt;Bonus : une propriété étonnante de dplyr&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;p&gt;La richesse de R, alimentée par une communauté de développeurs très active, rend le choix d’une méthode adaptée à une problématique donnée difficile, et c’est tant mieux. Vous trouverez ici une modeste participation au débat qui oppose les deux packages d’analyse des données les plus en vue dans la communauté R : &lt;code&gt;data.table&lt;/code&gt; et &lt;code&gt;dplyr&lt;/code&gt;. Après un rappel de la syntaxe de ces packages, on les compare entre eux et avec les fonctions de R base sur un traitement tout simple issu des données du package &lt;code&gt;nycflights13&lt;/code&gt;. On présente une comparaison des vitesses d’exécutions de ce traitement avec le package &lt;code&gt;microbenchmark&lt;/code&gt;. On fournit ensuite un autre benchmark de &lt;code&gt;data.table&lt;/code&gt; et &lt;code&gt;dplyr&lt;/code&gt; sur des statistiques par groupe en faisant varier le nombre d’observations et le nombre de groupes.&lt;/p&gt;
 &lt;div id=&#34;rappels-sur-dplyr-et-data.table&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;Rappels sur dplyr et data.table&lt;/h1&gt;
-&lt;p&gt;Si vous connaissez déjà la syntaxe de ces packages, vous pouvez directement aller à la partie &lt;a href=&#34;#comparaisons-sur-une-etude-de-cas-simple&#34;&gt;Comparaisons sur une étude de cas simple&lt;/a&gt;. On rappelle ici très rapidement les syntaxes de ces packages mais si vous voulez vous former à leur utilisation on peut se référer à l’excellent &lt;a href=&#34;https://teaching.slmc.fr/perf/presentation_handout.pdf&#34;&gt;cours de perfectionnement de Martin Chevalier&lt;/a&gt;. Pour une exploration de ce qu’englobe le &lt;code&gt;tidyverse&lt;/code&gt; et notamment une présentation des commandes de &lt;code&gt;dplyr&lt;/code&gt;, vous pouvez jeter un oeil à &lt;a href=&#34;https://juba.github.io/tidyverse/index.html&#34;&gt;l’introduction à R et au tidyverse&lt;/a&gt; de J. Barnier. Enfin pour data.table, j’ai trouvé des informations utiles sur le cours &lt;a href=&#34;http://larmarange.github.io/analyse-R/manipulations-avancees-avec-data-table.html&#34;&gt;Manipulations avancée avec data.table&lt;/a&gt; de J. Larmarange.&lt;/p&gt;
+&lt;p&gt;Si vous connaissez déjà la syntaxe de ces packages, vous pouvez directement aller à la partie &lt;a href=&#34;#comparaisons-sur-une-etude-de-cas-simple&#34;&gt;Comparaisons sur une étude de cas simple&lt;/a&gt;. On rappelle ici les principales caractéristiques de ces packages mais pour se former à leur utilisation on peut se référer à l’excellent &lt;a href=&#34;https://teaching.slmc.fr/perf/presentation_handout.pdf&#34;&gt;cours de perfectionnement de Martin Chevalier&lt;/a&gt;. Pour une exploration de ce qu’englobe le &lt;code&gt;tidyverse&lt;/code&gt; et notamment une présentation des commandes de &lt;code&gt;dplyr&lt;/code&gt;, vous pouvez jeter un oeil à &lt;a href=&#34;https://juba.github.io/tidyverse/index.html&#34;&gt;l’introduction à R et au tidyverse&lt;/a&gt; de J. Barnier. Enfin pour data.table, on trouve des informations utiles sur le cours &lt;a href=&#34;http://larmarange.github.io/analyse-R/manipulations-avancees-avec-data-table.html&#34;&gt;Manipulations avancée avec data.table&lt;/a&gt; de J. Larmarange.&lt;/p&gt;
 &lt;div id=&#34;dplyr-et-le-tidyverse&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;dplyr et le tidyverse&lt;/h2&gt;
 &lt;p&gt;Le &lt;code&gt;tidyverse&lt;/code&gt; (contraction de “tidy” et “universe”) est un concept initié par Hadley Wickham, chef statisticien de RStudio. Il regroupe un ensemble de packages utiles au traitement statistique et au nettoyage de bases de données. On va s’intéresser ici presque seulement au package &lt;code&gt;dplyr&lt;/code&gt; (dont les instructions seront appliquées aux &lt;code&gt;tibbles&lt;/code&gt;, un format de data.frame issu du &lt;code&gt;tidyverse&lt;/code&gt;), mais vous pouvez parcourir les packages proposés dans le tidyverse sur &lt;a href=&#34;https://www.tidyverse.org/&#34;&gt;le site officiel&lt;/a&gt;.&lt;br /&gt;
@@ -172,9 +196,9 @@ dt[, list(var_mean = mean(rnorm(100))), by = list(idgpe = idgpe)] -&amp;gt; outp
 &lt;h2&gt;Vitesses d’exécution&lt;/h2&gt;
 &lt;p&gt;Voilà donc pour les présentations! Allez, on montre le résultat d’un petit &lt;code&gt;microbenchmark&lt;/code&gt; des deux juste pour voir :&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;## Unit: microseconds
-##        expr      min        lq     mean   median       uq      max neval
-##       dplyr 1539.984 1607.3980 2068.602 1726.296 2302.012 4465.782   100
-##  data.table  826.028  865.8505 1034.651  935.255 1063.539 3582.866   100&lt;/code&gt;&lt;/pre&gt;
+##        expr      min       lq     mean   median       uq      max neval
+##       dplyr 1893.261 1948.727 2199.169 2144.994 2395.873 4998.820   100
+##  data.table  997.261 1053.013 1186.019 1130.097 1227.661 4085.755   100&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Sur cet exemple, on voit un avantage clair à data.table! Mais on est sur une toute petite table en entrée. On va essayer de se rapprocher de cas plus concrets en s’intéressant à un exemple sur des bases plus importantes.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -233,10 +257,10 @@ output_base &amp;lt;- merge(weather, flights_time_hour, by = c(&amp;quot;time_ho
 &lt;h2&gt;Comparaisons des vitesses d’exécution&lt;/h2&gt;
 &lt;p&gt;Je vous laisse juger de la lisibilité de chacune de ces instructions, qui font toutes la même chose, car c’est finalement assez subjectif. On donne ici les résultats d’un &lt;code&gt;microbenchmark&lt;/code&gt; de ces instructions :&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;## Unit: milliseconds
-##   expr        min         lq       mean     median         uq        max
-##   Base 2340.25444 2530.58605 2544.03710 2567.87334 2580.75754 2659.17553
-##  DplyR   57.31390   58.20080   61.20294   58.59874   59.48649   73.48458
-##     DT   33.10538   33.32156   38.93496   35.09706   39.28807   66.43433
+##   expr        min         lq       mean     median         uq       max
+##   Base 2848.06991 2907.54431 3087.02122 3086.25993 3210.24226 3453.2656
+##  DplyR   68.99304   71.40626   92.94516   94.69284  114.52115  120.4291
+##     DT   41.40254   44.63268   54.22215   51.42891   62.38939   79.4987
 ##  neval
 ##     10
 ##     10
@@ -262,32 +286,32 @@ output_base &amp;lt;- merge(weather, flights_time_hour, by = c(&amp;quot;time_ho
 &lt;div id=&#34;lignes-pour-10-groupes&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;10 000 lignes pour 10 groupes&lt;/h2&gt;
 &lt;pre&gt;&lt;code&gt;## Coordinate system already present. Adding new coordinate system, which will replace the existing one.&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;benchmark_DT_dplyr_base_102018_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/benchmark_DT_dplyr_base_102018_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;lignes-pour-5-000-groupes&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;10 000 lignes pour 5 000 groupes&lt;/h2&gt;
 &lt;pre&gt;&lt;code&gt;## Coordinate system already present. Adding new coordinate system, which will replace the existing one.&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;benchmark_DT_dplyr_base_102018_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/benchmark_DT_dplyr_base_102018_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;lignes-pour-100-groupes&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;100 000 lignes pour 100 groupes&lt;/h2&gt;
 &lt;pre&gt;&lt;code&gt;## Coordinate system already present. Adding new coordinate system, which will replace the existing one.&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;benchmark_DT_dplyr_base_102018_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/benchmark_DT_dplyr_base_102018_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;lignes-pour-50-000-groupes&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;100 000 lignes pour 50 000 groupes&lt;/h2&gt;
 &lt;pre&gt;&lt;code&gt;## Coordinate system already present. Adding new coordinate system, which will replace the existing one.&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;benchmark_DT_dplyr_base_102018_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/benchmark_DT_dplyr_base_102018_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;lignes-pour-1-000-groupes&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;1 000 000 lignes pour 1 000 groupes&lt;/h2&gt;
 &lt;pre&gt;&lt;code&gt;## Coordinate system already present. Adding new coordinate system, which will replace the existing one.&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;benchmark_DT_dplyr_base_102018_files/figure-html/unnamed-chunk-14-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/benchmark_DT_dplyr_base_102018_files/figure-html/unnamed-chunk-14-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;lignes-pour-500-000-groupes&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;1 000 000 lignes pour 500 000 groupes&lt;/h2&gt;
 &lt;pre&gt;&lt;code&gt;## Coordinate system already present. Adding new coordinate system, which will replace the existing one.&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;benchmark_DT_dplyr_base_102018_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/benchmark_DT_dplyr_base_102018_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div id=&#34;bonus-une-propriete-etonnante-de-dplyr&#34; class=&#34;section level1&#34;&gt;
@@ -309,9 +333,9 @@ Et bien, je n’ai pas seulement écrit cette instruction ainsi pour le plaisir 
     summarise(var_mean = mean(rnorm(100))) -&amp;gt; output_tibble
 })
 ## Unit: milliseconds
-##    expr      min       lq     mean   median       uq      max neval
-##  dplyr1 1.558757 1.619913 1.874292 1.654900 1.754171 8.092452   100
-##  dplyr2 2.634527 2.729247 2.883201 2.771061 2.846438 4.488538   100&lt;/code&gt;&lt;/pre&gt;
+##    expr      min       lq     mean   median       uq       max neval
+##  dplyr1 3.768315 3.847676 3.944347 3.909115 4.001844  4.708688   100
+##  dplyr2 5.790713 6.476792 6.783872 6.534249 6.652010 17.965486   100&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Ca peut sembler secondaire pour cet exemple, mais sur des grosses tables la différence va vraiment peser. Regardons par exemple les différences de performance de deux instructions &lt;code&gt;dplyr&lt;/code&gt; agrégeant par heure une variable égale au pourcentage de retard à l’arrivée par rapport à la durée du vol :&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;microbenchmark::microbenchmark(times=10L, dplyr_mutate = {
   flightstib %&amp;gt;% mutate(propor_delay = arr_delay / air_time) %&amp;gt;% 
@@ -323,11 +347,11 @@ Et bien, je n’ai pas seulement écrit cette instruction ainsi pour le plaisir 
 })
 ## Unit: milliseconds
 ##               expr       min        lq      mean    median        uq
-##       dplyr_mutate  24.03615  24.20795  25.44517  24.51686  24.66477
-##  dplyr_sans_mutate 212.00687 216.12904 230.15148 218.33320 238.56433
+##       dplyr_mutate  56.42915  56.90531  58.50877  57.16301  57.67843
+##  dplyr_sans_mutate 502.07786 508.23266 515.58623 514.23898 518.19446
 ##        max neval
-##   31.76223    10
-##  274.48457    10&lt;/code&gt;&lt;/pre&gt;
+##   69.41743    10
+##  543.17320    10&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Les performances changent du tout au tout. Je n’ai pas d’explications à cela et je n’étais pas conscient de cette propriété de &lt;code&gt;summarise&lt;/code&gt;, mais cela montre visiblement que cela doit être une mauvais pratique de définir une variable au sein d’un summarise. Cela semble être un aspect important à avoir en tête quand on code en &lt;code&gt;dplyr&lt;/code&gt;!&lt;/p&gt;
 &lt;/div&gt;
 </description>

@@ -5,21 +5,19 @@ date: '`r format(Sys.Date(), "%d %B, %Y")`'
 categories: ["R"]
 tags: ["dplyr", "tidyverse", "data.table", "microbenchmark", "benchmark", "data science"]
 output: 
-  html_document: 
-    number_sections: yes
-    toc: yes
+  blogdown::html_page:
+    toc: TRUE
     toc_depth: 2
-    toc_float: yes
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(collapse = TRUE)
 ```
 
-La richesse de R, alimentée par une communauté de développeurs très active, rend le choix d'une méthode adaptée à une problématique donnée difficile, et c'est tant mieux. Vous trouverez ici une modeste participation au débat qui oppose les deux packages d'analyse des données les plus en vue dans la communauté R : `data.table` et `dplyr`. Après un rappel de la syntaxe de ces packages, on les compare entre eux et avec les fonctions de R base sur un traitement tout simple issu des données du package `nycflights13`. On présente une comparaison des vitesses d'exécutions de ce traitement avec le package `microbenchmark`. On fournit ensuite un autre benchmark entre `data.table` et `dplyr` sur des statistiques par groupe en faisant varier le nombre d'observations et le nombre de groupes.
+La richesse de R, alimentée par une communauté de développeurs très active, rend le choix d'une méthode adaptée à une problématique donnée difficile, et c'est tant mieux. Vous trouverez ici une modeste participation au débat qui oppose les deux packages d'analyse des données les plus en vue dans la communauté R : `data.table` et `dplyr`. Après un rappel de la syntaxe de ces packages, on les compare entre eux et avec les fonctions de R base sur un traitement tout simple issu des données du package `nycflights13`. On présente une comparaison des vitesses d'exécutions de ce traitement avec le package `microbenchmark`. On fournit ensuite un autre benchmark de `data.table` et `dplyr` sur des statistiques par groupe en faisant varier le nombre d'observations et le nombre de groupes.
 
 # Rappels sur dplyr et data.table
-Si vous connaissez déjà la syntaxe de ces packages, vous pouvez directement aller à la partie [Comparaisons sur une étude de cas simple ][Comparaisons sur une étude de cas simple]. On rappelle ici très rapidement les syntaxes de ces packages mais si vous voulez vous former à leur utilisation on peut se référer à l'excellent [cours de perfectionnement de Martin Chevalier](https://teaching.slmc.fr/perf/presentation_handout.pdf). Pour une exploration de ce qu'englobe le `tidyverse` et notamment une présentation des commandes de `dplyr`, vous pouvez jeter un oeil à [l'introduction à R et au tidyverse](https://juba.github.io/tidyverse/index.html) de J. Barnier. Enfin pour data.table, j'ai trouvé des informations utiles sur le cours [Manipulations avancée avec data.table](http://larmarange.github.io/analyse-R/manipulations-avancees-avec-data-table.html) de J. Larmarange.
+Si vous connaissez déjà la syntaxe de ces packages, vous pouvez directement aller à la partie [Comparaisons sur une étude de cas simple ][Comparaisons sur une étude de cas simple]. On rappelle ici les principales caractéristiques de ces packages mais pour se former à leur utilisation on peut se référer à l'excellent [cours de perfectionnement de Martin Chevalier](https://teaching.slmc.fr/perf/presentation_handout.pdf). Pour une exploration de ce qu'englobe le `tidyverse` et notamment une présentation des commandes de `dplyr`, vous pouvez jeter un oeil à [l'introduction à R et au tidyverse](https://juba.github.io/tidyverse/index.html) de J. Barnier. Enfin pour data.table, on trouve des informations utiles sur le cours [Manipulations avancée avec data.table](http://larmarange.github.io/analyse-R/manipulations-avancees-avec-data-table.html) de J. Larmarange.
 
 ## dplyr et le tidyverse
 Le `tidyverse` (contraction de "tidy" et "universe") est un concept initié par Hadley Wickham, chef statisticien de RStudio. Il regroupe un ensemble de packages utiles au traitement statistique et au nettoyage de bases de données. On va s'intéresser ici presque seulement au package `dplyr` (dont les instructions seront appliquées aux `tibbles`, un format de data.frame issu du `tidyverse`), mais vous pouvez parcourir les packages proposés dans le tidyverse sur [le site officiel](https://www.tidyverse.org/).  
