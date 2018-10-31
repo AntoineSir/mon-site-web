@@ -15,7 +15,7 @@
   
     
   
-  <meta name="description" content="1 Rappels sur dplyr et data.table1.1 dplyr et le tidyverse1.2 Data.table1.3 Vitesses d’exécution2 Comparaisons sur une étude de cas simple2.1 Notre étude de cas2.2 Moyenne des retards et fusion des tables2.3 Comparaisons des vitesses d’exécution3 Tests complémentaires sur les vitesse d’aggrégation4 Bonus : une propriété étonnante de dplyrLa richesse de R, alimentée par une communauté de développeurs très active, rend le choix d’une méthode adaptée à une problématique donnée difficile, et c’est tant mieux.">
+  <meta name="description" content="La richesse de R, alimentée par une communauté de développeurs très active, rend le choix d’une méthode adaptée à une problématique donnée difficile, et c’est tant mieux. Vous trouverez ici une modeste participation au débat qui oppose les deux packages d’analyse des données les plus en vue dans la communauté R : data.table et dplyr. Après un rappel de la syntaxe de ces packages, on les compare entre eux et avec les fonctions de R base sur un traitement tout simple issu des données du package nycflights13.">
 
   
   <link rel="alternate" hreflang="fr" href="/post/comparaisons-dplyr-data-table-base-r/">
@@ -91,7 +91,7 @@
   <meta property="og:site_name" content="Antoine Sireyjol">
   <meta property="og:url" content="/post/comparaisons-dplyr-data-table-base-r/">
   <meta property="og:title" content="Comparaisons dplyr - data.table - base R | Antoine Sireyjol">
-  <meta property="og:description" content="1 Rappels sur dplyr et data.table1.1 dplyr et le tidyverse1.2 Data.table1.3 Vitesses d’exécution2 Comparaisons sur une étude de cas simple2.1 Notre étude de cas2.2 Moyenne des retards et fusion des tables2.3 Comparaisons des vitesses d’exécution3 Tests complémentaires sur les vitesse d’aggrégation4 Bonus : une propriété étonnante de dplyrLa richesse de R, alimentée par une communauté de développeurs très active, rend le choix d’une méthode adaptée à une problématique donnée difficile, et c’est tant mieux.">
+  <meta property="og:description" content="La richesse de R, alimentée par une communauté de développeurs très active, rend le choix d’une méthode adaptée à une problématique donnée difficile, et c’est tant mieux. Vous trouverez ici une modeste participation au débat qui oppose les deux packages d’analyse des données les plus en vue dans la communauté R : data.table et dplyr. Après un rappel de la syntaxe de ces packages, on les compare entre eux et avec les fonctions de R base sur un traitement tout simple issu des données du package nycflights13.">
   
   
     
@@ -321,24 +321,7 @@
 
 
     <div class="article-style" itemprop="articleBody">
-      <div id="TOC">
-<ul>
-<li><a href="#rappels-sur-dplyr-et-data.table"><span class="toc-section-number">1</span> Rappels sur dplyr et data.table</a><ul>
-<li><a href="#dplyr-et-le-tidyverse"><span class="toc-section-number">1.1</span> dplyr et le tidyverse</a></li>
-<li><a href="#data.table"><span class="toc-section-number">1.2</span> Data.table</a></li>
-<li><a href="#vitesses-dexecution"><span class="toc-section-number">1.3</span> Vitesses d’exécution</a></li>
-</ul></li>
-<li><a href="#comparaisons-sur-une-etude-de-cas-simple"><span class="toc-section-number">2</span> Comparaisons sur une étude de cas simple</a><ul>
-<li><a href="#notre-etude-de-cas"><span class="toc-section-number">2.1</span> Notre étude de cas</a></li>
-<li><a href="#moyenne-des-retards-et-fusion-des-tables"><span class="toc-section-number">2.2</span> Moyenne des retards et fusion des tables</a></li>
-<li><a href="#comparaisons-des-vitesses-dexecution"><span class="toc-section-number">2.3</span> Comparaisons des vitesses d’exécution</a></li>
-</ul></li>
-<li><a href="#tests-complementaires-sur-les-vitesse-daggregation"><span class="toc-section-number">3</span> Tests complémentaires sur les vitesse d’aggrégation</a></li>
-<li><a href="#bonus-une-propriete-etonnante-de-dplyr"><span class="toc-section-number">4</span> Bonus : une propriété étonnante de dplyr</a></li>
-</ul>
-</div>
-
-<p>La richesse de R, alimentée par une communauté de développeurs très active, rend le choix d’une méthode adaptée à une problématique donnée difficile, et c’est tant mieux. Vous trouverez ici une modeste participation au débat qui oppose les deux packages d’analyse des données les plus en vue dans la communauté R : <code>data.table</code> et <code>dplyr</code>. Après un rappel de la syntaxe de ces packages, on les compare entre eux et avec les fonctions de R base sur un traitement tout simple issu des données du package <code>nycflights13</code>. On présente une comparaison des vitesses d’exécutions de ce traitement avec le package <code>microbenchmark</code>. On fournit ensuite un autre benchmark de <code>data.table</code> et <code>dplyr</code> sur des statistiques par groupe en faisant varier le nombre d’observations et le nombre de groupes.</p>
+      <p>La richesse de R, alimentée par une communauté de développeurs très active, rend le choix d’une méthode adaptée à une problématique donnée difficile, et c’est tant mieux. Vous trouverez ici une modeste participation au débat qui oppose les deux packages d’analyse des données les plus en vue dans la communauté R : <code>data.table</code> et <code>dplyr</code>. Après un rappel de la syntaxe de ces packages, on les compare entre eux et avec les fonctions de R base sur un traitement tout simple issu des données du package <code>nycflights13</code>. On présente une comparaison des vitesses d’exécutions de ce traitement avec le package <code>microbenchmark</code>. On fournit ensuite un autre benchmark de <code>data.table</code> et <code>dplyr</code> sur des statistiques par groupe en faisant varier le nombre d’observations et le nombre de groupes.</p>
 <div id="rappels-sur-dplyr-et-data.table" class="section level1">
 <h1><span class="header-section-number">1</span> Rappels sur dplyr et data.table</h1>
 <p>Si vous connaissez déjà la syntaxe de ces packages, vous pouvez directement aller à la partie <a href="#comparaisons-sur-une-etude-de-cas-simple">Comparaisons sur une étude de cas simple</a>. On rappelle ici les principales caractéristiques de ces packages mais pour se former à leur utilisation on peut se référer à l’excellent <a href="https://teaching.slmc.fr/perf/presentation_handout.pdf">cours de perfectionnement de Martin Chevalier</a>. Pour une exploration de ce qu’englobe le <code>tidyverse</code> et notamment une présentation des commandes de <code>dplyr</code>, vous pouvez jeter un oeil à <a href="https://juba.github.io/tidyverse/index.html">l’introduction à R et au tidyverse</a> de J. Barnier. Enfin pour data.table, on trouve des informations utiles sur le cours <a href="http://larmarange.github.io/analyse-R/manipulations-avancees-avec-data-table.html">Manipulations avancée avec data.table</a> de J. Larmarange.</p>
@@ -347,12 +330,12 @@
 <p>Le <code>tidyverse</code> (contraction de “tidy” et “universe”) est un concept initié par Hadley Wickham, chef statisticien de RStudio. Il regroupe un ensemble de packages utiles au traitement statistique et au nettoyage de bases de données. On va s’intéresser ici presque seulement au package <code>dplyr</code> (dont les instructions seront appliquées aux <code>tibbles</code>, un format de data.frame issu du <code>tidyverse</code>), mais vous pouvez parcourir les packages proposés dans le tidyverse sur <a href="https://www.tidyverse.org/">le site officiel</a>.<br />
 <code>dplyr</code> propose un ensemble d’opérations de traitement de données sous une syntaxe différente de celle utilisée dans les fonctions de base de R. Ce langage présente le double avantage d’être à la fois lisible pour quelqu’un habitué aux langages tels que SAS ou SQL et de proposer des fonctions optimisées qui présentent de bonnes performances en termes de temps d’exécution. La grammaire <code>dplyr</code> s’appuie en effet sur des fonctions au nom explicite :</p>
 <ul>
-<li>mutate(data, newvar1=fonction(var1,var2…)) crée de nouvelles variables</li>
-<li>filter(data, condition) sélectionne au sein d’une table certaines observations, à la manière de <code>where</code> dans SAS.</li>
-<li>arrange(data, var1, descending var2,…) trie une base selon une ou plusieurs variables (l’équivalent d’une <code>proc sort</code>).</li>
-<li>select(data, var1 : varX) sélectionne certaines variables dans une base, à la manière de <code>keep</code> dans SAS.</li>
-<li>summarise(data, newvar1=mean(var1), newvar2=sum(var2)) réalise toute sorte d’opérations statistiques sur une table.</li>
-<li>group_by(data, var) regroupe une table par une variable</li>
+<li><code>mutate(data, newvar1=fonction(var1,var2...))</code> et <code>transmute(data, newvar1=fonction(var1,var2...))</code> créent de nouvelles variables</li>
+<li><code>filter(data, condition)</code> sélectionne au sein d’une table certaines observations, à la manière de <code>where</code> dans SAS.</li>
+<li><code>arrange(data, var1, descending var2,...)</code> trie une base selon une ou plusieurs variables (l’équivalent d’une <code>proc sort</code>).</li>
+<li><code>select(data, var1 : varX)</code> sélectionne certaines variables dans une base, à la manière de <code>keep</code> dans SAS.</li>
+<li><code>summarise(data, newvar1=mean(var1), newvar2=sum(var2))</code> réalise toute sorte d’opérations statistiques sur une table.</li>
+<li><code>group_by(data, var)</code> regroupe une table par une variable</li>
 <li>et bien d’autres…</li>
 </ul>
 <p>Un aspect pratique de ce langage est que toutes ces opérations peuvent être chaînées à l’aide de l’opérateur <code>%&gt;%</code> (“pipe”) dont la syntaxe est la suivante : <code>data %&gt;% fonction(...)</code> est équivalent à <code>fonction(data, ...)</code>. Cette syntaxe permet de chaîner un grand nombre d’opérations sur une base commune, en limitant le nombre de fois où l’on écrit des tables intermédiaires tout en conservant une grande lisibilité du code. Ce petit exemple vous en convaincra peut-être :</p>
@@ -393,9 +376,9 @@ dt[, list(var_mean = mean(rnorm(100))), by = list(idgpe = idgpe)] -&gt; output_d
 <h2><span class="header-section-number">1.3</span> Vitesses d’exécution</h2>
 <p>Voilà donc pour les présentations! Allez, on montre le résultat d’un petit <code>microbenchmark</code> des deux juste pour voir :</p>
 <pre><code>## Unit: microseconds
-##        expr      min        lq     mean   median       uq      max neval
-##       dplyr 1574.687 1677.6565 2080.334 1888.146 2250.244 5383.973   100
-##  data.table  841.958  909.6555 1183.064 1014.616 1256.394 6463.725   100</code></pre>
+##        expr      min        lq      mean   median       uq      max neval
+##       dplyr 1543.967 1577.2480 1745.3260 1600.287 1811.630 4396.949   100
+##  data.table  830.580  853.9045  909.1037  877.797  972.233 1151.433   100</code></pre>
 <p>Sur cet exemple, on voit un avantage clair à data.table! Mais on est sur une toute petite table en entrée. On va essayer de se rapprocher de cas plus concrets en s’intéressant à un exemple sur des bases plus importantes.</p>
 </div>
 </div>
@@ -455,9 +438,9 @@ output_base &lt;- merge(weather, flights_time_hour, by = c(&quot;time_hour&quot;
 <p>Je vous laisse juger de la lisibilité de chacune de ces instructions, qui font toutes la même chose, car c’est finalement assez subjectif. On donne ici les résultats d’un <code>microbenchmark</code> de ces instructions :</p>
 <pre><code>## Unit: milliseconds
 ##   expr        min         lq       mean     median         uq        max
-##   Base 2762.56421 2788.56816 2889.57988 2901.98173 2976.58564 3014.96863
-##  DplyR   67.18872   67.42424   75.34978   72.22737   78.19105  104.46863
-##     DT   34.94064   36.79920   38.46866   37.37634   40.09649   45.03274
+##   Base 2355.44627 2459.29651 2496.52522 2481.32193 2559.77893 2630.55734
+##  DplyR   56.79624   57.27126   58.08034   57.72182   59.09683   60.05427
+##     DT   32.95123   33.75337   34.32743   34.05715   34.36265   37.85904
 ##  neval
 ##     10
 ##     10
@@ -506,9 +489,9 @@ Et bien, je n’ai pas seulement écrit cette instruction ainsi pour le plaisir 
     summarise(var_mean = mean(rnorm(100))) -&gt; output_tibble
 })
 ## Unit: milliseconds
-##    expr      min       lq     mean   median       uq      max neval
-##  dplyr1 1.564448 1.606829 1.819492 1.651487 1.834670  4.15574   100
-##  dplyr2 2.659560 2.703365 3.205717 2.791258 3.224752 10.40556   100</code></pre>
+##    expr      min       lq     mean  median       uq      max neval
+##  dplyr1 1.541123 1.555061 1.639342 1.56843 1.590617 7.658963   100
+##  dplyr2 2.610067 2.631400 2.721569 2.65501 2.677765 8.616404   100</code></pre>
 <p>Ca peut sembler secondaire pour cet exemple, mais sur des grosses tables la différence va vraiment peser. Regardons par exemple les différences de performance de deux instructions <code>dplyr</code> agrégeant par heure une variable égale au pourcentage de retard à l’arrivée par rapport à la durée du vol :</p>
 <pre class="r"><code>microbenchmark::microbenchmark(times=10L, dplyr_mutate = {
   flightstib %&gt;% mutate(propor_delay = arr_delay / air_time) %&gt;% 
@@ -520,11 +503,11 @@ Et bien, je n’ai pas seulement écrit cette instruction ainsi pour le plaisir 
 })
 ## Unit: milliseconds
 ##               expr       min        lq      mean    median        uq
-##       dplyr_mutate  25.18759  25.77696  26.71347  26.55008  26.88345
-##  dplyr_sans_mutate 230.49533 233.77157 241.32859 236.51276 241.43849
+##       dplyr_mutate  23.89052  24.00942  24.29842  24.21138  24.43324
+##  dplyr_sans_mutate 211.96432 212.57929 214.04082 213.25342 215.00162
 ##        max neval
-##   29.73814    10
-##  278.43055    10</code></pre>
+##   25.21945    10
+##  219.71886    10</code></pre>
 <p>Les performances changent du tout au tout. Je n’ai pas d’explications à cela et je n’étais pas conscient de cette propriété de <code>summarise</code>, mais cela montre visiblement que cela doit être une mauvais pratique de définir une variable au sein d’un summarise. Cela semble être un aspect important à avoir en tête quand on code en <code>dplyr</code>!</p>
 </div>
 

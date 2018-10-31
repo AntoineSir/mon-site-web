@@ -18,7 +18,7 @@ header:
 output:
   blogdown::html_page:
     number_sections: yes
-    toc: yes
+    toc: no
 ---
 
 ```{r setup, include=FALSE}
@@ -34,12 +34,12 @@ Si vous connaissez déjà la syntaxe de ces packages, vous pouvez directement al
 Le `tidyverse` (contraction de "tidy" et "universe") est un concept initié par Hadley Wickham, chef statisticien de RStudio. Il regroupe un ensemble de packages utiles au traitement statistique et au nettoyage de bases de données. On va s'intéresser ici presque seulement au package `dplyr` (dont les instructions seront appliquées aux `tibbles`, un format de data.frame issu du `tidyverse`), mais vous pouvez parcourir les packages proposés dans le tidyverse sur [le site officiel](https://www.tidyverse.org/).  
 `dplyr` propose un ensemble d'opérations de traitement de données sous une syntaxe différente de celle utilisée dans les fonctions de base de R. Ce langage présente le double avantage d'être à la fois lisible pour quelqu'un habitué aux langages tels que SAS ou SQL et de proposer des fonctions optimisées qui présentent de bonnes performances en termes de temps d'exécution. La grammaire `dplyr` s'appuie en effet sur des fonctions au nom explicite :  
 
-* mutate(data, newvar1=fonction(var1,var2...)) crée de nouvelles variables
-* filter(data, condition) sélectionne au sein d'une table certaines observations, à la manière de `where` dans SAS.
-* arrange(data, var1, descending var2,...) trie une base selon une ou plusieurs variables (l'équivalent d'une `proc sort`).
-* select(data, var1 : varX) sélectionne certaines variables dans une base, à la manière de `keep` dans SAS. 
-* summarise(data, newvar1=mean(var1), newvar2=sum(var2)) réalise toute sorte d'opérations statistiques sur une table.
-* group_by(data, var) regroupe une table par une variable
+* `mutate(data, newvar1=fonction(var1,var2...))` et `transmute(data, newvar1=fonction(var1,var2...))` créent de nouvelles variables
+* `filter(data, condition)` sélectionne au sein d'une table certaines observations, à la manière de `where` dans SAS.
+* `arrange(data, var1, descending var2,...)` trie une base selon une ou plusieurs variables (l'équivalent d'une `proc sort`).
+* `select(data, var1 : varX)` sélectionne certaines variables dans une base, à la manière de `keep` dans SAS. 
+* `summarise(data, newvar1=mean(var1), newvar2=sum(var2))` réalise toute sorte d'opérations statistiques sur une table.
+* `group_by(data, var)` regroupe une table par une variable
 * et bien d'autres...
 
 Un aspect pratique de ce langage est que toutes ces opérations peuvent être chaînées à l'aide de l'opérateur `%>%` ("pipe") dont la syntaxe est la suivante : `data %>% fonction(...)` est équivalent à `fonction(data, ...)`. Cette syntaxe permet de chaîner un grand nombre d'opérations sur une base commune, en limitant le nombre de fois où l'on écrit des tables intermédiaires tout en conservant une grande lisibilité du code. Ce petit exemple vous en convaincra peut-être :
