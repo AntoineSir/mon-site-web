@@ -1,0 +1,63 @@
+---
+title: Quelques particularités de dplyr
+author: Antoine Sireyjol
+date: '2018-11-15'
+slug: quelques-particularités-de-dplyr
+categories:
+  - R
+tags:
+  - benchmark
+  - dplyr
+  - microbenchmark
+  - tidyverse
+  - R
+header:
+  caption: ''
+  image: ''
+---
+
+On poste ici quelques aspects de dplyr qui peuvent sembler surprenants. Ils ont souvent des conséquences sur les vitesses d'exécution des instructions. On en propose pour l'instant deux, mais le post pourra être actualisé par la suite. Ce sont les suivants :  
+
+* [Ralentissement de la vitesse d'exécution pour une création de variable directement à l'intérieur de summarise()][Ralentissement de la vitesse d'exécution pour une création de variable directement à l'intérieur de summarise()]
+* [group_by par une variable caractère][group_by par une variable caractère]
+
+# Ralentissement de la vitesse d'exécution pour une création de variable directement à l'intérieur de summarise()
+Si je reprends l'exemple donné dans le précédent post, vous avez pu remarquer que :
+```{r eval=FALSE}
+# Rappel : df <- data.frame(id1 = c(1:100), idgpe = sample(50), replace = TRUE)
+  df %>% as_tibble() %>% mutate(var = rnorm(100)) %>% 
+    group_by(idgpe) %>% summarise(var_mean = mean(var)) -> output_tibble
+```
+pouvait se réécrire de manière plus directe (comme le fait d'ailleurs la partie sur data.table) ainsi : 
+```{r eval=FALSE}
+  df %>% as_tibble() %>%  group_by(idgpe) %>% 
+  summarise(var_mean = mean(rnorm(100))) -> output_tibble
+```
+c'est-à-dire en se passant du `mutate` pour remplacer `var` par sa valeur dans `summarise`.  
+Hé bien, je n'ai pas seulement écrit cette instruction ainsi pour le plaisir de vous montrer la fonction `mutate`, mais aussi parce que la première option est bien plus rapide que la seconde, comme le montre `microbenchmark` :
+```{r}
+microbenchmark::microbenchmark(times=100L, dplyr1 = {
+  df %>% as_tibble() %>% mutate(var = rnorm(100)) %>% 
+    group_by(idgpe) %>% summarise(var_mean = mean(var)) -> output_tibble
+}, dplyr2 = {
+  df %>% as_tibble() %>% group_by(idgpe) %>% 
+    summarise(var_mean = mean(rnorm(100))) -> output_tibble
+})
+```
+Ca peut sembler secondaire pour cet exemple, mais sur des grosses tables la différence va vraiment peser. Regardons par exemple les différences de performance de deux instructions `dplyr` agrégeant par heure une variable égale au pourcentage de retard à l'arrivée par rapport à la durée du vol en utilisant les données de `nycflights13`: 
+```{r}
+microbenchmark::microbenchmark(times=10L, dplyr_mutate = {
+  flightstib %>% mutate(propor_delay = arr_delay / air_time) %>% 
+    group_by(time_hour) %>% 
+    summarise(propor_delay = mean(propor_delay)) -> output_dplyr 
+}, dplyr_sans_mutate = {
+  flightstib %>% group_by(time_hour) %>% 
+    summarise(propor_delay = mean(arr_delay / air_time)) -> output_dplyr 
+})
+```
+Les performances changent du tout au tout. Il semblerait donc que cela soit une très mauvais pratique d'essayer de "sauter" l'étape du `mutate()`, sans doute parce que le `group_by` peine à traiter le regroupement d'une opération de variables pas encore regroupées. Je n'étais pas du tout conscient de cette propriété de `summarise`, voilà pourquoi je la partage.
+
+# group_by par une variable caractère
+
+__en cours d'écriture__
+

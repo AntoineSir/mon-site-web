@@ -1,0 +1,42 @@
+---
+title: Vitesses d'agrégation de data.table et dplyr
+author: Antoine Sireyjol
+date: '2018-11-15'
+slug: vitesses-d-agrégation-de-data-table-et-dplyr
+categories:
+  - R
+tags:
+  - benchmark
+  - data.table
+  - dplyr
+  - tidyverse
+  - microbenchmark
+header:
+  caption: ''
+  image: ''
+output:
+  blogdown::html_page:
+    number_sections: no
+    toc: no
+---
+
+
+
+<p>Comme on a pu le voir par exemple dans le <a href="https://antoinesir.netlify.com/post/comparaisons-dplyr-data-table-base-r/">précédent post</a>, l’aggrégation est souvent utilisée en analyse de données. Il est donc intéressant de comparer les performances de <code>data.table</code> et <code>dplyr</code> de ce point de vue. Des benchamrks ont déjà été faits, et on peut les trouver cette <a href="https://stackoverflow.com/questions/21435339/data-table-vs-dplyr-can-one-do-something-well-the-other-cant-or-does-poorly">discussion sur stackoverflow</a> évoquée plus haut. On propose ici quelques tests comparatifs complémentaires sur un cas de groupement d’une base fictive de <code>nbrow</code> lignes appartenant à <code>nbgpe</code> groupes. La fonction est la suivante :</p>
+<pre class="r"><code>library(tidyverse)
+library(data.table)
+library(microbenchmark)
+
+test_group_by &lt;- function(nbrow, nbgpe){
+  test &lt;- as_tibble(data.frame(x = rnorm(nbrow), y = sample(floor(nbgpe), replace = TRUE)))
+  testDT &lt;- as.data.table(test)
+  
+  return(autoplot(
+    microbenchmark::microbenchmark(times = 10, unit=&quot;ms&quot;, 
+                                   DplyR = test %&gt;% group_by(y) %&gt;% summarise(x = mean(x)),
+                                   data.table = testDT[, x:= mean(x), by = y]),
+    log = FALSE)
+    + ggtitle(paste0(nbrow, &quot; lignes pour &quot;, nbgpe, &quot; groupes &quot;)))
+}</code></pre>
+<p>Notez qu’on en profite pour se faire mousser facilement avec <code>autoplot</code> de <code>ggplot2</code> qui sort les résultats de <code>microbenchmark</code> sous forme d’un joli graphique.</p>
+<p>Il n’y a plus qu’à tester! On propose des tests sur 10 000, 100 000 et 1 million de lignes avec à chaque fois peu (1/1000e du nombre de lignes) ou beaucoup (la moitié du nombre de lignes) de groupes. On fait un tableau récapitulatif des différents graphiques (avec l’aide du package <code>gridExtra</code>) : <img src="/post/2018-11-15-vitesses-d-agrégation-de-data-table-et-dplyr_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>

@@ -7,10 +7,28 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>fr</language>
     <copyright>&amp;copy; 2018</copyright>
-    <lastBuildDate>Wed, 31 Oct 2018 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 15 Nov 2018 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/microbenchmark/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Quelques particularités de dplyr</title>
+      <link>/post/quelques-particularit%C3%A9s-de-dplyr/</link>
+      <pubDate>Thu, 15 Nov 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/post/quelques-particularit%C3%A9s-de-dplyr/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Vitesses d&#39;agrégation de data.table et dplyr</title>
+      <link>/post/vitesses-d-agr%C3%A9gation-de-data-table-et-dplyr/</link>
+      <pubDate>Thu, 15 Nov 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/post/vitesses-d-agr%C3%A9gation-de-data-table-et-dplyr/</guid>
+      <description>Comme on a pu le voir par exemple dans le précédent post, l’aggrégation est souvent utilisée en analyse de données. Il est donc intéressant de comparer les performances de data.table et dplyr de ce point de vue. Des benchamrks ont déjà été faits, et on peut les trouver cette discussion sur stackoverflow évoquée plus haut. On propose ici quelques tests comparatifs complémentaires sur un cas de groupement d’une base fictive de nbrow lignes appartenant à nbgpe groupes.</description>
+    </item>
     
     <item>
       <title>Comparaisons dplyr - data.table - base R</title>
@@ -18,7 +36,8 @@
       <pubDate>Wed, 31 Oct 2018 00:00:00 +0000</pubDate>
       
       <guid>/post/comparaisons-dplyr-data-table-base-r/</guid>
-      <description>La richesse de R, alimentée par une communauté de développeurs très active, rend le choix d’une méthode adaptée à une problématique donnée difficile, et c’est tant mieux. Vous trouverez ici une modeste participation au débat qui oppose les deux packages d’analyse des données les plus en vue dans la communauté R : data.table et dplyr. Après un rappel de la syntaxe de ces packages, on les compare entre eux et avec les fonctions de R base sur un traitement tout simple issu des données du package nycflights13.</description>
+      <description>La richesse de R, alimentée par une communauté de développeurs très active, rend le choix d’une méthode adaptée à une problématique donnée difficile, et c’est tant mieux. Vous trouverez ici une modeste participation au débat qui oppose les deux packages d’analyse des données les plus en vue dans la communauté R : data.table et dplyr. L’article se présente en deux parties :
+Un rappel sur les syntaxes de dplyr et data.</description>
     </item>
     
   </channel>

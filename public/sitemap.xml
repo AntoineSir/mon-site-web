@@ -4,6 +4,22 @@
     
     <url>
     
+      <loc>/post/quelques-particularit%C3%A9s-de-dplyr/</loc>
+      <lastmod>2018-11-15T00:00:00+00:00</lastmod>
+    </url>
+    
+  
+    
+    <url>
+    
+      <loc>/post/vitesses-d-agr%C3%A9gation-de-data-table-et-dplyr/</loc>
+      <lastmod>2018-11-15T00:00:00+00:00</lastmod>
+    </url>
+    
+  
+    
+    <url>
+    
       <loc>/post/comparaisons-dplyr-data-table-base-r/</loc>
       <lastmod>2018-10-31T00:00:00+00:00</lastmod>
     </url>
@@ -171,8 +187,17 @@
     
     <url>
     
+      <loc>/tags/r/</loc>
+      <lastmod>2018-11-15T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    <url>
+    
       <loc>/categories/r/</loc>
-      <lastmod>2018-10-31T00:00:00+00:00</lastmod>
+      <lastmod>2018-11-15T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -205,7 +230,7 @@
     <url>
     
       <loc>/tags/benchmark/</loc>
-      <lastmod>2018-10-31T00:00:00+00:00</lastmod>
+      <lastmod>2018-11-15T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -223,7 +248,7 @@
     <url>
     
       <loc>/tags/data.table/</loc>
-      <lastmod>2018-10-31T00:00:00+00:00</lastmod>
+      <lastmod>2018-11-15T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -232,7 +257,7 @@
     <url>
     
       <loc>/tags/dplyr/</loc>
-      <lastmod>2018-10-31T00:00:00+00:00</lastmod>
+      <lastmod>2018-11-15T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -241,7 +266,7 @@
     <url>
     
       <loc>/tags/microbenchmark/</loc>
-      <lastmod>2018-10-31T00:00:00+00:00</lastmod>
+      <lastmod>2018-11-15T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -250,7 +275,7 @@
     <url>
     
       <loc>/tags/tidyverse/</loc>
-      <lastmod>2018-10-31T00:00:00+00:00</lastmod>
+      <lastmod>2018-11-15T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     

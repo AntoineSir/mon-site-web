@@ -17,7 +17,7 @@ header:
   image: ''
 output:
   blogdown::html_page:
-    number_sections: yes
+    number_sections: no
     toc: no
 ---
 
@@ -25,7 +25,10 @@ output:
 knitr::opts_chunk$set(collapse = TRUE)
 ```
 
-La richesse de R, alimentée par une communauté de développeurs très active, rend le choix d'une méthode adaptée à une problématique donnée difficile, et c'est tant mieux. Vous trouverez ici une modeste participation au débat qui oppose les deux packages d'analyse des données les plus en vue dans la communauté R : `data.table` et `dplyr`. Après un rappel de la syntaxe de ces packages, on les compare entre eux et avec les fonctions de R base sur un traitement tout simple issu des données du package `nycflights13`. On présente une comparaison des vitesses d'exécutions de ce traitement avec le package `microbenchmark`. On fournit ensuite un autre benchmark de `data.table` et `dplyr` sur des statistiques par groupe en faisant varier le nombre d'observations et le nombre de groupes.
+La richesse de R, alimentée par une communauté de développeurs très active, rend le choix d'une méthode adaptée à une problématique donnée difficile, et c'est tant mieux. Vous trouverez ici une modeste participation au débat qui oppose les deux packages d'analyse des données les plus en vue dans la communauté R : `data.table` et `dplyr`. L'article se présente en deux parties :  
+
+* [Un rappel sur les syntaxes de dplyr et data.table][Rappels sur dplyr et data.table], que vous pouvez passer si vous connaissez déjà les packages.
+* [Une comparaison de l'efficacité des deux packages][Comparaisons sur une étude de cas simple] sur une étude de cas à partir des données du package `nycflights13`
 
 # Rappels sur dplyr et data.table
 Si vous connaissez déjà la syntaxe de ces packages, vous pouvez directement aller à la partie [Comparaisons sur une étude de cas simple ][Comparaisons sur une étude de cas simple]. On rappelle ici les principales caractéristiques de ces packages mais pour se former à leur utilisation on peut se référer à l'excellent [cours de perfectionnement de Martin Chevalier](https://teaching.slmc.fr/perf/presentation_handout.pdf). Pour une exploration de ce qu'englobe le `tidyverse` et notamment une présentation des commandes de `dplyr`, vous pouvez jeter un oeil à [l'introduction à R et au tidyverse](https://juba.github.io/tidyverse/index.html) de J. Barnier. Enfin pour data.table, on trouve des informations utiles sur le cours [Manipulations avancée avec data.table](http://larmarange.github.io/analyse-R/manipulations-avancees-avec-data-table.html) de J. Larmarange.
@@ -171,89 +174,4 @@ microbenchmark::microbenchmark(times = 10L, unit = "ms", Base={
 ```
 
 Les résultats sont très nettement en faveur des packages `dplyr` et `data.table`, ce dernier ayant l'avantage. Sans doute existe-t-il des moyens de plus optimiser l'instruction en base R, mais là n'est pas vraiment la question. On voit qu'avec une syntaxe simple et lisible, `dplyr` et `data.table` font beaucoup mieux que l'instruction qui viendrait à l'esprit d'un statisticien qui n'utiliserait que les premières fonctions venues de base R. 
-
-# Tests complémentaires sur les vitesse d'aggrégation
-Comme on l'a vu dans notre petit exemple, l'aggrégation est souvent utilisée en statistiques. Il est donc intéressant de comparer les performances de `data.table` et `dplyr` de ce point de vue. Des benchamrks ont déjà été faits, et on peut les trouver dans la [discussion sur stackoverflow](https://stackoverflow.com/questions/21435339/data-table-vs-dplyr-can-one-do-something-well-the-other-cant-or-does-poorly) évoquée plus haut. On propose ici quelques tests comparatifs sur un cas de groupement d'une base fictive de `nbrow` lignes appartenant à `nbgpe` groupes. La fonction est la suivante :
-```{r}
-test_group_by <- function(nbrow, nbgpe){
-  test <- as_tibble(data.frame(x = rnorm(nbrow), y = sample(floor(nbgpe), replace = TRUE)))
-  testDT <- as.data.table(test)
-  
-  return(autoplot(
-    microbenchmark::microbenchmark(times = 10, unit="ms", 
-                                   DplyR = test %>% group_by(y) %>% summarise(x = mean(x)),
-                                   data.table = testDT[, x:= mean(x), by = y]),
-    title = paste0("Benchmark avec table de ", nbrow, " observations (100 itérations)")))
-}
-```
-Notez qu'on en profite pour se faire mousser facilement avec `autoplot` de  `ggplot2` qui sort les résultats de `microbenchmark` sous forme d'un joli graphique.  
-
-Il n'y a plus qu'à tester! On propose des tests sur 10 000, 100 000 et 1 million de lignes avec à chaque fois peu (1/1000e du nombre de lignes) ou beaucoup (la moitié du nombre de lignes) de groupes.
-
-__10 000 lignes pour 10 groupes__
-```{r echo=FALSE, message=FALSE, warning=FALSE}
-test_group_by(10000, 10)
-```
-
-__10 000 lignes pour 5 000 groupes__
-```{r echo=FALSE, message=FALSE, warning=FALSE}
-test_group_by(10000, 5000)
-```
-
-__100 000 lignes pour 100 groupes__
-```{r echo=FALSE, message=FALSE, warning=FALSE}
-test_group_by(100000, 100)
-```
-
-__100 000 lignes pour 50 000 groupes__
-```{r echo=FALSE, message=FALSE, warning=FALSE}
-test_group_by(100000, 50000)
-```
-
-__1 million de lignes pour 1 000 groupes__
-```{r echo=FALSE, message=FALSE, warning=FALSE}
-test_group_by(1000000, 1000)
-```
-
-__1 million de lignes pour 500 000 groupes__
-```{r echo=FALSE, message=FALSE, warning=FALSE}
-test_group_by(1000000, 500000)
-```
-
-# Bonus : une propriété étonnante de dplyr
-Je partage ici un aspect qui m'a semblé étonnant de dplyr. Si je reprends l'exemple donné en première partie de cet article, vous avez pu remarquer que :
-```{r eval=FALSE}
-# Rappel : df <- data.frame(id1 = c(1:100), idgpe = sample(50), replace = TRUE)
-  df %>% as_tibble() %>% mutate(var = rnorm(100)) %>% 
-    group_by(idgpe) %>% summarise(var_mean = mean(var)) -> output_tibble
-```
-pouvait se réécrire de manière plus directe (comme le fait d'ailleurs la partie sur data.table) ainsi : 
-```{r eval=FALSE}
-  df %>% as_tibble() %>%  group_by(idgpe) %>% 
-  summarise(var_mean = mean(rnorm(100))) -> output_tibble
-```
-c'est-à-dire en se passant du `mutate` pour remplacer `var` par sa valeur dans `summarise`.  
-Et bien, je n'ai pas seulement écrit cette instruction ainsi pour le plaisir de vous montrer la fonction `mutate`, mais aussi parce que la première option est bien plus rapide que la seconde, comme le montre `microbenchmark` :
-```{r}
-microbenchmark::microbenchmark(times=100L, dplyr1 = {
-  df %>% as_tibble() %>% mutate(var = rnorm(100)) %>% 
-    group_by(idgpe) %>% summarise(var_mean = mean(var)) -> output_tibble
-}, dplyr2 = {
-  df %>% as_tibble() %>% group_by(idgpe) %>% 
-    summarise(var_mean = mean(rnorm(100))) -> output_tibble
-})
-```
-Ca peut sembler secondaire pour cet exemple, mais sur des grosses tables la différence va vraiment peser. Regardons par exemple les différences de performance de deux instructions `dplyr` agrégeant par heure une variable égale au pourcentage de retard à l'arrivée par rapport à la durée du vol : 
-```{r}
-microbenchmark::microbenchmark(times=10L, dplyr_mutate = {
-  flightstib %>% mutate(propor_delay = arr_delay / air_time) %>% 
-    group_by(time_hour) %>% 
-    summarise(propor_delay = mean(propor_delay)) -> output_dplyr 
-}, dplyr_sans_mutate = {
-  flightstib %>% group_by(time_hour) %>% 
-    summarise(propor_delay = mean(arr_delay / air_time)) -> output_dplyr 
-})
-```
-Les performances changent du tout au tout. Je n'ai pas d'explications à cela et je n'étais pas conscient de cette propriété de `summarise`, mais cela montre visiblement que cela doit être une mauvais pratique de définir une variable au sein d'un summarise. Cela semble être un aspect important à avoir en tête quand on code en `dplyr`!
-
 
