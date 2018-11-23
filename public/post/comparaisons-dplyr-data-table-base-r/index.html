@@ -255,7 +255,7 @@
   
   <span class="middot-divider"></span>
   <span class="article-reading-time">
-    10 min de lecture
+    9 min de lecture
   </span>
   
 
@@ -382,9 +382,9 @@ dt[, list(var_mean = mean(rnorm(100))), by = list(idgpe = idgpe)] -&gt; output_d
 <h2>Vitesses d’exécution</h2>
 <p>Voilà donc pour les présentations! Allez, on montre le résultat d’un petit <code>microbenchmark</code> des deux juste pour voir :</p>
 <pre><code>## Unit: microseconds
-##        expr      min       lq      mean    median        uq      max neval
-##       dplyr 1547.947 1597.157 1749.7775 1632.9960 1857.4230 4364.515   100
-##  data.table  820.907  865.565  941.8474  898.5605  963.9825 3728.498   100</code></pre>
+##        expr      min        lq     mean   median       uq      max neval
+##       dplyr 1539.983 1584.6405 1779.172 1631.005 1868.801 4469.760   100
+##  data.table  833.992  850.2055  937.905  891.450 1005.512 1517.227   100</code></pre>
 <p>Sur cet exemple, on voit un avantage clair à data.table! Mais on est sur une toute petite table en entrée. On va essayer de se rapprocher de cas plus concrets en s’intéressant à un exemple sur des bases plus importantes.</p>
 </div>
 </div>
@@ -444,55 +444,15 @@ output_base &lt;- merge(weather, flights_time_hour, by = c(&quot;time_hour&quot;
 <p>Je vous laisse juger de la lisibilité de chacune de ces instructions, qui font toutes la même chose, car c’est finalement assez subjectif. On donne ici les résultats d’un <code>microbenchmark</code> de ces instructions :</p>
 <pre><code>## Unit: milliseconds
 ##   expr        min         lq       mean     median         uq        max
-##   Base 2347.00790 2376.10030 2436.73775 2438.21556 2492.95574 2526.32504
-##  DplyR   55.99401   56.23351   56.72907   56.67782   57.18754   57.56471
-##     DT   32.73329   33.04845   33.31253   33.31896   33.58890   33.74079
+##   Base 2532.70001 2547.65211 2614.52265 2588.78021 2644.28924 2764.51591
+##  DplyR   60.37445   60.89670   62.54289   62.48617   63.71156   64.82658
+##     DT   34.58730   35.04184   36.93675   35.48301   35.80700   50.99746
 ##  neval
 ##     10
 ##     10
 ##     10</code></pre>
 <p>Les résultats sont très nettement en faveur des packages <code>dplyr</code> et <code>data.table</code>, ce dernier ayant l’avantage. Sans doute existe-t-il des moyens de plus optimiser l’instruction en base R, mais là n’est pas vraiment la question. On voit qu’avec une syntaxe simple et lisible, <code>dplyr</code> et <code>data.table</code> font beaucoup mieux que l’instruction qui viendrait à l’esprit d’un statisticien qui n’utiliserait que les premières fonctions venues de base R.</p>
 </div>
-</div>
-<div id="bonus-une-propriete-etonnante-de-dplyr" class="section level1">
-<h1>Bonus : une propriété étonnante de dplyr</h1>
-<p>Je partage ici un aspect qui m’a semblé étonnant de dplyr. Si je reprends l’exemple donné en première partie de cet article, vous avez pu remarquer que :</p>
-<pre class="r"><code># Rappel : df &lt;- data.frame(id1 = c(1:100), idgpe = sample(50), replace = TRUE)
-  df %&gt;% as_tibble() %&gt;% mutate(var = rnorm(100)) %&gt;% 
-    group_by(idgpe) %&gt;% summarise(var_mean = mean(var)) -&gt; output_tibble</code></pre>
-<p>pouvait se réécrire de manière plus directe (comme le fait d’ailleurs la partie sur data.table) ainsi :</p>
-<pre class="r"><code>  df %&gt;% as_tibble() %&gt;%  group_by(idgpe) %&gt;% 
-  summarise(var_mean = mean(rnorm(100))) -&gt; output_tibble</code></pre>
-<p>c’est-à-dire en se passant du <code>mutate</code> pour remplacer <code>var</code> par sa valeur dans <code>summarise</code>.<br />
-Et bien, je n’ai pas seulement écrit cette instruction ainsi pour le plaisir de vous montrer la fonction <code>mutate</code>, mais aussi parce que la première option est bien plus rapide que la seconde, comme le montre <code>microbenchmark</code> :</p>
-<pre class="r"><code>microbenchmark::microbenchmark(times=100L, dplyr1 = {
-  df %&gt;% as_tibble() %&gt;% mutate(var = rnorm(100)) %&gt;% 
-    group_by(idgpe) %&gt;% summarise(var_mean = mean(var)) -&gt; output_tibble
-}, dplyr2 = {
-  df %&gt;% as_tibble() %&gt;% group_by(idgpe) %&gt;% 
-    summarise(var_mean = mean(rnorm(100))) -&gt; output_tibble
-})
-## Unit: milliseconds
-##    expr      min       lq     mean   median       uq      max neval
-##  dplyr1 1.535432 1.562169 1.713619 1.588338 1.605120 7.159465   100
-##  dplyr2 2.605511 2.656712 2.732436 2.695965 2.722987 3.643164   100</code></pre>
-<p>Ca peut sembler secondaire pour cet exemple, mais sur des grosses tables la différence va vraiment peser. Regardons par exemple les différences de performance de deux instructions <code>dplyr</code> agrégeant par heure une variable égale au pourcentage de retard à l’arrivée par rapport à la durée du vol :</p>
-<pre class="r"><code>microbenchmark::microbenchmark(times=10L, dplyr_mutate = {
-  flightstib %&gt;% mutate(propor_delay = arr_delay / air_time) %&gt;% 
-    group_by(time_hour) %&gt;% 
-    summarise(propor_delay = mean(propor_delay)) -&gt; output_dplyr 
-}, dplyr_sans_mutate = {
-  flightstib %&gt;% group_by(time_hour) %&gt;% 
-    summarise(propor_delay = mean(arr_delay / air_time)) -&gt; output_dplyr 
-})
-## Unit: milliseconds
-##               expr       min       lq      mean    median        uq
-##       dplyr_mutate  23.60262  23.7511  23.94072  23.88593  24.22783
-##  dplyr_sans_mutate 211.71706 213.5625 214.45421 213.94568 214.66903
-##       max neval
-##   24.2540    10
-##  218.3025    10</code></pre>
-<p>Les performances changent du tout au tout. Je n’ai pas d’explications à cela et je n’étais pas conscient de cette propriété de <code>summarise</code>, mais cela montre visiblement que cela doit être une mauvais pratique de définir une variable au sein d’un summarise. Cela semble être un aspect important à avoir en tête quand on code en <code>dplyr</code>!</p>
 </div>
 
     </div>

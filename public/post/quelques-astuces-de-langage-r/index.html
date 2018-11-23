@@ -15,10 +15,10 @@
   
     
   
-  <meta name="description" content="Comme on a pu le voir par exemple dans le précédent post, l’aggrégation est souvent utilisée en analyse de données. Il est donc intéressant de comparer les performances de data.table et dplyr de ce point de vue. Des benchamrks ont déjà été faits, et on peut les trouver cette discussion sur stackoverflow évoquée plus haut. On propose ici quelques tests comparatifs complémentaires sur un cas de groupement d’une base fictive de nbrow lignes appartenant à nbgpe groupes.">
+  <meta name="description" content="">
 
   
-  <link rel="alternate" hreflang="fr" href="/post/vitesses-d-agr%C3%A9gation-de-data-table-et-dplyr/">
+  <link rel="alternate" hreflang="fr" href="/post/quelques-astuces-de-langage-r/">
 
   
 
@@ -84,30 +84,30 @@
   <link rel="icon" type="image/png" href="/img/icon.png">
   <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
 
-  <link rel="canonical" href="/post/vitesses-d-agr%C3%A9gation-de-data-table-et-dplyr/">
+  <link rel="canonical" href="/post/quelques-astuces-de-langage-r/">
 
   <meta property="twitter:card" content="summary_large_image">
   
   <meta property="og:site_name" content="Antoine Sireyjol">
-  <meta property="og:url" content="/post/vitesses-d-agr%C3%A9gation-de-data-table-et-dplyr/">
-  <meta property="og:title" content="Vitesses d&#39;agrégation de data.table et dplyr | Antoine Sireyjol">
-  <meta property="og:description" content="Comme on a pu le voir par exemple dans le précédent post, l’aggrégation est souvent utilisée en analyse de données. Il est donc intéressant de comparer les performances de data.table et dplyr de ce point de vue. Des benchamrks ont déjà été faits, et on peut les trouver cette discussion sur stackoverflow évoquée plus haut. On propose ici quelques tests comparatifs complémentaires sur un cas de groupement d’une base fictive de nbrow lignes appartenant à nbgpe groupes.">
+  <meta property="og:url" content="/post/quelques-astuces-de-langage-r/">
+  <meta property="og:title" content="Quelques astuces de langage R | Antoine Sireyjol">
+  <meta property="og:description" content="">
   
   
     
   <meta property="og:image" content="/img/icon-192.png">
   <meta property="og:locale" content="fr">
   
-  <meta property="article:published_time" content="2018-11-15T00:00:00&#43;00:00">
+  <meta property="article:published_time" content="2018-11-23T00:00:00&#43;00:00">
   
-  <meta property="article:modified_time" content="2018-11-15T00:00:00&#43;00:00">
-  
-
+  <meta property="article:modified_time" content="2018-11-23T00:00:00&#43;00:00">
   
 
   
 
-  <title>Vitesses d&#39;agrégation de data.table et dplyr | Antoine Sireyjol</title>
+  
+
+  <title>Quelques astuces de langage R | Antoine Sireyjol</title>
 
 </head>
 <body id="top" data-spy="scroll" data-target="#TableOfContents" data-offset="71" >
@@ -226,7 +226,7 @@
 
 
   <div class="article-container">
-    <h1 itemprop="name">Vitesses d&#39;agrégation de data.table et dplyr</h1>
+    <h1 itemprop="name">Quelques astuces de langage R</h1>
 
     
 
@@ -241,9 +241,9 @@
 
   <span class="article-date">
     
-    <meta content="2018-11-15 00:00:00 &#43;0000 UTC" itemprop="datePublished">
-    <time datetime="2018-11-15 00:00:00 &#43;0000 UTC" itemprop="dateModified">
-      Nov 15, 2018
+    <meta content="2018-11-23 00:00:00 &#43;0000 UTC" itemprop="datePublished">
+    <time datetime="2018-11-23 00:00:00 &#43;0000 UTC" itemprop="dateModified">
+      Nov 23, 2018
     </time>
   </span>
   <span itemscope itemprop="publisher" itemtype="http://schema.org/Person">
@@ -253,7 +253,7 @@
   
   <span class="middot-divider"></span>
   <span class="article-reading-time">
-    2 min de lecture
+    0 min de lecture
   </span>
   
 
@@ -279,35 +279,35 @@
   <ul class="share">
     <li>
       <a class="twitter"
-         href="https://twitter.com/intent/tweet?text=Vitesses%20d%27agr%c3%a9gation%20de%20data.table%20et%20dplyr&amp;url=%2fpost%2fvitesses-d-agr%25C3%25A9gation-de-data-table-et-dplyr%2f"
+         href="https://twitter.com/intent/tweet?text=Quelques%20astuces%20de%20langage%20R&amp;url=%2fpost%2fquelques-astuces-de-langage-r%2f"
          target="_blank" rel="noopener">
         <i class="fab fa-twitter"></i>
       </a>
     </li>
     <li>
       <a class="facebook"
-         href="https://www.facebook.com/sharer.php?u=%2fpost%2fvitesses-d-agr%25C3%25A9gation-de-data-table-et-dplyr%2f"
+         href="https://www.facebook.com/sharer.php?u=%2fpost%2fquelques-astuces-de-langage-r%2f"
          target="_blank" rel="noopener">
         <i class="fab fa-facebook-f"></i>
       </a>
     </li>
     <li>
       <a class="linkedin"
-         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2fvitesses-d-agr%25C3%25A9gation-de-data-table-et-dplyr%2f&amp;title=Vitesses%20d%27agr%c3%a9gation%20de%20data.table%20et%20dplyr"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2fquelques-astuces-de-langage-r%2f&amp;title=Quelques%20astuces%20de%20langage%20R"
          target="_blank" rel="noopener">
         <i class="fab fa-linkedin-in"></i>
       </a>
     </li>
     <li>
       <a class="weibo"
-         href="http://service.weibo.com/share/share.php?url=%2fpost%2fvitesses-d-agr%25C3%25A9gation-de-data-table-et-dplyr%2f&amp;title=Vitesses%20d%27agr%c3%a9gation%20de%20data.table%20et%20dplyr"
+         href="http://service.weibo.com/share/share.php?url=%2fpost%2fquelques-astuces-de-langage-r%2f&amp;title=Quelques%20astuces%20de%20langage%20R"
          target="_blank" rel="noopener">
         <i class="fab fa-weibo"></i>
       </a>
     </li>
     <li>
       <a class="email"
-         href="mailto:?subject=Vitesses%20d%27agr%c3%a9gation%20de%20data.table%20et%20dplyr&amp;body=%2fpost%2fvitesses-d-agr%25C3%25A9gation-de-data-table-et-dplyr%2f">
+         href="mailto:?subject=Quelques%20astuces%20de%20langage%20R&amp;body=%2fpost%2fquelques-astuces-de-langage-r%2f">
         <i class="fas fa-envelope"></i>
       </a>
     </li>
@@ -321,25 +321,7 @@
 
 
     <div class="article-style" itemprop="articleBody">
-      <p>Comme on a pu le voir par exemple dans le <a href="https://antoinesir.netlify.com/post/comparaisons-dplyr-data-table-base-r/">précédent post</a>, l’aggrégation est souvent utilisée en analyse de données. Il est donc intéressant de comparer les performances de <code>data.table</code> et <code>dplyr</code> de ce point de vue. Des benchamrks ont déjà été faits, et on peut les trouver cette <a href="https://stackoverflow.com/questions/21435339/data-table-vs-dplyr-can-one-do-something-well-the-other-cant-or-does-poorly">discussion sur stackoverflow</a> évoquée plus haut. On propose ici quelques tests comparatifs complémentaires sur un cas de groupement d’une base fictive de <code>nbrow</code> lignes appartenant à <code>nbgpe</code> groupes. La fonction est la suivante :</p>
-<pre class="r"><code>library(tidyverse)
-library(data.table)
-library(microbenchmark)
-
-test_group_by &lt;- function(nbrow, nbgpe){
-  test &lt;- as_tibble(data.frame(x = rnorm(nbrow), y = sample(floor(nbgpe), replace = TRUE)))
-  testDT &lt;- as.data.table(test)
-  
-  return(autoplot(
-    microbenchmark::microbenchmark(times = 10, unit=&quot;ms&quot;, 
-                                   DplyR = test %&gt;% group_by(y) %&gt;% summarise(x = mean(x)),
-                                   data.table = testDT[, x:= mean(x), by = y]),
-    log = FALSE)
-    + ggtitle(paste0(nbrow, &quot; lignes pour &quot;, nbgpe, &quot; groupes &quot;)))
-}</code></pre>
-<p>Notez qu’on en profite pour se faire mousser facilement avec <code>autoplot</code> de <code>ggplot2</code> qui sort les résultats de <code>microbenchmark</code> sous forme d’un joli graphique.</p>
-<p>Il n’y a plus qu’à tester! On propose des tests sur 10 000, 100 000 et 1 million de lignes avec à chaque fois peu (1/1000e du nombre de lignes) ou beaucoup (la moitié du nombre de lignes) de groupes. On fait un tableau récapitulatif des différents graphiques (avec l’aide du package <code>gridExtra</code>) : <img src="/post/2018-11-15-vitesses-d-agrégation-de-data-table-et-dplyr_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
-
+      
     </div>
 
     
@@ -349,13 +331,11 @@ test_group_by &lt;- function(nbrow, nbgpe){
   
   <a class="badge badge-light" href="/tags/benchmark/">benchmark</a>
   
-  <a class="badge badge-light" href="/tags/data.table/">data.table</a>
-  
   <a class="badge badge-light" href="/tags/dplyr/">dplyr</a>
   
   <a class="badge badge-light" href="/tags/tidyverse/">tidyverse</a>
   
-  <a class="badge badge-light" href="/tags/microbenchmark/">microbenchmark</a>
+  <a class="badge badge-light" href="/tags/r/">R</a>
   
 </div>
 
@@ -368,6 +348,10 @@ test_group_by &lt;- function(nbrow, nbgpe){
       <div class="hr-light"></div>
       <h3>Sur le même sujet</h3>
       <ul>
+        
+        <li><a href="/post/quelques-particularit%C3%A9s-de-dplyr/">Quelques particularités de dplyr</a></li>
+        
+        <li><a href="/post/vitesses-d-agr%C3%A9gation-de-data-table-et-dplyr/">Vitesses d&#39;agrégation de data.table et dplyr</a></li>
         
         <li><a href="/post/comparaisons-dplyr-data-table-base-r/">Comparaisons dplyr - data.table - base R</a></li>
         

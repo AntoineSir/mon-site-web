@@ -1,0 +1,94 @@
+---
+title: Quelques astuces du langage R
+author: Antoine Sireyjol
+date: '2018-11-23'
+slug: quelques-particularités-de-dplyr
+categories:
+  - R
+tags:
+  - benchmark
+  - dplyr
+  - microbenchmark
+  - tidyverse
+  - R
+header:
+  caption: ''
+  image: ''
+output:
+  blogdown::html_page:
+    number_sections: no
+    toc: no
+---
+
+
+
+<p>On poste ici quelques aspects de R qui peuvent sembler surprenants. Ils ont souvent des conséquences sur les vitesses d’exécution des instructions. On en propose pour l’instant trois, mais le post pourra être actualisé par la suite. Les points explorés dans cette note sont les suivants :</p>
+<ul>
+<li>Pour dplyr : la <a href="#ralentissement-de-la-vitesse-dexecution-pour-une-creation-de-variable-directement-a-linterieur-de-summarise">création d’une variable directement à l’intérieur de summarise()</a></li>
+<li>Encore sur dplyr : le temps d’exécution d’un <a href="#group_by-par-une-variable-caractere">group_by par une variable caractère</a></li>
+<li>Pour base R : la question de <a href="#definition-dune-fonction-apply-sur-les-colonnes-dun-dataframe">l’application d’une fonction apply aux colonnes d’un data.frame</a></li>
+</ul>
+<div id="ralentissement-de-la-vitesse-dexecution-pour-une-creation-de-variable-directement-a-linterieur-de-summarise" class="section level1">
+<h1>Ralentissement de la vitesse d’exécution pour une création de variable directement à l’intérieur de summarise()</h1>
+<p>Si on reprend l’exemple donné dans <a href="https://antoinesir.netlify.com/post/vitesses-d-agr%C3%A9gation-de-data-table-et-dplyr/">le précédent post</a>, vous avez pu remarquer que :</p>
+<pre class="r"><code># Rappel : df &lt;- data.frame(id1 = c(1:100), idgpe = sample(50), replace = TRUE)
+df %&gt;% as_tibble() %&gt;% mutate(var = rnorm(100)) %&gt;% 
+group_by(idgpe) %&gt;% summarise(var_mean = mean(var)) -&gt; output_tibble</code></pre>
+<p>pouvait se réécrire de manière plus directe (comme le fait d’ailleurs la partie sur data.table) ainsi :</p>
+<pre class="r"><code>df %&gt;% as_tibble() %&gt;%  group_by(idgpe) %&gt;% 
+  summarise(var_mean = mean(rnorm(100))) -&gt; output_tibble</code></pre>
+<p>C’est-à-dire en se passant du <code>mutate</code> pour remplacer <code>var</code> par sa valeur dans <code>summarise</code>.<br />
+Hé bien, cette instruction n’est pas seulement présentée ainsi pour le plaisir de vous montrer la fonction <code>mutate</code>, mais aussi parce que la première option est bien plus rapide que la seconde, comme le montre la fonction <code>microbenchmark</code> :</p>
+<pre class="r"><code>microbenchmark::microbenchmark(times=100L, dplyr1 = {
+  df %&gt;% as_tibble() %&gt;% mutate(var = rnorm(100)) %&gt;% 
+    group_by(idgpe) %&gt;% summarise(var_mean = mean(var)) 
+}, dplyr2 = {
+  df %&gt;% as_tibble() %&gt;% group_by(idgpe) %&gt;% 
+    summarise(var_mean = mean(rnorm(100))) 
+})</code></pre>
+<pre><code>## Unit: milliseconds
+##    expr      min       lq     mean   median       uq      max neval
+##  dplyr1 1.513245 1.557619 1.769535 1.574116 1.603414 14.55957   100
+##  dplyr2 2.598685 2.649031 2.772782 2.669796 2.713316  4.61312   100</code></pre>
+<p>Ca peut sembler secondaire pour cet exemple, mais sur des grosses tables la différence va vraiment peser. Regardons par exemple les différences de performance de deux instructions <code>dplyr</code> agrégeant par heure une variable égale au pourcentage de retard à l’arrivée par rapport à la durée du vol en utilisant les données de <code>nycflights13</code>:</p>
+<pre class="r"><code>df &lt;- data.frame(id1 = c(1:100), idgpe = sample(50), replace = TRUE)
+microbenchmark::microbenchmark(times=10L, dplyr_mutate = {
+flightstib %&gt;% mutate(propor_delay = arr_delay / air_time) %&gt;% 
+group_by(time_hour) %&gt;% 
+summarise(propor_delay = mean(propor_delay)) -&gt; output_dplyr 
+}, dplyr_sans_mutate = {
+flightstib %&gt;% group_by(time_hour) %&gt;% 
+summarise(propor_delay = mean(arr_delay / air_time)) -&gt; output_dplyr 
+})</code></pre>
+<pre><code>## Unit: milliseconds
+##               expr       min        lq     mean    median        uq
+##       dplyr_mutate  24.66986  25.37301  30.2097  28.20835  31.55057
+##  dplyr_sans_mutate 206.16357 210.86316 237.4071 238.59307 257.07684
+##        max neval
+##   50.80347    10
+##  282.86570    10</code></pre>
+<p>Les performances changent du tout au tout. Il semblerait donc que cela soit une très mauvais pratique d’essayer de “sauter” l’étape du <code>mutate()</code>, sans doute parce que le <code>group_by</code> peine à traiter le regroupement d’une opération de variables pas encore regroupées. C’est une propriété de <code>summarise</code> qu’il est important d’avoir à l’esprit.</p>
+</div>
+<div id="group_by-par-une-variable-caractere" class="section level1">
+<h1>group_by par une variable caractère</h1>
+<p>Quelque chose de très simple à faire pour optimiser ses codes : ne pas faire de group_by sur des variables caractères mais sur des factors. On montre ici un exemple très simple sur la même base flights. Tout d’abord, faisons une moyenne des retards à l’arrivée groupée par le lieu d’origine :</p>
+<pre class="r"><code>flightstib %&gt;% group_by(origin) %&gt;% 
+  summarize(mean_delay = mean(arr_delay, na.rm = TRUE))</code></pre>
+<p>On compare la rapidité de cette instruction, à celle-ci, qui fait la même chose sur une variable factor :</p>
+<pre class="r"><code>flightstib$originfac &lt;- as.factor(flightstib$origin)
+flightstib %&gt;% group_by(originfac) %&gt;% 
+  summarize(mean_delay = mean(arr_delay, na.rm = TRUE))</code></pre>
+<p>Le résultat de la fonction <code>microbenchmark</code> appliquée à ces deux instructions donne :</p>
+<pre><code>## Unit: milliseconds
+##                expr      min       lq     mean   median       uq      max
+##  group by character 14.83434 15.58186 17.66089 16.04892 17.67964 54.71231
+##     group by factor 12.15488 12.75961 14.56278 13.39221 14.89152 33.56671
+##  neval
+##    100
+##    100</code></pre>
+<p>La différence est de l’ordre de 20% et peut peser sur de stables plus grosses. À noter qu’on ne compte pas dans la comparaison le temps de transposition d’une variable caractère en factor, puisque celui-ci peut être amorti sur de plus nombreuses instructions ou être appliqué au moment de l’import des bases.</p>
+</div>
+<div id="definition-dune-fonction-apply-sur-les-colonnes-dun-dataframe" class="section level1">
+<h1>Définition d’une fonction apply sur les colonnes d’un dataframe</h1>
+<p>__ en cours d’écriture __</p>
+</div>

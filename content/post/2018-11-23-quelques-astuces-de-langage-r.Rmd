@@ -1,0 +1,108 @@
+---
+title: Quelques astuces du langage R
+author: Antoine Sireyjol
+date: '2018-11-23'
+slug: quelques-particularités-de-dplyr
+categories:
+  - R
+tags:
+  - benchmark
+  - dplyr
+  - microbenchmark
+  - tidyverse
+  - R
+header:
+  caption: ''
+  image: ''
+output:
+  blogdown::html_page:
+    number_sections: no
+    toc: no
+---
+
+
+```{r include=FALSE}
+library(dplyr)
+library(microbenchmark)
+library(nycflights13)
+flightstib <- as_tibble(flights)
+df <- data.frame(id1 = c(1:100), idgpe = sample(50), replace = TRUE)
+```
+
+On poste ici quelques aspects de R qui peuvent sembler surprenants. Ils ont souvent des conséquences sur les vitesses d'exécution des instructions. On en propose pour l'instant trois, mais le post pourra être actualisé par la suite. Les points explorés dans cette note sont les suivants :  
+  
+* Pour dplyr : la [création d'une variable directement à l'intérieur de summarise()][Ralentissement de la vitesse d'exécution pour une création de variable directement à l'intérieur de summarise()]
+* Encore sur dplyr : le temps d'exécution d'un [group_by par une variable caractère][group_by par une variable caractère]
+* Pour base R : la question de [l'application d'une fonction apply aux colonnes d'un data.frame][Définition d'une fonction apply sur les colonnes d'un dataframe]
+
+# Ralentissement de la vitesse d'exécution pour une création de variable directement à l'intérieur de summarise()
+Si on reprend l'exemple donné dans [le précédent post](https://antoinesir.netlify.com/post/vitesses-d-agr%C3%A9gation-de-data-table-et-dplyr/), vous avez pu remarquer que :
+```{r eval=FALSE}
+# Rappel : df <- data.frame(id1 = c(1:100), idgpe = sample(50), replace = TRUE)
+df %>% as_tibble() %>% mutate(var = rnorm(100)) %>% 
+group_by(idgpe) %>% summarise(var_mean = mean(var)) -> output_tibble
+```
+pouvait se réécrire de manière plus directe (comme le fait d'ailleurs la partie sur data.table) ainsi : 
+```{r eval=FALSE}
+df %>% as_tibble() %>%  group_by(idgpe) %>% 
+  summarise(var_mean = mean(rnorm(100))) -> output_tibble
+```
+C'est-à-dire en se passant du `mutate` pour remplacer `var` par sa valeur dans `summarise`.  
+Hé bien, cette instruction n'est pas seulement présentée ainsi pour le plaisir de vous montrer la fonction `mutate`, mais aussi parce que la première option est bien plus rapide que la seconde, comme le montre la fonction `microbenchmark` : 
+
+```{r}
+microbenchmark::microbenchmark(times=100L, dplyr1 = {
+  df %>% as_tibble() %>% mutate(var = rnorm(100)) %>% 
+    group_by(idgpe) %>% summarise(var_mean = mean(var)) 
+}, dplyr2 = {
+  df %>% as_tibble() %>% group_by(idgpe) %>% 
+    summarise(var_mean = mean(rnorm(100))) 
+})
+```
+
+Ca peut sembler secondaire pour cet exemple, mais sur des grosses tables la différence va vraiment peser. Regardons par exemple les différences de performance de deux instructions `dplyr` agrégeant par heure une variable égale au pourcentage de retard à l'arrivée par rapport à la durée du vol en utilisant les données de `nycflights13`: 
+
+```{r}
+df <- data.frame(id1 = c(1:100), idgpe = sample(50), replace = TRUE)
+microbenchmark::microbenchmark(times=10L, dplyr_mutate = {
+flightstib %>% mutate(propor_delay = arr_delay / air_time) %>% 
+group_by(time_hour) %>% 
+summarise(propor_delay = mean(propor_delay)) -> output_dplyr 
+}, dplyr_sans_mutate = {
+flightstib %>% group_by(time_hour) %>% 
+summarise(propor_delay = mean(arr_delay / air_time)) -> output_dplyr 
+})
+```
+Les performances changent du tout au tout. Il semblerait donc que cela soit une très mauvais pratique d'essayer de "sauter" l'étape du `mutate()`, sans doute parce que le `group_by` peine à traiter le regroupement d'une opération de variables pas encore regroupées. C'est une propriété de `summarise` qu'il est important d'avoir à l'esprit.
+
+
+# group_by par une variable caractère
+
+Quelque chose de très simple à faire pour optimiser ses codes : ne pas faire de group_by sur des variables caractères mais sur des factors. On montre ici un exemple très simple sur la même base flights. Tout d'abord, faisons une moyenne des retards à l'arrivée groupée par le lieu d'origine : 
+```{r eval=FALSE, include=TRUE}
+flightstib %>% group_by(origin) %>% 
+  summarize(mean_delay = mean(arr_delay, na.rm = TRUE))
+```
+On compare la rapidité de cette instruction, à celle-ci, qui fait la même chose sur une variable factor : 
+```{r eval=FALSE, include=TRUE}
+flightstib$originfac <- as.factor(flightstib$origin)
+flightstib %>% group_by(originfac) %>% 
+  summarize(mean_delay = mean(arr_delay, na.rm = TRUE))
+```
+Le résultat de la fonction `microbenchmark` appliquée à ces deux instructions donne : 
+```{r echo=FALSE}
+flightstib$originfac <- as.factor(flightstib$origin)
+microbenchmark::microbenchmark(times = 100L, 
+                               "group by character" = {
+                                 flightstib %>% group_by(origin) %>% 
+                                   summarize(mean_delay = mean(arr_delay, na.rm = TRUE))
+                                 },
+                               "group by factor" = {
+                                 flightstib %>% group_by(originfac) %>% 
+                                   summarize(mean_delay = mean(arr_delay, na.rm = TRUE))
+                               })
+```
+La différence est de l'ordre de 20% et peut peser sur de stables plus grosses. À noter qu'on ne compte pas dans la comparaison le temps de transposition d'une variable caractère en factor, puisque celui-ci peut être amorti sur de plus nombreuses instructions ou être appliqué au moment de l'import des bases. 
+
+# Définition d'une fonction apply sur les colonnes d'un dataframe
+__ en cours d'écriture __
