@@ -11,16 +11,16 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
-      <title>Quelques astuces du langage R</title>
+      <title>Études de cas de certaines propriétés du langage R</title>
       <link>/post/quelques-particularit%C3%A9s-de-dplyr/</link>
       <pubDate>Fri, 23 Nov 2018 00:00:00 +0000</pubDate>
       
       <guid>/post/quelques-particularit%C3%A9s-de-dplyr/</guid>
-      <description>&lt;p&gt;On regroupe ici quelques aspects de R qui peuvent parfois sembler surprenants. Ils ont souvent des conséquences sur les vitesses d’exécution des instructions. On en propose pour l’instant trois, mais le post pourra être actualisé par la suite. Les points explorés dans cette note sont les suivants :&lt;/p&gt;
+      <description>&lt;p&gt;On regroupe ici quelques aspects de R qui peuvent parfois sembler surprenants. Ils ont souvent des conséquences sur les vitesses d’exécution des instructions. On en propose pour l’instant trois, mais le post pourra être actualisé par la suite. L’idée est de regrouper des situations auxquelles chacun pourrait être confronté. Les points explorés dans cette note sont les suivants :&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;Pour base R : la question de &lt;a href=&#34;#definition-dune-fonction-apply-sur-les-colonnes-dun-dataframe&#34;&gt;l’application d’une fonction apply aux colonnes d’un data.frame&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;Pour dplyr : la &lt;a href=&#34;#ralentissement-de-la-vitesse-dexecution-pour-une-creation-de-variable-directement-a-linterieur-de-summarise&#34;&gt;création d’une variable directement à l’intérieur de summarise()&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;Encore sur dplyr : le temps d’exécution d’un &lt;a href=&#34;#group_by-par-une-variable-caractere&#34;&gt;group_by par une variable caractère&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Pour base R : la question de &lt;a href=&#34;#definition-dune-fonction-apply-sur-les-colonnes-dun-dataframe&#34;&gt;l’application d’une fonction apply aux colonnes d’un data.frame&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Pour dplyr : la &lt;a href=&#34;#ralentissement-de-la-vitesse-dexecution-pour-une-creation-de-variable-directement-a-linterieur-de-summarise&#34;&gt;création d’une variable directement à l’intérieur de summarise()&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Encore sur dplyr : le temps d’exécution d’un &lt;a href=&#34;#group_by-par-une-variable-caractere&#34;&gt;group_by par une variable caractère&lt;/a&gt;.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;div id=&#34;definition-dune-fonction-apply-sur-les-colonnes-dun-dataframe&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;Définition d’une fonction apply sur les colonnes d’un dataframe&lt;/h1&gt;
@@ -44,9 +44,9 @@
 &lt;p&gt;Ainsi, l’option 2 peut sembler à juste titre plus intuitive (ne serait-ce que parce qu’elle se simplifie avec l’option 2bis), pourtant l’option 1 est significativement plus rapide, comme le montre la fonction &lt;code&gt;microbenchmark&lt;/code&gt; :&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;## Unit: milliseconds
 ##          expr      min       lq     mean   median       uq      max neval
-##      Option 1 1.566721 1.573547 1.611765 1.578667 1.583787 2.639645    50
-##      Option 2 1.917155 1.925689 1.958685 1.934791 1.953565 2.739201    50
-##  Option 2 bis 1.916018 1.924551 1.955522 1.937352 1.966650 2.112854    50&lt;/code&gt;&lt;/pre&gt;
+##      Option 1 1.566720 1.576392 1.630345 1.581511 1.598578 2.684018    50
+##      Option 2 1.916018 1.933654 1.994240 1.951005 2.013867 2.882560    50
+##  Option 2 bis 1.913174 1.931947 1.965921 1.948160 1.987698 2.174862    50&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;J’ai pu le constater sur d’autres cas, mais je n’ai pas encore d’explications.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;group_by-par-une-variable-caractere&#34; class=&#34;section level1&#34;&gt;
@@ -61,8 +61,8 @@ flightstib %&amp;gt;% group_by(originfac) %&amp;gt;%
 &lt;p&gt;Le résultat de la fonction &lt;code&gt;microbenchmark&lt;/code&gt; appliquée à ces deux instructions donne :&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;## Unit: milliseconds
 ##                expr      min       lq     mean   median       uq      max
-##  group by character 14.52259 14.64889 15.83802 14.72028 15.51473 22.46997
-##     group by factor 11.82037 12.00611 13.06466 12.05020 12.27065 19.68014
+##  group by character 14.47708 14.68700 16.39592 14.83491 17.73283 28.22598
+##     group by factor 11.85962 12.04906 13.58219 12.18873 15.02009 20.33607
 ##  neval
 ##    100
 ##    100&lt;/code&gt;&lt;/pre&gt;
@@ -87,9 +87,9 @@ Hé bien, cette instruction n’est pas seulement présentée ainsi pour le plai
     summarise(var_mean = mean(rnorm(100))) 
 })&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Unit: milliseconds
-##    expr      min       lq     mean   median       uq       max neval
-##  dplyr1 1.512677 1.543964 1.604017 1.561600 1.581511  3.729066   100
-##  dplyr2 2.577067 2.634809 2.836776 2.653582 2.684019 12.101402   100&lt;/code&gt;&lt;/pre&gt;
+##    expr      min       lq     mean   median       uq      max neval
+##  dplyr1 1.500729 1.539983 1.663306 1.559325 1.604836  3.41504   100
+##  dplyr2 2.569103 2.630827 3.111344 2.654151 3.007146 12.93994   100&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Ca peut sembler secondaire pour cet exemple, mais sur des grosses tables la différence va vraiment peser. Regardons par exemple les différences de performance de deux instructions &lt;code&gt;dplyr&lt;/code&gt; agrégeant par heure une variable égale au pourcentage de retard à l’arrivée par rapport à la durée du vol en utilisant les données de &lt;code&gt;nycflights13&lt;/code&gt;:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;microbenchmark::microbenchmark(times=10L, dplyr_mutate = {
 flightstib %&amp;gt;% mutate(propor_delay = arr_delay / air_time) %&amp;gt;% 
@@ -101,11 +101,11 @@ summarise(propor_delay = mean(arr_delay / air_time)) -&amp;gt; output_dplyr
 })&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Unit: milliseconds
 ##               expr       min        lq      mean    median        uq
-##       dplyr_mutate  24.34275  24.43207  24.80583  24.54158  25.14545
-##  dplyr_sans_mutate 203.42608 205.53153 211.44138 208.27813 211.88545
+##       dplyr_mutate  24.70115  25.09766  25.76474  25.45464  26.51761
+##  dplyr_sans_mutate 201.96858 204.10476 212.08166 205.31536 218.19670
 ##        max neval
-##   25.83722    10
-##  239.99823    10&lt;/code&gt;&lt;/pre&gt;
+##   27.65141    10
+##  240.05682    10&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Les performances changent du tout au tout. Il semblerait donc que cela soit une très mauvais pratique d’essayer de “sauter” l’étape du &lt;code&gt;mutate()&lt;/code&gt;, sans doute parce que le &lt;code&gt;group_by&lt;/code&gt; peine à traiter le regroupement d’une opération de variables pas encore regroupées. C’est une propriété de &lt;code&gt;summarise&lt;/code&gt; qu’il est important d’avoir à l’esprit.&lt;/p&gt;
 &lt;/div&gt;
 </description>

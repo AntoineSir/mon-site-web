@@ -6,7 +6,7 @@ active = true
 date = 2016-04-20T00:00:00
 
 title = "Le blog"
-subtitle = "Articles sur les envies du moment"
+subtitle = "Quelques notes sur la programmation statistique"
 
 # Order that this section will appear in.
 weight = 6

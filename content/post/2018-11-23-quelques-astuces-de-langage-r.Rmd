@@ -1,5 +1,5 @@
 ---
-title: Quelques astuces du langage R
+title: Études de cas de certaines propriétés du langage R
 author: Antoine Sireyjol
 date: '2018-11-23'
 slug: quelques-particularités-de-dplyr
@@ -29,11 +29,11 @@ flightstib <- as_tibble(flights)
 df <- data.frame(id1 = c(1:100), idgpe = sample(50), replace = TRUE)
 ```
 
-On regroupe ici quelques aspects de R qui peuvent parfois sembler surprenants. Ils ont souvent des conséquences sur les vitesses d'exécution des instructions. On en propose pour l'instant trois, mais le post pourra être actualisé par la suite. Les points explorés dans cette note sont les suivants :  
+On regroupe ici quelques aspects de R qui peuvent parfois sembler surprenants. Ils ont souvent des conséquences sur les vitesses d'exécution des instructions. On en propose pour l'instant trois, mais le post pourra être actualisé par la suite. L'idée est de regrouper des situations auxquelles chacun pourrait être confronté. Les points explorés dans cette note sont les suivants :  
 
-* Pour base R : la question de [l'application d'une fonction apply aux colonnes d'un data.frame][Définition d'une fonction apply sur les colonnes d'un dataframe] 
-* Pour dplyr : la [création d'une variable directement à l'intérieur de summarise()][Ralentissement de la vitesse d'exécution pour une création de variable directement à l'intérieur de summarise()]
-* Encore sur dplyr : le temps d'exécution d'un [group_by par une variable caractère][group_by par une variable caractère]
+* Pour base R : la question de [l'application d'une fonction apply aux colonnes d'un data.frame][Définition d'une fonction apply sur les colonnes d'un dataframe].
+* Pour dplyr : la [création d'une variable directement à l'intérieur de summarise()][Ralentissement de la vitesse d'exécution pour une création de variable directement à l'intérieur de summarise()].
+* Encore sur dplyr : le temps d'exécution d'un [group_by par une variable caractère][group_by par une variable caractère].
 
 # Définition d'une fonction apply sur les colonnes d'un dataframe
 Imaginons que vous souhaitiez appliquer une fonction à un ensemble de variables d'un data.frame, définies dans une liste (par exemple pour faire une fonction qui appliquerait des statistiques sur un ensemble de variables choisies par l'utilisateur). On définit donc une telle liste de variables, dans la table `flights` du package `nycflights13`: 
