@@ -22,7 +22,7 @@ output:
 
 
 
-<p>On poste ici quelques aspects de R qui peuvent sembler surprenants. Ils ont souvent des conséquences sur les vitesses d’exécution des instructions. On en propose pour l’instant trois, mais le post pourra être actualisé par la suite. Les points explorés dans cette note sont les suivants :</p>
+<p>On poste ici quelques aspects de R qui peuvent parfois sembler surprenants. Ils ont souvent des conséquences sur les vitesses d’exécution des instructions. On en propose pour l’instant trois, mais le post pourra être actualisé par la suite. Les points explorés dans cette note sont les suivants :</p>
 <ul>
 <li>Pour dplyr : la <a href="#ralentissement-de-la-vitesse-dexecution-pour-une-creation-de-variable-directement-a-linterieur-de-summarise">création d’une variable directement à l’intérieur de summarise()</a></li>
 <li>Encore sur dplyr : le temps d’exécution d’un <a href="#group_by-par-une-variable-caractere">group_by par une variable caractère</a></li>
@@ -47,9 +47,9 @@ Hé bien, cette instruction n’est pas seulement présentée ainsi pour le plai
     summarise(var_mean = mean(rnorm(100))) 
 })</code></pre>
 <pre><code>## Unit: milliseconds
-##    expr      min       lq     mean   median       uq      max neval
-##  dplyr1 1.513245 1.557619 1.769535 1.574116 1.603414 14.55957   100
-##  dplyr2 2.598685 2.649031 2.772782 2.669796 2.713316  4.61312   100</code></pre>
+##    expr      min       lq     mean   median       uq       max neval
+##  dplyr1 1.526329 1.556481 1.644960 1.572978 1.590329  3.881529   100
+##  dplyr2 2.580481 2.643058 2.855999 2.660694 2.691129 15.445899   100</code></pre>
 <p>Ca peut sembler secondaire pour cet exemple, mais sur des grosses tables la différence va vraiment peser. Regardons par exemple les différences de performance de deux instructions <code>dplyr</code> agrégeant par heure une variable égale au pourcentage de retard à l’arrivée par rapport à la durée du vol en utilisant les données de <code>nycflights13</code>:</p>
 <pre class="r"><code>df &lt;- data.frame(id1 = c(1:100), idgpe = sample(50), replace = TRUE)
 microbenchmark::microbenchmark(times=10L, dplyr_mutate = {
@@ -61,12 +61,12 @@ flightstib %&gt;% group_by(time_hour) %&gt;%
 summarise(propor_delay = mean(arr_delay / air_time)) -&gt; output_dplyr 
 })</code></pre>
 <pre><code>## Unit: milliseconds
-##               expr       min        lq     mean    median        uq
-##       dplyr_mutate  24.66986  25.37301  30.2097  28.20835  31.55057
-##  dplyr_sans_mutate 206.16357 210.86316 237.4071 238.59307 257.07684
+##               expr       min        lq      mean    median        uq
+##       dplyr_mutate  24.45994  25.18357  26.91731  26.55573  28.89614
+##  dplyr_sans_mutate 205.23742 205.99916 212.24055 209.13516 215.57356
 ##        max neval
-##   50.80347    10
-##  282.86570    10</code></pre>
+##   29.79612    10
+##  227.89683    10</code></pre>
 <p>Les performances changent du tout au tout. Il semblerait donc que cela soit une très mauvais pratique d’essayer de “sauter” l’étape du <code>mutate()</code>, sans doute parce que le <code>group_by</code> peine à traiter le regroupement d’une opération de variables pas encore regroupées. C’est une propriété de <code>summarise</code> qu’il est important d’avoir à l’esprit.</p>
 </div>
 <div id="group_by-par-une-variable-caractere" class="section level1">
@@ -80,15 +80,38 @@ flightstib %&gt;% group_by(originfac) %&gt;%
   summarize(mean_delay = mean(arr_delay, na.rm = TRUE))</code></pre>
 <p>Le résultat de la fonction <code>microbenchmark</code> appliquée à ces deux instructions donne :</p>
 <pre><code>## Unit: milliseconds
-##                expr      min       lq     mean   median       uq      max
-##  group by character 14.83434 15.58186 17.66089 16.04892 17.67964 54.71231
-##     group by factor 12.15488 12.75961 14.56278 13.39221 14.89152 33.56671
+##                expr      min       lq    mean   median       uq      max
+##  group by character 14.56867 14.75754 16.2328 14.83491 17.19779 23.49966
+##     group by factor 11.88409 12.09429 13.2437 12.15488 12.28999 48.84934
 ##  neval
 ##    100
 ##    100</code></pre>
-<p>La différence est de l’ordre de 20% et peut peser sur de stables plus grosses. À noter qu’on ne compte pas dans la comparaison le temps de transposition d’une variable caractère en factor, puisque celui-ci peut être amorti sur de plus nombreuses instructions ou être appliqué au moment de l’import des bases.</p>
+<p>La différence est de l’ordre de 20% et peut peser encore sur des tables plus volumineuses. Elle est attendue car le type factor est plus léger et convient parfaitement pour des statistiques groupées. Mais cela semble jouer particulièrement pour les instructions sur dplyr, comme le suggère <a href="https://github.com/tidyverse/dplyr/issues/2198">cette discussion sur le github de dplyr</a>. À noter qu’on ne compte pas dans la comparaison le temps de transposition d’une variable caractère en factor, puisque celui-ci peut être appliqué une seule fois pour de nombreuses instructions ou être appliqué au moment de l’import des bases.</p>
 </div>
 <div id="definition-dune-fonction-apply-sur-les-colonnes-dun-dataframe" class="section level1">
 <h1>Définition d’une fonction apply sur les colonnes d’un dataframe</h1>
-<p>__ en cours d’écriture __</p>
+<p>Imaginons que vous souhaitiez appliquer une fonction à un ensemble de variables d’un data.frame, définies dans une liste (par exemple pour faire une fonction qui appliquerait des statistiques sur un ensemble de variables choisies par l’utilisateur). On définit donc une telle liste de variables, toujours dans notre table <code>flights</code>:</p>
+<pre class="r"><code>var &lt;- c(&quot;dep_delay&quot;, &quot;arr_delay&quot;, &quot;air_time&quot;)</code></pre>
+<p>On sort ensuite les moyennes de ces trois variables avec <code>sapply</code>. Cela peut s’écrire ainsi :</p>
+<p><strong>Option 1</strong></p>
+<pre class="r"><code>sapply(var, function(x) sum(flights[[x]], na.rm = TRUE))</code></pre>
+<pre><code>## dep_delay arr_delay  air_time 
+##   4152200   2257174  49326610</code></pre>
+<p>Mais aussi ainsi :</p>
+<p><strong>Option 2</strong></p>
+<pre class="r"><code>sapply(flights[var], function(x) sum(x, na.rm = TRUE))</code></pre>
+<pre><code>## dep_delay arr_delay  air_time 
+##   4152200   2257174  49326610</code></pre>
+<p>Cette dernière option pouvant se simplifier, puisqu’on n’a pas vraiment besoin de définir notre fonction à la volée dans ce cas :</p>
+<p><strong>Option 2 bis</strong></p>
+<pre class="r"><code>sapply(flights[var], sum, na.rm = TRUE)</code></pre>
+<pre><code>## dep_delay arr_delay  air_time 
+##   4152200   2257174  49326610</code></pre>
+<p>Ainsi, l’option 2 peut sembler à juste titre plus intuitive (ne serait-ce que parce qu’elle se simplifie avec l’option 2bis), pourtant l’option 1 est significativement plus rapide, comme le montre la fonction <code>microbenchmark</code> :</p>
+<pre><code>## Unit: milliseconds
+##          expr      min       lq     mean   median       uq      max neval
+##      Option 1 1.564445 1.570703 1.599534 1.574969 1.579805 2.700515    50
+##      Option 2 1.910898 1.917156 1.949583 1.921138 1.945031 2.795520    50
+##  Option 2 bis 1.907485 1.916018 1.933335 1.922560 1.937067 2.156658    50</code></pre>
+<p>J’ai pu le constater sur d’autres cas, mais je n’ai pas encore d’explications.</p>
 </div>

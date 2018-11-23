@@ -16,7 +16,7 @@
       <pubDate>Fri, 23 Nov 2018 00:00:00 +0000</pubDate>
       
       <guid>/post/quelques-particularit%C3%A9s-de-dplyr/</guid>
-      <description>&lt;p&gt;On poste ici quelques aspects de R qui peuvent sembler surprenants. Ils ont souvent des conséquences sur les vitesses d’exécution des instructions. On en propose pour l’instant trois, mais le post pourra être actualisé par la suite. Les points explorés dans cette note sont les suivants :&lt;/p&gt;
+      <description>&lt;p&gt;On poste ici quelques aspects de R qui peuvent parfois sembler surprenants. Ils ont souvent des conséquences sur les vitesses d’exécution des instructions. On en propose pour l’instant trois, mais le post pourra être actualisé par la suite. Les points explorés dans cette note sont les suivants :&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Pour dplyr : la &lt;a href=&#34;#ralentissement-de-la-vitesse-dexecution-pour-une-creation-de-variable-directement-a-linterieur-de-summarise&#34;&gt;création d’une variable directement à l’intérieur de summarise()&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;Encore sur dplyr : le temps d’exécution d’un &lt;a href=&#34;#group_by-par-une-variable-caractere&#34;&gt;group_by par une variable caractère&lt;/a&gt;&lt;/li&gt;
@@ -41,9 +41,9 @@ Hé bien, cette instruction n’est pas seulement présentée ainsi pour le plai
     summarise(var_mean = mean(rnorm(100))) 
 })&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Unit: milliseconds
-##    expr      min       lq     mean   median       uq      max neval
-##  dplyr1 1.513245 1.557619 1.769535 1.574116 1.603414 14.55957   100
-##  dplyr2 2.598685 2.649031 2.772782 2.669796 2.713316  4.61312   100&lt;/code&gt;&lt;/pre&gt;
+##    expr      min       lq     mean   median       uq       max neval
+##  dplyr1 1.526329 1.556481 1.644960 1.572978 1.590329  3.881529   100
+##  dplyr2 2.580481 2.643058 2.855999 2.660694 2.691129 15.445899   100&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Ca peut sembler secondaire pour cet exemple, mais sur des grosses tables la différence va vraiment peser. Regardons par exemple les différences de performance de deux instructions &lt;code&gt;dplyr&lt;/code&gt; agrégeant par heure une variable égale au pourcentage de retard à l’arrivée par rapport à la durée du vol en utilisant les données de &lt;code&gt;nycflights13&lt;/code&gt;:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;df &amp;lt;- data.frame(id1 = c(1:100), idgpe = sample(50), replace = TRUE)
 microbenchmark::microbenchmark(times=10L, dplyr_mutate = {
@@ -55,12 +55,12 @@ flightstib %&amp;gt;% group_by(time_hour) %&amp;gt;%
 summarise(propor_delay = mean(arr_delay / air_time)) -&amp;gt; output_dplyr 
 })&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Unit: milliseconds
-##               expr       min        lq     mean    median        uq
-##       dplyr_mutate  24.66986  25.37301  30.2097  28.20835  31.55057
-##  dplyr_sans_mutate 206.16357 210.86316 237.4071 238.59307 257.07684
+##               expr       min        lq      mean    median        uq
+##       dplyr_mutate  24.45994  25.18357  26.91731  26.55573  28.89614
+##  dplyr_sans_mutate 205.23742 205.99916 212.24055 209.13516 215.57356
 ##        max neval
-##   50.80347    10
-##  282.86570    10&lt;/code&gt;&lt;/pre&gt;
+##   29.79612    10
+##  227.89683    10&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Les performances changent du tout au tout. Il semblerait donc que cela soit une très mauvais pratique d’essayer de “sauter” l’étape du &lt;code&gt;mutate()&lt;/code&gt;, sans doute parce que le &lt;code&gt;group_by&lt;/code&gt; peine à traiter le regroupement d’une opération de variables pas encore regroupées. C’est une propriété de &lt;code&gt;summarise&lt;/code&gt; qu’il est important d’avoir à l’esprit.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;group_by-par-une-variable-caractere&#34; class=&#34;section level1&#34;&gt;
@@ -74,17 +74,40 @@ flightstib %&amp;gt;% group_by(originfac) %&amp;gt;%
   summarize(mean_delay = mean(arr_delay, na.rm = TRUE))&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Le résultat de la fonction &lt;code&gt;microbenchmark&lt;/code&gt; appliquée à ces deux instructions donne :&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;## Unit: milliseconds
-##                expr      min       lq     mean   median       uq      max
-##  group by character 14.83434 15.58186 17.66089 16.04892 17.67964 54.71231
-##     group by factor 12.15488 12.75961 14.56278 13.39221 14.89152 33.56671
+##                expr      min       lq    mean   median       uq      max
+##  group by character 14.56867 14.75754 16.2328 14.83491 17.19779 23.49966
+##     group by factor 11.88409 12.09429 13.2437 12.15488 12.28999 48.84934
 ##  neval
 ##    100
 ##    100&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;La différence est de l’ordre de 20% et peut peser sur de stables plus grosses. À noter qu’on ne compte pas dans la comparaison le temps de transposition d’une variable caractère en factor, puisque celui-ci peut être amorti sur de plus nombreuses instructions ou être appliqué au moment de l’import des bases.&lt;/p&gt;
+&lt;p&gt;La différence est de l’ordre de 20% et peut peser encore sur des tables plus volumineuses. Elle est attendue car le type factor est plus léger et convient parfaitement pour des statistiques groupées. Mais cela semble jouer particulièrement pour les instructions sur dplyr, comme le suggère &lt;a href=&#34;https://github.com/tidyverse/dplyr/issues/2198&#34;&gt;cette discussion sur le github de dplyr&lt;/a&gt;. À noter qu’on ne compte pas dans la comparaison le temps de transposition d’une variable caractère en factor, puisque celui-ci peut être appliqué une seule fois pour de nombreuses instructions ou être appliqué au moment de l’import des bases.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;definition-dune-fonction-apply-sur-les-colonnes-dun-dataframe&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;Définition d’une fonction apply sur les colonnes d’un dataframe&lt;/h1&gt;
-&lt;p&gt;__ en cours d’écriture __&lt;/p&gt;
+&lt;p&gt;Imaginons que vous souhaitiez appliquer une fonction à un ensemble de variables d’un data.frame, définies dans une liste (par exemple pour faire une fonction qui appliquerait des statistiques sur un ensemble de variables choisies par l’utilisateur). On définit donc une telle liste de variables, toujours dans notre table &lt;code&gt;flights&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;var &amp;lt;- c(&amp;quot;dep_delay&amp;quot;, &amp;quot;arr_delay&amp;quot;, &amp;quot;air_time&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;On sort ensuite les moyennes de ces trois variables avec &lt;code&gt;sapply&lt;/code&gt;. Cela peut s’écrire ainsi :&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Option 1&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sapply(var, function(x) sum(flights[[x]], na.rm = TRUE))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## dep_delay arr_delay  air_time 
+##   4152200   2257174  49326610&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Mais aussi ainsi :&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Option 2&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sapply(flights[var], function(x) sum(x, na.rm = TRUE))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## dep_delay arr_delay  air_time 
+##   4152200   2257174  49326610&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Cette dernière option pouvant se simplifier, puisqu’on n’a pas vraiment besoin de définir notre fonction à la volée dans ce cas :&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Option 2 bis&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sapply(flights[var], sum, na.rm = TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## dep_delay arr_delay  air_time 
+##   4152200   2257174  49326610&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Ainsi, l’option 2 peut sembler à juste titre plus intuitive (ne serait-ce que parce qu’elle se simplifie avec l’option 2bis), pourtant l’option 1 est significativement plus rapide, comme le montre la fonction &lt;code&gt;microbenchmark&lt;/code&gt; :&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;## Unit: milliseconds
+##          expr      min       lq     mean   median       uq      max neval
+##      Option 1 1.564445 1.570703 1.599534 1.574969 1.579805 2.700515    50
+##      Option 2 1.910898 1.917156 1.949583 1.921138 1.945031 2.795520    50
+##  Option 2 bis 1.907485 1.916018 1.933335 1.922560 1.937067 2.156658    50&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;J’ai pu le constater sur d’autres cas, mais je n’ai pas encore d’explications.&lt;/p&gt;
 &lt;/div&gt;
 </description>
     </item>
