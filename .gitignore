@@ -36,8 +36,3 @@ vignettes/*.pdf
 rsconnect/
 .Rproj.user
 
-# Posts à sortir au fur et à mesure
-content/post/*vitesses-d-agrégation-de-data-table-et-dplyr.Rmd
-content/post/*vitesses-d-agrégation-de-data-table-et-dplyr.html
-content/post/*quelques-astuces-de-langage-r.Rmd
-content/post/*quelques-astuces-de-langage-r.html
