@@ -14,10 +14,10 @@
     
     <item>
       <title>Études de cas de certaines propriétés du langage R</title>
-      <link>/post/quelques-particularit%C3%A9s-de-dplyr/</link>
+      <link>/posts-pour-plus-tard/quelques-particularit%C3%A9s-de-dplyr/</link>
       <pubDate>Fri, 23 Nov 2018 00:00:00 +0000</pubDate>
       
-      <guid>/post/quelques-particularit%C3%A9s-de-dplyr/</guid>
+      <guid>/posts-pour-plus-tard/quelques-particularit%C3%A9s-de-dplyr/</guid>
       <description>On regroupe ici quelques aspects de R qui peuvent parfois sembler surprenants. Ils ont souvent des conséquences sur les vitesses d’exécution des instructions. On en propose pour l’instant trois, mais le post pourra être actualisé par la suite. L’idée est de regrouper des situations auxquelles chacun pourrait être confronté. Les points explorés dans cette note sont les suivants :
 Pour base R : la question de l’application d’une fonction apply aux colonnes d’un data.</description>
     </item>

@@ -1,67 +1,27 @@
+---
+title: Vitesses d'agrégation de data.table et dplyr
+author: Antoine Sireyjol
+date: '2018-11-15'
+slug: vitesses-d-agrégation-de-data-table-et-dplyr
+categories:
+  - R
+tags:
+  - benchmark
+  - data.table
+  - dplyr
+  - tidyverse
+  - microbenchmark
+header:
+  caption: ''
+  image: ''
+output:
+  blogdown::html_page:
+    number_sections: no
+    toc: no
+---
 
 
 
-<table>
-<tbody>
-<tr class="odd">
-<td>itle: Vitesses d’agrégation de data.table et dplyr</td>
-</tr>
-<tr class="even">
-<td>uthor: Antoine Sireyjol</td>
-</tr>
-<tr class="odd">
-<td>ate: ‘2018-11-15’</td>
-</tr>
-<tr class="even">
-<td>lug: vitesses-d-agrégation-de-data-table-et-dplyr</td>
-</tr>
-<tr class="odd">
-<td>ategories:</td>
-</tr>
-<tr class="even">
-<td>- R</td>
-</tr>
-<tr class="odd">
-<td>ags:</td>
-</tr>
-<tr class="even">
-<td>- benchmark</td>
-</tr>
-<tr class="odd">
-<td>- data.table</td>
-</tr>
-<tr class="even">
-<td>- dplyr</td>
-</tr>
-<tr class="odd">
-<td>- tidyverse</td>
-</tr>
-<tr class="even">
-<td>- microbenchmark</td>
-</tr>
-<tr class="odd">
-<td>eader:</td>
-</tr>
-<tr class="even">
-<td>caption: ’’</td>
-</tr>
-<tr class="odd">
-<td>image: ’’</td>
-</tr>
-<tr class="even">
-<td>utput:</td>
-</tr>
-<tr class="odd">
-<td>blogdown::html_page:</td>
-</tr>
-<tr class="even">
-<td>number_sections: no</td>
-</tr>
-<tr class="odd">
-<td>toc: no</td>
-</tr>
-</tbody>
-</table>
 <p>Comme on a pu le voir par exemple dans le <a href="https://antoinesir.netlify.com/post/comparaisons-dplyr-data-table-base-r/">précédent post</a>, l’aggrégation est souvent utilisée en analyse de données. Il est donc intéressant de comparer les performances de <code>data.table</code> et <code>dplyr</code> de ce point de vue. Des benchamrks ont déjà été faits, et on peut les trouver cette <a href="https://stackoverflow.com/questions/21435339/data-table-vs-dplyr-can-one-do-something-well-the-other-cant-or-does-poorly">discussion sur stackoverflow</a> évoquée plus haut. On propose ici quelques tests comparatifs complémentaires sur un cas de groupement d’une base fictive de <code>nbrow</code> lignes appartenant à <code>nbgpe</code> groupes. La fonction est la suivante :</p>
 <pre class="r"><code>library(tidyverse)
 library(data.table)

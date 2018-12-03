@@ -100,7 +100,7 @@
   <meta property="og:image" content="/img/icon-192.png">
   <meta property="og:locale" content="fr">
   
-  <meta property="article:published_time" content="2018-10-31T00:00:00&#43;00:00">
+  <meta property="article:published_time" content="2018-12-03T00:00:00&#43;00:00">
   
   <meta property="article:modified_time" content="2018-12-03T17:10:47&#43;01:00">
   
@@ -207,7 +207,7 @@
     
         Dernière mise à jour le
     
-    <meta content="2018-10-31 00:00:00 &#43;0000 UTC" itemprop="datePublished">
+    <meta content="2018-12-03 00:00:00 &#43;0000 UTC" itemprop="datePublished">
     <time datetime="2018-12-03 17:10:47 &#43;0100 CET" itemprop="dateModified">
       Dec 3, 2018
     </time>
@@ -346,9 +346,9 @@ dt[, list(var_mean = mean(rnorm(100))), by = list(idgpe = idgpe)] -&gt; output_d
 <h2>Vitesses d’exécution</h2>
 <p>Voilà donc pour les présentations! Allez, on montre le résultat d’un petit <code>microbenchmark</code> des deux juste pour voir :</p>
 <pre><code>## Unit: microseconds
-##        expr      min       lq     mean   median       uq      max neval
-##       dplyr 1756.161 1823.289 2007.808 1894.116 2228.338 4794.026   100
-##  data.table  930.703  980.765 1075.474 1032.249 1105.636 3648.285   100</code></pre>
+##        expr      min        lq     mean   median       uq      max neval
+##       dplyr 1743.075 1811.3425 2036.435 1898.951 2205.298 5001.102   100
+##  data.table  943.218  976.4985 1069.574 1097.671 1142.899 1318.116   100</code></pre>
 <p>Sur cet exemple, on voit un avantage clair à data.table! Mais on est sur une toute petite table en entrée. On va essayer de se rapprocher de cas plus concrets en s’intéressant à un exemple sur des bases plus importantes.</p>
 </div>
 </div>
@@ -401,10 +401,10 @@ output_base &lt;- merge(weather, flights_time_hour, by = c(&quot;time_hour&quot;
 <h2>Comparaisons des vitesses d’exécution</h2>
 <p>Je vous laisse juger de la lisibilité de chacune de ces instructions, qui font toutes la même chose, car c’est finalement assez subjectif. On donne ici les résultats d’un <code>microbenchmark</code> de ces instructions :</p>
 <pre><code>## Unit: milliseconds
-##   expr        min         lq       mean     median         uq        max
-##   Base 2781.76746 2914.69684 3580.11415 3121.11271 3486.85384 5644.27217
-##  DplyR   75.43408   75.66675  101.01052   89.94245  130.29657  140.98144
-##     DT   41.27288   44.13325   57.70682   56.19995   72.06114   77.42917
+##   expr        min         lq       mean     median        uq        max
+##   Base 2810.05773 3261.40551 4862.29724 5548.14534 5674.0256 5805.31376
+##  DplyR   81.60880   90.10174  115.37081  116.18614  133.2491  168.95995
+##     DT   42.15124   45.70907   60.82041   59.20738   77.0793   77.89054
 ##  neval
 ##     10
 ##     10
@@ -438,6 +438,18 @@ output_base &lt;- merge(weather, flights_time_hour, by = c(&quot;time_hour&quot;
 
 
     
+    
+    <div class="article-widget">
+      <div class="hr-light"></div>
+      <h3>Sur le même sujet</h3>
+      <ul>
+        
+        <li><a href="/posts-pour-plus-tard/vitesses-d-agr%C3%A9gation-de-data-table-et-dplyr/">Vitesses d&#39;agrégation de data.table et dplyr</a></li>
+        
+        <li><a href="/posts-pour-plus-tard/quelques-particularit%C3%A9s-de-dplyr/">Études de cas de certaines propriétés du langage R</a></li>
+        
+      </ul>
+    </div>
     
 
     

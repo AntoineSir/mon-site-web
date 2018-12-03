@@ -7,7 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>fr</language>
     <copyright>&amp;copy; 2018</copyright>
-    <lastBuildDate>Wed, 31 Oct 2018 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 03 Dec 2018 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/data.table/index.xml" rel="self" type="application/rss+xml" />
     
@@ -15,11 +15,20 @@
     <item>
       <title>Comparaisons dplyr - data.table - base R</title>
       <link>/post/comparaisons-dplyr-data-table-base-r/</link>
-      <pubDate>Wed, 31 Oct 2018 00:00:00 +0000</pubDate>
+      <pubDate>Mon, 03 Dec 2018 00:00:00 +0000</pubDate>
       
       <guid>/post/comparaisons-dplyr-data-table-base-r/</guid>
       <description>La richesse de R, alimentée par une communauté de développeurs très active, rend le choix d’une méthode adaptée à une problématique donnée difficile, et c’est tant mieux. Vous trouverez ici une modeste participation au débat qui oppose les deux packages d’analyse des données les plus en vue dans la communauté R : data.table et dplyr. L’article se présente en deux parties :
 Un rappel sur les syntaxes de dplyr et data.</description>
+    </item>
+    
+    <item>
+      <title>Vitesses d&#39;agrégation de data.table et dplyr</title>
+      <link>/posts-pour-plus-tard/vitesses-d-agr%C3%A9gation-de-data-table-et-dplyr/</link>
+      <pubDate>Thu, 15 Nov 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/posts-pour-plus-tard/vitesses-d-agr%C3%A9gation-de-data-table-et-dplyr/</guid>
+      <description>Comme on a pu le voir par exemple dans le précédent post, l’aggrégation est souvent utilisée en analyse de données. Il est donc intéressant de comparer les performances de data.table et dplyr de ce point de vue. Des benchamrks ont déjà été faits, et on peut les trouver cette discussion sur stackoverflow évoquée plus haut. On propose ici quelques tests comparatifs complémentaires sur un cas de groupement d’une base fictive de nbrow lignes appartenant à nbgpe groupes.</description>
     </item>
     
   </channel>
