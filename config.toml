@@ -264,10 +264,10 @@ enableGitInfo = true
   # Align the main menu to the right of the page? (true/false)
   align_right = true
 
-[[menu.main]]
-  name = "Accueil"
-  url = "#hero"
-  weight = 1
+#[[menu.main]]
+#  name = "Accueil"
+#  url = "#hero"
+#  weight = 1
   
 [[menu.main]]
   name = "Le blog"
