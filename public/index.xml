@@ -11,11 +11,11 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
-      <title>Comparaisons dplyr - data.table - base R</title>
-      <link>/post/comparaisons-dplyr-data-table-base-r/</link>
+      <title>comparaisons base R - dplyr - data.table</title>
+      <link>/post/comparaisons-base-r-dplyr-data-table/</link>
       <pubDate>Mon, 03 Dec 2018 00:00:00 +0000</pubDate>
       
-      <guid>/post/comparaisons-dplyr-data-table-base-r/</guid>
+      <guid>/post/comparaisons-base-r-dplyr-data-table/</guid>
       <description>&lt;p&gt;La richesse de R, alimentée par une communauté de développeurs très active, rend le choix d’une méthode adaptée à une problématique donnée difficile, et c’est tant mieux. Vous trouverez ici une modeste participation au débat qui oppose les deux packages d’analyse des données les plus en vue dans la communauté R : &lt;code&gt;data.table&lt;/code&gt; et &lt;code&gt;dplyr&lt;/code&gt;. L’article se présente en deux parties :&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#rappels-sur-dplyr-et-data.table&#34;&gt;Un rappel sur les syntaxes de dplyr et data.table&lt;/a&gt;, que vous pouvez passer si vous connaissez déjà les packages.&lt;/li&gt;
@@ -23,7 +23,7 @@
 &lt;/ul&gt;
 &lt;div id=&#34;rappels-sur-dplyr-et-data.table&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;Rappels sur dplyr et data.table&lt;/h1&gt;
-&lt;p&gt;Si vous connaissez déjà la syntaxe de ces packages, vous pouvez directement aller à la partie &lt;a href=&#34;#comparaisons-sur-une-etude-de-cas-simple&#34;&gt;Comparaisons sur une étude de cas simple&lt;/a&gt;. On rappelle ici les principales caractéristiques de ces packages mais pour se former à leur utilisation on peut se référer à l’excellent &lt;a href=&#34;https://teaching.slmc.fr/perf/presentation_handout.pdf&#34;&gt;cours de perfectionnement de Martin Chevalier&lt;/a&gt;. Pour une exploration de ce qu’englobe le &lt;code&gt;tidyverse&lt;/code&gt; et notamment une présentation des commandes de &lt;code&gt;dplyr&lt;/code&gt;, vous pouvez jeter un oeil à &lt;a href=&#34;https://juba.github.io/tidyverse/index.html&#34;&gt;l’introduction à R et au tidyverse&lt;/a&gt; de J. Barnier. Enfin pour data.table, on trouve des informations utiles sur le cours &lt;a href=&#34;http://larmarange.github.io/analyse-R/manipulations-avancees-avec-data-table.html&#34;&gt;Manipulations avancée avec data.table&lt;/a&gt; de J. Larmarange.&lt;/p&gt;
+&lt;p&gt;Si vous connaissez déjà la syntaxe de ces packages, vous pouvez directement aller à la partie &lt;a href=&#34;#comparaisons-sur-une-etude-de-cas-simple&#34;&gt;Comparaisons sur une étude de cas simple&lt;/a&gt;. On rappelle ici les principales caractéristiques de ces packages mais pour se former à leur utilisation on peut se référer au &lt;a href=&#34;https://teaching.slmc.fr/perf/presentation_handout.pdf&#34;&gt;cours de perfectionnement de Martin Chevalier&lt;/a&gt;. Pour une exploration de ce qu’englobe le &lt;code&gt;tidyverse&lt;/code&gt; et notamment une présentation des commandes de &lt;code&gt;dplyr&lt;/code&gt;, vous pouvez jeter un oeil à &lt;a href=&#34;https://juba.github.io/tidyverse/index.html&#34;&gt;l’introduction à R et au tidyverse&lt;/a&gt; de J. Barnier. Enfin pour data.table, on trouve des informations utiles sur le cours &lt;a href=&#34;http://larmarange.github.io/analyse-R/manipulations-avancees-avec-data-table.html&#34;&gt;Manipulations avancée avec data.table&lt;/a&gt; de J. Larmarange.&lt;/p&gt;
 &lt;div id=&#34;dplyr-et-le-tidyverse&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;dplyr et le tidyverse&lt;/h2&gt;
 &lt;p&gt;Le &lt;code&gt;tidyverse&lt;/code&gt; (contraction de “tidy” et “universe”) est un concept initié par Hadley Wickham, chef statisticien de RStudio. Il regroupe un ensemble de packages utiles au traitement statistique et au nettoyage de bases de données. On va s’intéresser ici presque seulement au package &lt;code&gt;dplyr&lt;/code&gt; (dont les instructions seront appliquées aux &lt;code&gt;tibbles&lt;/code&gt;, un format de data.frame issu du &lt;code&gt;tidyverse&lt;/code&gt;), mais vous pouvez parcourir les packages proposés dans le tidyverse sur &lt;a href=&#34;https://www.tidyverse.org/&#34;&gt;le site officiel&lt;/a&gt;.&lt;br /&gt;
@@ -37,7 +37,7 @@
 &lt;li&gt;&lt;code&gt;group_by(data, var)&lt;/code&gt; regroupe une table par une variable&lt;/li&gt;
 &lt;li&gt;et bien d’autres…&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;Un aspect pratique de ce langage est que toutes ces opérations peuvent être chaînées à l’aide de l’opérateur &lt;code&gt;%&amp;gt;%&lt;/code&gt; (“pipe”) dont la syntaxe est la suivante : &lt;code&gt;data %&amp;gt;% fonction(...)&lt;/code&gt; est équivalent à &lt;code&gt;fonction(data, ...)&lt;/code&gt;. Cette syntaxe permet de chaîner un grand nombre d’opérations sur une base commune, en limitant le nombre de fois où l’on écrit des tables intermédiaires tout en conservant une grande lisibilité du code. Ce petit exemple vous en convaincra peut-être :&lt;/p&gt;
+&lt;p&gt;Un aspect pratique de ce langage est que toutes ces opérations peuvent être chaînées à l’aide de l’opérateur &lt;code&gt;%&amp;gt;%&lt;/code&gt; (“pipe” en anglais) dont la syntaxe est la suivante : &lt;code&gt;data %&amp;gt;% fonction(...)&lt;/code&gt; est équivalent à &lt;code&gt;fonction(data, ...)&lt;/code&gt;. Cette syntaxe permet de chaîner un grand nombre d’opérations sur une base commune, en limitant le nombre de fois où l’on écrit des tables intermédiaires tout en conservant une grande lisibilité du code. Ce petit exemple vous en convaincra peut-être :&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse) # On aurait aussi pu charger seulement le package dplyr
 # on crée un data frame avec 100 lignes, chaque individu appartenant à un des 50 groupes
 df &amp;lt;- data.frame(id1 = c(1:100), idgpe = sample(50), replace = TRUE)
@@ -55,7 +55,7 @@ df %&amp;gt;% as_tibble() %&amp;gt;% mutate(var = rnorm(100)) %&amp;gt;%
 &lt;/li&gt;
 &lt;li&gt;on calcule la moyenne de &lt;code&gt;var&lt;/code&gt; avec &lt;code&gt;summarise&lt;/code&gt;, que l’on stocke dans &lt;code&gt;var_mean&lt;/code&gt;. Comme cette instruction suit un group_by, elle est réalisée à l’intérieur de chaque groupe (défini par &lt;code&gt;idgpe&lt;/code&gt;), sinon elle aurait été réalisé sur l’ensemble de la table.&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;Tout cela est stocké dans une table output_tibble, qui est (si vous avez suivi) un tibble agrégé par &lt;code&gt;idgpe&lt;/code&gt; et qui a donc 50 lignes. L’intérêt de ce chaînage est qu’il permet une économie de code et d’écriture d’éventuelles tables intermédiaires.&lt;/p&gt;
+&lt;p&gt;Tout cela est stocké dans une table output_tibble, qui est ainsi un tibble agrégé par &lt;code&gt;idgpe&lt;/code&gt; et qui a donc 50 lignes. L’intérêt de ce chaînage est qu’il permet une économie de code et d’écriture d’éventuelles tables intermédiaires.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;data.table&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Data.table&lt;/h2&gt;
@@ -75,9 +75,9 @@ dt[, list(var_mean = mean(rnorm(100))), by = list(idgpe = idgpe)] -&amp;gt; outp
 &lt;h2&gt;Vitesses d’exécution&lt;/h2&gt;
 &lt;p&gt;Voilà donc pour les présentations! Allez, on montre le résultat d’un petit &lt;code&gt;microbenchmark&lt;/code&gt; des deux juste pour voir :&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;## Unit: microseconds
-##        expr      min        lq     mean   median       uq      max neval
-##       dplyr 1743.075 1811.3425 2036.435 1898.951 2205.298 5001.102   100
-##  data.table  943.218  976.4985 1069.574 1097.671 1142.899 1318.116   100&lt;/code&gt;&lt;/pre&gt;
+##        expr      min       lq     mean   median       uq      max neval
+##       dplyr 1796.551 1949.014 2454.193 2224.071 2473.244 6044.443   100
+##  data.table  939.237 1047.610 1274.903 1156.552 1244.160 2366.009   100&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Sur cet exemple, on voit un avantage clair à data.table! Mais on est sur une toute petite table en entrée. On va essayer de se rapprocher de cas plus concrets en s’intéressant à un exemple sur des bases plus importantes.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -92,7 +92,7 @@ dt[, list(var_mean = mean(rnorm(100))), by = list(idgpe = idgpe)] -&amp;gt; outp
 &lt;p&gt;Pour ce deuxième point, on va essayer de s’en convaincre ensemble avec ce petit exemple.&lt;/p&gt;
 &lt;div id=&#34;notre-etude-de-cas&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Notre étude de cas&lt;/h2&gt;
-&lt;p&gt;Pour cet exemple, on utilise les données du package de Hadley Wickham (oui, le même qui est à l’origine du &lt;code&gt;tidyverse&lt;/code&gt;, mais ça n’entamera pas notre indépendance) que l’on trouve dans &lt;code&gt;nycflights13&lt;/code&gt;. En particulier, la base &lt;code&gt;flights&lt;/code&gt; donne toutes les heures de départ et d’arrivée selon les aéroports de départ et d’arrivée ainsi que les retards au départ et à l’arrivée. La base &lt;code&gt;weather&lt;/code&gt; donne elle des indications météo, heure par heure, dans chaque aéroport. Tout bon statisticien qui se respecte devrait commencer à se dire qu’il y a quelque chose à faire pour tenter d’expliquer les retards des avions (&lt;em&gt;spoiler alert&lt;/em&gt; : on ne va pas le faire).&lt;br /&gt;
+&lt;p&gt;Pour cet exemple, on utilise les données du package de Hadley Wickham que l’on trouve dans &lt;code&gt;nycflights13&lt;/code&gt;. En particulier, la base &lt;code&gt;flights&lt;/code&gt; donne toutes les heures de départ et d’arrivée selon les aéroports de départ et d’arrivée ainsi que les retards au départ et à l’arrivée. La base &lt;code&gt;weather&lt;/code&gt; donne elle des indications météo, heure par heure, dans chaque aéroport. Tout bon statisticien qui se respecte devrait commencer à se dire qu’il y a quelque chose à faire pour tenter d’expliquer les retards des avions (&lt;em&gt;spoiler alert&lt;/em&gt; : on ne va pas le faire).&lt;br /&gt;
 Commençons par charger nos packages (n’oubliez pas de faire &lt;code&gt;install.packages(&amp;quot;nom_pck&amp;quot;)&lt;/code&gt; avant si vous ne l’avez jamais fait) et nos données :&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Les packages nécessaires
 library(tidyverse) # Regroupe différents packages, voir https://www.tidyverse.org/ 
@@ -107,7 +107,7 @@ weatherdt &amp;lt;- as.data.table(weather)&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;moyenne-des-retards-et-fusion-des-tables&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Moyenne des retards et fusion des tables&lt;/h2&gt;
-&lt;p&gt;Un rapide examen des bases vous montre que la première étape avant toute analyse est comme souvent de regrouper les éléments de flights par heure et aéroport de départ (ou aurait aussi pu prendre aéroport d’arrivée) pour pouvoir les fusionner avec la table weather, qui donnent les indications météo minute par minute. On écrit cette instruction de manières différentes :&lt;/p&gt;
+&lt;p&gt;Un rapide examen des bases vous montre que la première étape avant toute analyse est comme souvent de regrouper les éléments de flights par heure et aéroport de départ pour pouvoir les fusionner avec la table weather, qui donnent les indications météo minute par minute. On écrit cette instruction de 3 manières différentes :&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;En base R&lt;/strong&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;flights_time_hour &amp;lt;- aggregate.data.frame(list(arr_delay = flights$arr_delay, 
                                     dep_delay = flights$dep_delay), 
@@ -130,10 +130,10 @@ output_base &amp;lt;- merge(weather, flights_time_hour, by = c(&amp;quot;time_ho
 &lt;h2&gt;Comparaisons des vitesses d’exécution&lt;/h2&gt;
 &lt;p&gt;Je vous laisse juger de la lisibilité de chacune de ces instructions, qui font toutes la même chose, car c’est finalement assez subjectif. On donne ici les résultats d’un &lt;code&gt;microbenchmark&lt;/code&gt; de ces instructions :&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;## Unit: milliseconds
-##   expr        min         lq       mean     median        uq        max
-##   Base 2810.05773 3261.40551 4862.29724 5548.14534 5674.0256 5805.31376
-##  DplyR   81.60880   90.10174  115.37081  116.18614  133.2491  168.95995
-##     DT   42.15124   45.70907   60.82041   59.20738   77.0793   77.89054
+##   expr        min         lq       mean     median         uq        max
+##   Base 2857.24932 3036.47089 3102.50857 3050.57051 3195.90594 3469.92940
+##  DplyR   65.73680   74.66665   88.49024   81.14259   84.56417  152.50143
+##     DT   38.05866   44.98431   62.20429   60.05076   74.69907   96.40332
 ##  neval
 ##     10
 ##     10
@@ -371,6 +371,15 @@ test_group_by &amp;lt;- function(nbrow, nbgpe){
       <guid>/publication/clothing-search/</guid>
       <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
 </description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>/post/2018-10-31-comparaisons-dplyr-data-table-base-r/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/post/2018-10-31-comparaisons-dplyr-data-table-base-r/</guid>
+      <description></description>
     </item>
     
     <item>

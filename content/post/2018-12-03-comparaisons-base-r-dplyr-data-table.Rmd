@@ -1,7 +1,8 @@
 ---
-title: Comparaisons dplyr - data.table - base R
+title: comparaisons base R - dplyr - data.table
 author: Antoine Sireyjol
 date: '2018-12-03'
+slug: comparaisons-base-r-dplyr-data-table
 categories:
   - R
 tags:
@@ -11,15 +12,12 @@ tags:
   - dplyr
   - microbenchmark
   - tidyverse
-slug: comparaisons-dplyr-data-table-base-r
+  - R
 header:
   caption: ''
   image: ''
-output:
-  blogdown::html_page:
-    number_sections: no
-    toc: no
 ---
+
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(collapse = TRUE)
@@ -31,7 +29,7 @@ La richesse de R, alimentée par une communauté de développeurs très active, 
 * [Une comparaison de l'efficacité des deux packages][Comparaisons sur une étude de cas simple] sur une étude de cas à partir des données du package `nycflights13`
 
 # Rappels sur dplyr et data.table
-Si vous connaissez déjà la syntaxe de ces packages, vous pouvez directement aller à la partie [Comparaisons sur une étude de cas simple ][Comparaisons sur une étude de cas simple]. On rappelle ici les principales caractéristiques de ces packages mais pour se former à leur utilisation on peut se référer à l'excellent [cours de perfectionnement de Martin Chevalier](https://teaching.slmc.fr/perf/presentation_handout.pdf). Pour une exploration de ce qu'englobe le `tidyverse` et notamment une présentation des commandes de `dplyr`, vous pouvez jeter un oeil à [l'introduction à R et au tidyverse](https://juba.github.io/tidyverse/index.html) de J. Barnier. Enfin pour data.table, on trouve des informations utiles sur le cours [Manipulations avancée avec data.table](http://larmarange.github.io/analyse-R/manipulations-avancees-avec-data-table.html) de J. Larmarange.
+Si vous connaissez déjà la syntaxe de ces packages, vous pouvez directement aller à la partie [Comparaisons sur une étude de cas simple ][Comparaisons sur une étude de cas simple]. On rappelle ici les principales caractéristiques de ces packages mais pour se former à leur utilisation on peut se référer au [cours de perfectionnement de Martin Chevalier](https://teaching.slmc.fr/perf/presentation_handout.pdf). Pour une exploration de ce qu'englobe le `tidyverse` et notamment une présentation des commandes de `dplyr`, vous pouvez jeter un oeil à [l'introduction à R et au tidyverse](https://juba.github.io/tidyverse/index.html) de J. Barnier. Enfin pour data.table, on trouve des informations utiles sur le cours [Manipulations avancée avec data.table](http://larmarange.github.io/analyse-R/manipulations-avancees-avec-data-table.html) de J. Larmarange.
 
 ## dplyr et le tidyverse
 Le `tidyverse` (contraction de "tidy" et "universe") est un concept initié par Hadley Wickham, chef statisticien de RStudio. Il regroupe un ensemble de packages utiles au traitement statistique et au nettoyage de bases de données. On va s'intéresser ici presque seulement au package `dplyr` (dont les instructions seront appliquées aux `tibbles`, un format de data.frame issu du `tidyverse`), mais vous pouvez parcourir les packages proposés dans le tidyverse sur [le site officiel](https://www.tidyverse.org/).  
@@ -45,7 +43,7 @@ Le `tidyverse` (contraction de "tidy" et "universe") est un concept initié par 
 * `group_by(data, var)` regroupe une table par une variable
 * et bien d'autres...
 
-Un aspect pratique de ce langage est que toutes ces opérations peuvent être chaînées à l'aide de l'opérateur `%>%` ("pipe") dont la syntaxe est la suivante : `data %>% fonction(...)` est équivalent à `fonction(data, ...)`. Cette syntaxe permet de chaîner un grand nombre d'opérations sur une base commune, en limitant le nombre de fois où l'on écrit des tables intermédiaires tout en conservant une grande lisibilité du code. Ce petit exemple vous en convaincra peut-être :
+Un aspect pratique de ce langage est que toutes ces opérations peuvent être chaînées à l'aide de l'opérateur `%>%` ("pipe" en anglais) dont la syntaxe est la suivante : `data %>% fonction(...)` est équivalent à `fonction(data, ...)`. Cette syntaxe permet de chaîner un grand nombre d'opérations sur une base commune, en limitant le nombre de fois où l'on écrit des tables intermédiaires tout en conservant une grande lisibilité du code. Ce petit exemple vous en convaincra peut-être :
 ```{r message=FALSE, warning=FALSE, paged.print=FALSE}
 library(tidyverse) # On aurait aussi pu charger seulement le package dplyr
 # on crée un data frame avec 100 lignes, chaque individu appartenant à un des 50 groupes
@@ -62,7 +60,7 @@ Un regard peu habitué contesterait peut-être l'aspect très lisible de l'instr
 3) on agrège par  `idgpe` avec `group_by`   
 4) on calcule la moyenne de `var` avec `summarise`, que l'on stocke dans `var_mean`. Comme cette instruction suit un group_by, elle est réalisée à l'intérieur de chaque groupe (défini par `idgpe`), sinon elle aurait été réalisé sur l'ensemble de la table.    
 
-Tout cela est stocké dans une table output_tibble, qui est (si vous avez suivi) un tibble agrégé par `idgpe` et qui a donc 50 lignes. L'intérêt de ce chaînage est qu'il permet une économie de code et d'écriture d'éventuelles tables intermédiaires.
+Tout cela est stocké dans une table output_tibble, qui est ainsi un tibble agrégé par `idgpe` et qui a donc 50 lignes. L'intérêt de ce chaînage est qu'il permet une économie de code et d'écriture d'éventuelles tables intermédiaires.
 
 ## Data.table
 Le package `data.table` ne prétend pas, contrairement au `tidyverse`, proposer une syntaxe concurrente à base R mais enrichir celle-ci. Il est axé autour d'un nouveau format d'objet, le data.table, qui est un type de data.frame qui permet une utilisation optimisée de l'opérateur `[`.  
@@ -100,7 +98,7 @@ Les avantages et inconvénients de ces deux packages sont à l'origine de nombre
 Pour ce deuxième point, on va essayer de s'en convaincre ensemble avec ce petit exemple.
 
 ## Notre étude de cas
-Pour cet exemple, on utilise les données du package de Hadley Wickham (oui, le même qui est à l'origine du `tidyverse`, mais ça n'entamera pas notre indépendance) que l'on trouve dans `nycflights13`. En particulier, la base `flights` donne toutes les heures de départ et d'arrivée selon les aéroports de départ et d'arrivée ainsi que les retards au départ et à l'arrivée. La base `weather` donne elle des indications météo, heure par heure, dans chaque aéroport. Tout bon statisticien qui se respecte devrait commencer à se dire qu'il y a quelque chose à faire pour tenter d'expliquer les retards des avions (*spoiler alert* : on ne va pas le faire).  
+Pour cet exemple, on utilise les données du package de Hadley Wickham que l'on trouve dans `nycflights13`. En particulier, la base `flights` donne toutes les heures de départ et d'arrivée selon les aéroports de départ et d'arrivée ainsi que les retards au départ et à l'arrivée. La base `weather` donne elle des indications météo, heure par heure, dans chaque aéroport. Tout bon statisticien qui se respecte devrait commencer à se dire qu'il y a quelque chose à faire pour tenter d'expliquer les retards des avions (*spoiler alert* : on ne va pas le faire).  
 Commençons par charger nos packages (n'oubliez pas de faire `install.packages("nom_pck")` avant si vous ne l'avez jamais fait) et nos données :
 ```{r message=FALSE, warning=FALSE, paged.print=FALSE}
 # Les packages nécessaires
@@ -117,7 +115,7 @@ weatherdt <- as.data.table(weather)
 Notez que l'on n'est pas obligés de faire du dplyr sur des tibbles plutôt que des data frame, mais on suit ici les recommandations d'Hadley Wickham.  
 
 ## Moyenne des retards et fusion des tables
-Un rapide examen des bases vous montre que la première étape avant toute analyse est comme souvent de regrouper les éléments de flights par heure et aéroport de départ (ou aurait aussi pu prendre aéroport d'arrivée) pour pouvoir les fusionner avec la table weather, qui donnent les indications météo minute par minute. On écrit cette instruction de  manières différentes :  
+Un rapide examen des bases vous montre que la première étape avant toute analyse est comme souvent de regrouper les éléments de flights par heure et aéroport de départ pour pouvoir les fusionner avec la table weather, qui donnent les indications météo minute par minute. On écrit cette instruction de  3 manières différentes :  
 
 __En base R__
 ```{r}
@@ -169,4 +167,3 @@ microbenchmark::microbenchmark(times = 10L, unit = "ms", Base={
 ```
 
 Les résultats sont très nettement en faveur des packages `dplyr` et `data.table`, ce dernier ayant l'avantage. Sans doute existe-t-il des moyens de plus optimiser l'instruction en base R, mais là n'est pas vraiment la question. On voit qu'avec une syntaxe simple et lisible, `dplyr` et `data.table` font beaucoup mieux que l'instruction qui viendrait à l'esprit d'un statisticien qui n'utiliserait que les premières fonctions venues de base R. 
-
