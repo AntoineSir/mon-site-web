@@ -37,5 +37,5 @@ rsconnect/
 .Rproj.user
 
 # Posts à sortir au fur et à mesure
-*vitesses-d-agrégation-de-data-table-et-dplyr*
-*quelques-astuces-de-langage-r*
+/content/post/*vitesses-d-agrégation-de-data-table-et-dplyr*
+/content/post/*quelques-astuces-de-langage-r*
