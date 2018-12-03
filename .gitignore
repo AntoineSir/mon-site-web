@@ -37,4 +37,4 @@ rsconnect/
 .Rproj.user
 
 # public file
-public/
+public/*
