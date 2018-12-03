@@ -37,7 +37,7 @@ rsconnect/
 .Rproj.user
 
 # public file
-**/public
+**/public/**
 
 # dossier pour les posts à venir
-**/posts pour plus tard
+**/posts pour plus tard/**
