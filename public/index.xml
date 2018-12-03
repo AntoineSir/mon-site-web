@@ -11,7 +11,7 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
-      <title>comparaisons base R - dplyr - data.table</title>
+      <title>Comparaisons base R - dplyr - data.table</title>
       <link>/post/comparaisons-base-r-dplyr-data-table/</link>
       <pubDate>Mon, 03 Dec 2018 00:00:00 +0000</pubDate>
       
@@ -75,9 +75,9 @@ dt[, list(var_mean = mean(rnorm(100))), by = list(idgpe = idgpe)] -&amp;gt; outp
 &lt;h2&gt;Vitesses d’exécution&lt;/h2&gt;
 &lt;p&gt;Voilà donc pour les présentations! Allez, on montre le résultat d’un petit &lt;code&gt;microbenchmark&lt;/code&gt; des deux juste pour voir :&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;## Unit: microseconds
-##        expr      min       lq     mean   median       uq      max neval
-##       dplyr 1796.551 1949.014 2454.193 2224.071 2473.244 6044.443   100
-##  data.table  939.237 1047.610 1274.903 1156.552 1244.160 2366.009   100&lt;/code&gt;&lt;/pre&gt;
+##        expr      min       lq      mean   median        uq      max neval
+##       dplyr 1531.449 1567.289 1753.4469 1596.303 1856.0005 4545.422   100
+##  data.table  819.201  856.178  919.2454  901.405  974.7915 1233.921   100&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Sur cet exemple, on voit un avantage clair à data.table! Mais on est sur une toute petite table en entrée. On va essayer de se rapprocher de cas plus concrets en s’intéressant à un exemple sur des bases plus importantes.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -131,9 +131,9 @@ output_base &amp;lt;- merge(weather, flights_time_hour, by = c(&amp;quot;time_ho
 &lt;p&gt;Je vous laisse juger de la lisibilité de chacune de ces instructions, qui font toutes la même chose, car c’est finalement assez subjectif. On donne ici les résultats d’un &lt;code&gt;microbenchmark&lt;/code&gt; de ces instructions :&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;## Unit: milliseconds
 ##   expr        min         lq       mean     median         uq        max
-##   Base 2857.24932 3036.47089 3102.50857 3050.57051 3195.90594 3469.92940
-##  DplyR   65.73680   74.66665   88.49024   81.14259   84.56417  152.50143
-##     DT   38.05866   44.98431   62.20429   60.05076   74.69907   96.40332
+##   Base 2313.60446 2492.01024 2631.20076 2704.05612 2753.71612 2868.66635
+##  DplyR   55.56166   58.76165   62.45664   61.29150   65.58718   71.77726
+##     DT   32.77311   33.92625   35.76353   35.02335   38.23842   39.83814
 ##  neval
 ##     10
 ##     10
