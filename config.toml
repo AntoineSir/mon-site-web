@@ -34,7 +34,7 @@ hasCJKLanguage = false  # Set `true` for Chinese/Japanese/Korean languages.
 defaultContentLanguageInSubdir = false
 
 # Get last modified date for content from Git?
-enableGitInfo = false
+enableGitInfo = true
 
 [outputs]
   home = [ "HTML", "CSS", "RSS", "JSON" ]
@@ -64,7 +64,6 @@ enableGitInfo = false
   # Details for the Contact Widget
   email = "antoine.sireyjol@gmail.com"
   address = "Toulouse, France"
-  phone = "888 888 88 88"
 
   # Discussion link (e.g. link to a forum, mailing list, or chat).
   #   Uncomment line below to use.
@@ -232,23 +231,24 @@ enableGitInfo = false
   #   cv, google-scholar, arxiv, orcid, researchgate, mendeley
   #
   #   Full list: https://jpswalsh.github.io/academicons/
-
+  
+  [[params.social]]
+    icon = "linkedin"
+    icon_pack = "fab"
+    link = "//www.linkedin.com/in/antoine-sireyjol-5224a3129/"
+    
   [[params.social]]
     icon = "envelope"
     icon_pack = "fas"
     link = "antoine.sireyjol@gmail.com"
 
-
-  [[params.social]]
-    icon = "google-scholar"
-    icon_pack = "ai"
-    link = "https://scholar.google.co.uk/citations?user=sIwtMXoAAAAJ"
-
   [[params.social]]
     icon = "github"
     icon_pack = "fab"
-    link = "//github.com/gcushen"
+    link = "//github.com/AntoineSir"
 
+
+    
   # Link to a PDF of your resume/CV from the About widget.
   # To enable, copy your resume/CV to `static/files/cv.pdf` and uncomment the lines below.
   # [[params.social]]
@@ -274,10 +274,10 @@ enableGitInfo = false
   url = "#posts"
   weight = 2
 
-[[menu.main]]
-  name = "Publications"
-  url = "#publications"
-  weight = 3
+#[[menu.main]]
+#  name = "Publications"
+#  url = "#publications"
+#  weight = 3
 
 [[menu.main]]
   name = "Contact"
