@@ -2,7 +2,7 @@
 title: Comparaisons base R - dplyr - data.table
 author: Antoine Sireyjol
 date: '2018-12-03'
-slug: comparaisons-base-r-dplyr-data-table
+slug: Comparaisons-base-r-dplyr-data-table
 categories:
   - R
 tags:
