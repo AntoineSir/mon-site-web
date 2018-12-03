@@ -23,15 +23,6 @@
     </item>
     
     <item>
-      <title>Vitesses d&#39;agrégation de data.table et dplyr</title>
-      <link>/post/vitesses-d-agr%C3%A9gation-de-data-table-et-dplyr/</link>
-      <pubDate>Thu, 15 Nov 2018 00:00:00 +0000</pubDate>
-      
-      <guid>/post/vitesses-d-agr%C3%A9gation-de-data-table-et-dplyr/</guid>
-      <description>Comme on a pu le voir par exemple dans le précédent post, l’aggrégation est souvent utilisée en analyse de données. Il est donc intéressant de comparer les performances de data.table et dplyr de ce point de vue. Des benchamrks ont déjà été faits, et on peut les trouver cette discussion sur stackoverflow évoquée plus haut. On propose ici quelques tests comparatifs complémentaires sur un cas de groupement d’une base fictive de nbrow lignes appartenant à nbgpe groupes.</description>
-    </item>
-    
-    <item>
       <title>Comparaisons dplyr - data.table - base R</title>
       <link>/post/comparaisons-dplyr-data-table-base-r/</link>
       <pubDate>Wed, 31 Oct 2018 00:00:00 +0000</pubDate>
@@ -39,6 +30,15 @@
       <guid>/post/comparaisons-dplyr-data-table-base-r/</guid>
       <description>La richesse de R, alimentée par une communauté de développeurs très active, rend le choix d’une méthode adaptée à une problématique donnée difficile, et c’est tant mieux. Vous trouverez ici une modeste participation au débat qui oppose les deux packages d’analyse des données les plus en vue dans la communauté R : data.table et dplyr. L’article se présente en deux parties :
 Un rappel sur les syntaxes de dplyr et data.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>/post/2018-11-15-vitesses-d-agr%C3%A9gation-de-data-table-et-dplyr/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/post/2018-11-15-vitesses-d-agr%C3%A9gation-de-data-table-et-dplyr/</guid>
+      <description>itle: Vitesses d’agrégation de data.table et dplyruthor: Antoine Sireyjolate: ‘2018-11-15’lug: vitesses-d-agrégation-de-data-table-et-dplyrategories:- Rags:- benchmark- data.table- dplyr- tidyverse- microbenchmarkeader:caption: ’’image: ’’utput:blogdown::html_page:number_sections: notoc: noComme on a pu le voir par exemple dans le précédent post, l’aggrégation est souvent utilisée en analyse de données.</description>
     </item>
     
   </channel>

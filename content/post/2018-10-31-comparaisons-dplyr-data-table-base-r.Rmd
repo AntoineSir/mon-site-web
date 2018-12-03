@@ -62,7 +62,7 @@ Un regard peu habitué contesterait peut-être l'aspect très lisible de l'instr
 3) on agrège par  `idgpe` avec `group_by`   
 4) on calcule la moyenne de `var` avec `summarise`, que l'on stocke dans `var_mean`. Comme cette instruction suit un group_by, elle est réalisée à l'intérieur de chaque groupe (défini par `idgpe`), sinon elle aurait été réalisé sur l'ensemble de la table.    
 
-Tout cela est stocké dans une table output_tibble, qui est (si vous avez suivi) un tibble agrégé par `idgpe` et qui a donc 50 lignes.
+Tout cela est stocké dans une table output_tibble, qui est (si vous avez suivi) un tibble agrégé par `idgpe` et qui a donc 50 lignes. L'intérêt de ce chaînage est qu'il permet une économie de code et d'écriture d'éventuelles tables intermédiaires.
 
 ## Data.table
 Le package `data.table` ne prétend pas, contrairement au `tidyverse`, proposer une syntaxe concurrente à base R mais enrichir celle-ci. Il est axé autour d'un nouveau format d'objet, le data.table, qui est un type de data.frame qui permet une utilisation optimisée de l'opérateur `[`.  
@@ -109,15 +109,10 @@ library(data.table)
 library(microbenchmark) # Pour les calculs de vitesse d'exécution
 library(nycflights13) # Pour les données
 
-# data frame classiques pour tests en base R
-flights <- as.data.frame(flights)
-weather <- as.data.frame(weather)
 # data.table pour tests avec data.table
 flightsdt <- as.data.table(flights)
 weatherdt <- as.data.table(weather)
-# tibbles pour instructions en dplyR (tournent aussi sur data.frame et data.table)
-flightstib <- as_tibble(flights)
-weathertib <- as_tibble(weather)
+
 ```
 Notez que l'on n'est pas obligés de faire du dplyr sur des tibbles plutôt que des data frame, mais on suit ici les recommandations d'Hadley Wickham.  
 
@@ -136,10 +131,10 @@ output_base <- merge(weather, flights_time_hour, by = c("time_hour", "origin"), 
 
 __En dplyr__
 ```{r}
-flightstib %>% group_by(time_hour, origin) %>% 
+flights %>% group_by(time_hour, origin) %>% 
   summarise(arr_delay = mean(arr_delay),
             dep_delay = mean(dep_delay)) %>% 
-  inner_join(weathertib, by = c("time_hour", "origin")) -> output_dplyr 
+  inner_join(weather, by = c("time_hour", "origin")) -> output_dplyr 
 ```
 
 __En data.table__
@@ -161,10 +156,10 @@ microbenchmark::microbenchmark(times = 10L, unit = "ms", Base={
                                  mean)
   output_base <- merge(weather, flights_time_hour, by = c("time_hour", "origin"), sort = FALSE)
 }, DplyR = {
-  flightstib %>% group_by(time_hour, origin) %>% 
+  flights %>% group_by(time_hour, origin) %>% 
     summarise(arr_delay = mean(arr_delay),
               dep_delay = mean(dep_delay)) %>% 
-    inner_join(weathertib, by = c("time_hour", "origin")) -> output_dplyr 
+    inner_join(weather, by = c("time_hour", "origin")) -> output_dplyr 
 }, DT = {
   output_DT <- merge(flightsdt[, list(arr_perc_delay = mean(arr_delay),
                                       dep_perc_delay = mean(dep_delay)), by = c("time_hour", "origin")],

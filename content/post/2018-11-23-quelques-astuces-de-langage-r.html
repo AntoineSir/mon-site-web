@@ -50,9 +50,9 @@ output:
 <p>Ainsi, l’option 2 peut sembler à juste titre plus intuitive (ne serait-ce que parce qu’elle se simplifie avec l’option 2bis), pourtant l’option 1 est significativement plus rapide, comme le montre la fonction <code>microbenchmark</code> :</p>
 <pre><code>## Unit: milliseconds
 ##          expr      min       lq     mean   median       uq      max neval
-##      Option 1 1.566720 1.576392 1.630345 1.581511 1.598578 2.684018    50
-##      Option 2 1.916018 1.933654 1.994240 1.951005 2.013867 2.882560    50
-##  Option 2 bis 1.913174 1.931947 1.965921 1.948160 1.987698 2.174862    50</code></pre>
+##      Option 1 3.735324 3.755235 3.825482 3.760640 3.788231 6.233883    50
+##      Option 2 4.596053 4.620515 4.739879 4.644693 4.685938 6.716870    50
+##  Option 2 bis 4.587520 4.605724 4.642406 4.622222 4.657493 4.935111    50</code></pre>
 <p>J’ai pu le constater sur d’autres cas, mais je n’ai pas encore d’explications.</p>
 </div>
 <div id="group_by-par-une-variable-caractere" class="section level1">
@@ -67,8 +67,8 @@ flightstib %&gt;% group_by(originfac) %&gt;%
 <p>Le résultat de la fonction <code>microbenchmark</code> appliquée à ces deux instructions donne :</p>
 <pre><code>## Unit: milliseconds
 ##                expr      min       lq     mean   median       uq      max
-##  group by character 14.47708 14.68700 16.39592 14.83491 17.73283 28.22598
-##     group by factor 11.85962 12.04906 13.58219 12.18873 15.02009 20.33607
+##  group by character 21.95455 34.86947 36.30551 35.15249 35.70630 48.85787
+##     group by factor 17.68561 28.54342 30.35701 28.79004 29.44198 44.83981
 ##  neval
 ##    100
 ##    100</code></pre>
@@ -94,8 +94,8 @@ Hé bien, cette instruction n’est pas seulement présentée ainsi pour le plai
 })</code></pre>
 <pre><code>## Unit: milliseconds
 ##    expr      min       lq     mean   median       uq      max neval
-##  dplyr1 1.500729 1.539983 1.663306 1.559325 1.604836  3.41504   100
-##  dplyr2 2.569103 2.630827 3.111344 2.654151 3.007146 12.93994   100</code></pre>
+##  dplyr1 3.689244 3.743572 4.105819 3.779413 3.861618 25.84063   100
+##  dplyr2 6.216248 6.389760 6.609128 6.428159 6.550470 10.84586   100</code></pre>
 <p>Ca peut sembler secondaire pour cet exemple, mais sur des grosses tables la différence va vraiment peser. Regardons par exemple les différences de performance de deux instructions <code>dplyr</code> agrégeant par heure une variable égale au pourcentage de retard à l’arrivée par rapport à la durée du vol en utilisant les données de <code>nycflights13</code>:</p>
 <pre class="r"><code>microbenchmark::microbenchmark(times=10L, dplyr_mutate = {
 flightstib %&gt;% mutate(propor_delay = arr_delay / air_time) %&gt;% 
@@ -106,11 +106,11 @@ flightstib %&gt;% group_by(time_hour) %&gt;%
 summarise(propor_delay = mean(arr_delay / air_time)) -&gt; output_dplyr 
 })</code></pre>
 <pre><code>## Unit: milliseconds
-##               expr       min        lq      mean    median        uq
-##       dplyr_mutate  24.70115  25.09766  25.76474  25.45464  26.51761
-##  dplyr_sans_mutate 201.96858 204.10476 212.08166 205.31536 218.19670
+##               expr       min        lq     mean    median        uq
+##       dplyr_mutate  57.82413  58.29915  60.0606  59.94295  60.80909
+##  dplyr_sans_mutate 491.43794 500.32284 507.9585 503.93301 507.34862
 ##        max neval
-##   27.65141    10
-##  240.05682    10</code></pre>
+##   64.41868    10
+##  551.17240    10</code></pre>
 <p>Les performances changent du tout au tout. Il semblerait donc que cela soit une très mauvais pratique d’essayer de “sauter” l’étape du <code>mutate()</code>, sans doute parce que le <code>group_by</code> peine à traiter le regroupement d’une opération de variables pas encore regroupées. C’est une propriété de <code>summarise</code> qu’il est important d’avoir à l’esprit.</p>
 </div>
