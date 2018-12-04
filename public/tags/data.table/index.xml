@@ -22,14 +22,5 @@
 Un rappel sur les syntaxes de dplyr et data.</description>
     </item>
     
-    <item>
-      <title>Vitesses d&#39;agrégation de data.table et dplyr</title>
-      <link>/posts-pour-plus-tard/vitesses-d-agr%C3%A9gation-de-data-table-et-dplyr/</link>
-      <pubDate>Thu, 15 Nov 2018 00:00:00 +0000</pubDate>
-      
-      <guid>/posts-pour-plus-tard/vitesses-d-agr%C3%A9gation-de-data-table-et-dplyr/</guid>
-      <description>Comme on a pu le voir par exemple dans le précédent post, l’aggrégation est souvent utilisée en analyse de données. Il est donc intéressant de comparer les performances de data.table et dplyr de ce point de vue. Des benchamrks ont déjà été faits, et on peut les trouver cette discussion sur stackoverflow évoquée plus haut. On propose ici quelques tests comparatifs complémentaires sur un cas de groupement d’une base fictive de nbrow lignes appartenant à nbgpe groupes.</description>
-    </item>
-    
   </channel>
 </rss>

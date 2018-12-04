@@ -114,20 +114,20 @@ I am a teaching instructor for the following courses at University X:
     </item>
     
     <item>
-      <title>Rechercher sur ce site</title>
-      <link>/home/search/</link>
-      <pubDate>Mon, 23 Jul 2018 00:00:00 +0200</pubDate>
-      
-      <guid>/home/search/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>Contact</title>
       <link>/home/contact/</link>
       <pubDate>Wed, 20 Apr 2016 00:00:00 +0200</pubDate>
       
       <guid>/home/contact/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Rechercher sur ce site</title>
+      <link>/home/search/</link>
+      <pubDate>Mon, 23 Jul 2018 00:00:00 +0200</pubDate>
+      
+      <guid>/home/search/</guid>
       <description></description>
     </item>
     
