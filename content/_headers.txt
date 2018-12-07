@@ -1,6 +1,0 @@
-# Redirect default Netlify subdomain to primary domain
-https://antoinesir.netlify.com/* https://antoinesir.rbind.io/*
-
-# Redirect http to https
-http://antoinesir.rbind.io/* https://antoinesir.rbind.io/*
-antoinesir.rbind.io/* https://antoinesir.rbind.io/*
