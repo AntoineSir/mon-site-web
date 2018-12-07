@@ -1,2 +1,2 @@
 # Redirect default Netlify subdomain to primary domain
-http://antoinesir.netlify.com/* http://antoinesir.rbind.io/:splat 301!
+https://antoinesir.netlify.com/* antoinesir.rbind.io/*
