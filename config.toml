@@ -107,7 +107,7 @@ enableGitInfo = true
   sharing_image = ""
 
   # Twitter username (without @). Used when a vistor shares your site on Twitter.
-  twitter = ""
+  twitter = "AntoineSyr"
 
   # Diplay a logo in navigation bar rather than title (optional).
   #   To enable, place an image in `static/img/` and reference its filename below. To disable, set the value to "".
@@ -236,17 +236,16 @@ enableGitInfo = true
     icon = "linkedin"
     icon_pack = "fab"
     link = "//www.linkedin.com/in/antoine-sireyjol-5224a3129/"
-    
-  [[params.social]]
-    icon = "envelope"
-    icon_pack = "fas"
-    link = "antoine.sireyjol@gmail.com"
 
   [[params.social]]
     icon = "github"
     icon_pack = "fab"
-    link = "//github.com/AntoineSir"
+    link = "https://github.com/AntoineSir"
 
+  [[params.social]]
+    icon = "twitter"
+    icon_pack = "fab"
+    link = "https://twitter.com/AntoineSyr"
 
     
   # Link to a PDF of your resume/CV from the About widget.
