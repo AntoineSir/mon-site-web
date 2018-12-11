@@ -1,0 +1,40 @@
+---
+title: Vitesses d'aggrégation de base R, data.table et dplyr
+author: Antoine Sireyjol
+date: '2018-12-11'
+slug: vitesses-d-agrégation-de-data-table-et-dplyr
+categories:
+  - R
+tags:
+  - benchmark
+  - data.table
+  - dplyr
+  - tidyverse
+  - microbenchmark
+header:
+  caption: ''
+  image: ''
+output:
+  blogdown::html_page:
+    number_sections: no
+    toc: no
+---
+
+
+
+<p>Comme on a pu le voir par exemple dans le <a href="https://antoinesir.rbind.io/post/comparaisons-base-r-dplyr-data-table/">précédent post</a>, l’aggrégation est souvent utilisée en analyse de données. Il est donc intéressant de comparer les performances des différentes options que propose R de ce point de vue. Des benchmarks comparant <code>data.table</code>, <code>dplyr</code> et la librairie <code>pandas</code> de python sur différentes tailles de tables ont déjà été faits, vous pouvez les trouver sur <a href="https://github.com/Rdatatable/data.table/wiki/Benchmarks-%3A-Grouping">cette page github</a>. On propose ici quelques tests comparatifs complémentaires sur un cas d’un calcul simple à partir d’un groupement d’une base fictive de <code>nbrow</code> lignes appartenant à <code>nbgpe</code> groupes. La fonction s’applique à deux variables numériques <code>x</code> et <code>y</code>, la première étant une variable aléatoire et la seconde un entier dont on fait varier le nombre de modalités. On teste l’instruction suivante :</p>
+<p><strong>Pour dplyr</strong></p>
+<pre class="r"><code>datatib %&gt;% group_by(y) %&gt;% summarise(x = mean(x))</code></pre>
+<p><strong>Pour data.table</strong></p>
+<pre class="r"><code>dataDT[, .(x = mean(x)), by = .(y = y)]</code></pre>
+<p><strong>Pour base R</strong></p>
+<pre class="r"><code>tap &lt;- tapply(test$x, test$y, mean)
+data.frame(x = tap, y = names(tap))</code></pre>
+<p>Notons que dans ce cas, on ajoute une étape pour transformer l’output doit être un dataframe. On aurait aussi pu utiliser la fonction <code>aggregate</code> qui permet cela.</p>
+<p>Il n’y a plus qu’à tester! On propose des tests sur 10 000, 100 000 et 1 million de lignes avec à chaque fois peu (1/1000e du nombre de lignes) ou beaucoup (la moitié du nombre de lignes) de groupes. On fait un tableau récapitulatif des différents graphiques issus de la fonction <code>autoplot</code> de <code>ggplot2</code> qui sort joliment les résultats de <code>microbenchmark</code> (on regroupe ces graphiques à l’aide du package <code>gridExtra</code>). Les graphiques représentent la distribution des 30 occurences testées par méthode en fonction de leur temps d’exécution.</p>
+<p><img src="/post/2018-11-15-vitesses-d-agrégation-de-data-table-et-dplyr_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>Le premier constat est que la méthode <code>data.table</code> est toujours plus rapide que les alternatives testées. Le second est que R base concurrence <code>dplyr</code> dans tous les cas où le nombre de groupes sur lesquels il faut agréger est petit. Au contraire, la fonction <code>tapply</code> est largement en dessous des performances des deux autres options quand le nombre de groupes est élevé.<br />
+Le changement d’échelle du graphique à chaque hypothèse testée est trompeur mais ne doit pas cacher que dans le cas d’une table à 1 million de lignes et 50 000 groupes, si l’option <code>dplyr</code> fait largement mieux que R base, elle est aussi plus surpassée que jamais par data.table. Il est intéressant de zoomer sur ce cas pour mieux s’en rendre compte :</p>
+<p><img src="/post/2018-11-15-vitesses-d-agrégation-de-data-table-et-dplyr_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>Les temps d’exécution de <code>data.table</code> ne dépassent pas 200 millisecondes alors que ceux de <code>dplyr</code> naviguent de 700 ms à un peu plus de 1 seconde, soit environ 4 fois plus.</p>
+<p>Ces tests confirment ceux cités en introduction de ce post. Ils montrent l’intérêt d’utiliser <code>data.table</code> dans le cas d’instructions agrégées si l’on souhaite optimiser le temps d’exécution de son script et/ou si l’on connaît des difficultés à gérer des tables volumineuses. Ils montrent aussi que <code>dplyr</code> reste une option crédible et très compétitive notamment par rapport aux fonctions de base R.</p>

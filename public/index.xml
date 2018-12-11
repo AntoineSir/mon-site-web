@@ -11,6 +11,31 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>Vitesses d&#39;aggrégation de base R, data.table et dplyr</title>
+      <link>/post/vitesses-d-agr%C3%A9gation-de-data-table-et-dplyr/</link>
+      <pubDate>Tue, 11 Dec 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/post/vitesses-d-agr%C3%A9gation-de-data-table-et-dplyr/</guid>
+      <description>&lt;p&gt;Comme on a pu le voir par exemple dans le &lt;a href=&#34;https://antoinesir.rbind.io/post/comparaisons-base-r-dplyr-data-table/&#34;&gt;précédent post&lt;/a&gt;, l’aggrégation est souvent utilisée en analyse de données. Il est donc intéressant de comparer les performances des différentes options que propose R de ce point de vue. Des benchmarks comparant &lt;code&gt;data.table&lt;/code&gt;, &lt;code&gt;dplyr&lt;/code&gt; et la librairie &lt;code&gt;pandas&lt;/code&gt; de python sur différentes tailles de tables ont déjà été faits, vous pouvez les trouver sur &lt;a href=&#34;https://github.com/Rdatatable/data.table/wiki/Benchmarks-%3A-Grouping&#34;&gt;cette page github&lt;/a&gt;. On propose ici quelques tests comparatifs complémentaires sur un cas d’un calcul simple à partir d’un groupement d’une base fictive de &lt;code&gt;nbrow&lt;/code&gt; lignes appartenant à &lt;code&gt;nbgpe&lt;/code&gt; groupes. La fonction s’applique à deux variables numériques &lt;code&gt;x&lt;/code&gt; et &lt;code&gt;y&lt;/code&gt;, la première étant une variable aléatoire et la seconde un entier dont on fait varier le nombre de modalités. On teste l’instruction suivante :&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Pour dplyr&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;datatib %&amp;gt;% group_by(y) %&amp;gt;% summarise(x = mean(x))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Pour data.table&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dataDT[, .(x = mean(x)), by = .(y = y)]&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Pour base R&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tap &amp;lt;- tapply(test$x, test$y, mean)
+data.frame(x = tap, y = names(tap))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Notons que dans ce cas, on ajoute une étape pour transformer l’output doit être un dataframe. On aurait aussi pu utiliser la fonction &lt;code&gt;aggregate&lt;/code&gt; qui permet cela.&lt;/p&gt;
+&lt;p&gt;Il n’y a plus qu’à tester! On propose des tests sur 10 000, 100 000 et 1 million de lignes avec à chaque fois peu (1/1000e du nombre de lignes) ou beaucoup (la moitié du nombre de lignes) de groupes. On fait un tableau récapitulatif des différents graphiques issus de la fonction &lt;code&gt;autoplot&lt;/code&gt; de &lt;code&gt;ggplot2&lt;/code&gt; qui sort joliment les résultats de &lt;code&gt;microbenchmark&lt;/code&gt; (on regroupe ces graphiques à l’aide du package &lt;code&gt;gridExtra&lt;/code&gt;). Les graphiques représentent la distribution des 30 occurences testées par méthode en fonction de leur temps d’exécution.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2018-11-15-vitesses-d-agrégation-de-data-table-et-dplyr_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Le premier constat est que la méthode &lt;code&gt;data.table&lt;/code&gt; est toujours plus rapide que les alternatives testées. Le second est que R base concurrence &lt;code&gt;dplyr&lt;/code&gt; dans tous les cas où le nombre de groupes sur lesquels il faut agréger est petit. Au contraire, la fonction &lt;code&gt;tapply&lt;/code&gt; est largement en dessous des performances des deux autres options quand le nombre de groupes est élevé.&lt;br /&gt;
+Le changement d’échelle du graphique à chaque hypothèse testée est trompeur mais ne doit pas cacher que dans le cas d’une table à 1 million de lignes et 50 000 groupes, si l’option &lt;code&gt;dplyr&lt;/code&gt; fait largement mieux que R base, elle est aussi plus surpassée que jamais par data.table. Il est intéressant de zoomer sur ce cas pour mieux s’en rendre compte :&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2018-11-15-vitesses-d-agrégation-de-data-table-et-dplyr_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Les temps d’exécution de &lt;code&gt;data.table&lt;/code&gt; ne dépassent pas 200 millisecondes alors que ceux de &lt;code&gt;dplyr&lt;/code&gt; naviguent de 700 ms à un peu plus de 1 seconde, soit environ 4 fois plus.&lt;/p&gt;
+&lt;p&gt;Ces tests confirment ceux cités en introduction de ce post. Ils montrent l’intérêt d’utiliser &lt;code&gt;data.table&lt;/code&gt; dans le cas d’instructions agrégées si l’on souhaite optimiser le temps d’exécution de son script et/ou si l’on connaît des difficultés à gérer des tables volumineuses. Ils montrent aussi que &lt;code&gt;dplyr&lt;/code&gt; reste une option crédible et très compétitive notamment par rapport aux fonctions de base R.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Comparaisons base R - dplyr - data.table</title>
       <link>/post/comparaisons-base-r-dplyr-data-table/</link>
       <pubDate>Mon, 03 Dec 2018 00:00:00 +0000</pubDate>
@@ -152,15 +177,6 @@ output_base &amp;lt;- merge(weather, flights_time_hour, by = c(&amp;quot;time_ho
       <guid>/privacy/</guid>
       <description>&lt;p&gt;&amp;hellip;&lt;/p&gt;
 </description>
-    </item>
-    
-    <item>
-      <title></title>
-      <link>/google97f73df960210299/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>/google97f73df960210299/</guid>
-      <description>google-site-verification: google97f73df960210299.html</description>
     </item>
     
   </channel>

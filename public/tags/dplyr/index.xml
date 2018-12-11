@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>fr</language>
     <copyright>&amp;copy; 2018</copyright>
-    <lastBuildDate>Mon, 03 Dec 2018 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 11 Dec 2018 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/dplyr/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Vitesses d&#39;aggrégation de base R, data.table et dplyr</title>
+      <link>/post/vitesses-d-agr%C3%A9gation-de-data-table-et-dplyr/</link>
+      <pubDate>Tue, 11 Dec 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/post/vitesses-d-agr%C3%A9gation-de-data-table-et-dplyr/</guid>
+      <description>Comme on a pu le voir par exemple dans le précédent post, l’aggrégation est souvent utilisée en analyse de données. Il est donc intéressant de comparer les performances des différentes options que propose R de ce point de vue. Des benchmarks comparant data.table, dplyr et la librairie pandas de python sur différentes tailles de tables ont déjà été faits, vous pouvez les trouver sur cette page github. On propose ici quelques tests comparatifs complémentaires sur un cas d’un calcul simple à partir d’un groupement d’une base fictive de nbrow lignes appartenant à nbgpe groupes.</description>
+    </item>
     
     <item>
       <title>Comparaisons base R - dplyr - data.table</title>
