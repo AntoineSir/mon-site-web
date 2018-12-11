@@ -62,9 +62,9 @@ __Pour base R__
 tap <- tapply(test$x, test$y, mean)
 data.frame(x = tap, y = names(tap))
 ```
-Notons que dans ce cas, on ajoute une étape pour transformer l'output doit être un dataframe. On aurait aussi pu utiliser la fonction `aggregate` qui permet cela.
+Notons que dans ce dernier cas, on ajoute une étape pour transformer l'output en dataframe. On aurait aussi pu utiliser la fonction `aggregate` qui permet cela.
 
-Il n'y a plus qu'à tester! On propose des tests sur 10 000, 100 000 et 1 million de lignes avec à chaque fois peu (1/1000e du nombre de lignes) ou beaucoup (la moitié du nombre de lignes) de groupes. On fait un tableau récapitulatif des différents graphiques issus de la fonction `autoplot` de  `ggplot2` qui sort joliment les résultats de `microbenchmark` (on regroupe ces graphiques à l'aide du package `gridExtra`). Les graphiques représentent la distribution des 30 occurences testées par méthode en fonction de leur temps d'exécution.
+Il n'y a plus qu'à tester! On propose des tests sur 10 000, 100 000 et 1 million de lignes avec à chaque fois peu (1/1000e du nombre de lignes) ou beaucoup (la moitié du nombre de lignes) de groupes. On fait un tableau récapitulatif des différents graphiques issus de la fonction `autoplot` de  `ggplot2` qui sort joliment les résultats de `microbenchmark` (on regroupe ces graphiques à l'aide du package `gridExtra`). Les graphiques représentent la distribution du temps d'exécution des 10 occurences testées par méthode.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 x <- 1000
@@ -88,12 +88,12 @@ grid.arrange(plot1, plot4, plot2, plot5, plot3, plot6, ncol = 2, heights = c(8, 
 ```
 
 Le premier constat est que la méthode `data.table` est toujours plus rapide que les alternatives testées. Le second est que R base concurrence `dplyr` dans tous les cas où le nombre de groupes sur lesquels il faut agréger est petit. Au contraire, la fonction `tapply` est largement en dessous des performances des deux autres options quand le nombre de groupes est élevé.  
-Le changement d'échelle du graphique à chaque hypothèse testée est trompeur mais ne doit pas cacher que dans le cas d'une table à 1 million de lignes et 50 000 groupes, si l'option `dplyr` fait largement mieux que R base, elle est aussi plus surpassée que jamais par data.table. Il est intéressant de zoomer sur ce cas pour mieux s'en rendre compte :  
+Le changement d'échelle du graphique à chaque hypothèse testée est trompeur mais ne doit pas cacher que dans le cas d'une table à 1 million de lignes et 50 000 groupes, si l'option `dplyr` fait largement mieux que R base, elle est aussi plus surpassée que jamais par data.table. Regardons le tableau de résultats de la comparaison de ces deux options pour mieux s'en rendre compte :  
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
 plot6
 ```
 
-Les temps d'exécution de `data.table` ne dépassent pas 200 millisecondes alors que ceux de `dplyr` naviguent de 700 ms à un peu plus de 1 seconde, soit environ 4 fois plus.  
+Les temps d'exécution de `data.table` se situent plutôt en deçà de 200 millisecondes alors que ceux de `dplyr` sont proches de 1 seconde.  
 
 Ces tests confirment ceux cités en introduction de ce post. Ils montrent l'intérêt d'utiliser `data.table` dans le cas d'instructions agrégées si l'on souhaite optimiser le temps d'exécution de son script et/ou si l'on connaît des difficultés à gérer des tables volumineuses. Ils montrent aussi que `dplyr` reste une option crédible et très compétitive notamment par rapport aux fonctions de base R.
