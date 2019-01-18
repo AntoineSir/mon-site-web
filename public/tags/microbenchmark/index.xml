@@ -7,10 +7,20 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>fr</language>
     <copyright>&amp;copy; 2018</copyright>
-    <lastBuildDate>Tue, 11 Dec 2018 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 18 Jan 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/microbenchmark/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Astuces d&#39;optimisation d&#39;un script R</title>
+      <link>/post/astuces-d-optimisation-d-un-script-r/</link>
+      <pubDate>Fri, 18 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/astuces-d-optimisation-d-un-script-r/</guid>
+      <description>On regroupe ici quelques astuces pour optimiser le temps d’exécution d’un code R. On en propose pour l’instant quatre, mais le post pourra être actualisé par la suite. L’idée est de regrouper des situations auxquelles chacun pourrait être confronté. Les points explorés dans cette note sont les suivants :
+Pour base R : la question de l’application d’une fonction apply aux colonnes d’un data.frame.Pour dplyr : la création d’une variable directement à l’intérieur de summarise().</description>
+    </item>
     
     <item>
       <title>Vitesses d&#39;aggrégation de base R, data.table et dplyr</title>
@@ -29,6 +39,16 @@
       <guid>/post/comparaisons-base-r-dplyr-data-table/</guid>
       <description>La richesse de R, alimentée par une communauté de développeurs très active, rend le choix d’une méthode adaptée à une problématique donnée difficile, et c’est tant mieux. Vous trouverez ici une modeste participation au débat qui oppose les deux packages d’analyse des données les plus en vue dans la communauté R : data.table et dplyr. L’article se présente en deux parties :
 Un rappel sur les syntaxes de dplyr et data.</description>
+    </item>
+    
+    <item>
+      <title>Astuces d&#39;optimisation pour un script R</title>
+      <link>/post/quelques-particularit%C3%A9s-de-dplyr/</link>
+      <pubDate>Thu, 18 Jan 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/post/quelques-particularit%C3%A9s-de-dplyr/</guid>
+      <description>On regroupe ici quelques astuces pour optimiser le temps d’exécution d’un code R. On en propose pour l’instant quatre, mais le post pourra être actualisé par la suite. L’idée est de regrouper des situations auxquelles chacun pourrait être confronté. Les points explorés dans cette note sont les suivants :
+Pour base R : la question de l’application d’une fonction apply aux colonnes d’un data.frame.Pour dplyr : la création d’une variable directement à l’intérieur de summarise().</description>
     </item>
     
   </channel>

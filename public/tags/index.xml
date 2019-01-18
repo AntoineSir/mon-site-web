@@ -7,7 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>fr</language>
     <copyright>&amp;copy; 2018</copyright>
-    <lastBuildDate>Mon, 03 Dec 2018 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 18 Jan 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     
@@ -15,7 +15,7 @@
     <item>
       <title>R</title>
       <link>/tags/r/</link>
-      <pubDate>Mon, 03 Dec 2018 00:00:00 +0000</pubDate>
+      <pubDate>Fri, 18 Jan 2019 00:00:00 +0000</pubDate>
       
       <guid>/tags/r/</guid>
       <description></description>
@@ -24,9 +24,18 @@
     <item>
       <title>benchmark</title>
       <link>/tags/benchmark/</link>
-      <pubDate>Tue, 11 Dec 2018 00:00:00 +0000</pubDate>
+      <pubDate>Fri, 18 Jan 2019 00:00:00 +0000</pubDate>
       
       <guid>/tags/benchmark/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>booléens</title>
+      <link>/tags/bool%C3%A9ens/</link>
+      <pubDate>Fri, 18 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/bool%C3%A9ens/</guid>
       <description></description>
     </item>
     
@@ -51,7 +60,7 @@
     <item>
       <title>dplyr</title>
       <link>/tags/dplyr/</link>
-      <pubDate>Tue, 11 Dec 2018 00:00:00 +0000</pubDate>
+      <pubDate>Fri, 18 Jan 2019 00:00:00 +0000</pubDate>
       
       <guid>/tags/dplyr/</guid>
       <description></description>
@@ -60,9 +69,27 @@
     <item>
       <title>microbenchmark</title>
       <link>/tags/microbenchmark/</link>
-      <pubDate>Tue, 11 Dec 2018 00:00:00 +0000</pubDate>
+      <pubDate>Fri, 18 Jan 2019 00:00:00 +0000</pubDate>
       
       <guid>/tags/microbenchmark/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>optimisation</title>
+      <link>/tags/optimisation/</link>
+      <pubDate>Fri, 18 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/optimisation/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>sapply</title>
+      <link>/tags/sapply/</link>
+      <pubDate>Fri, 18 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/sapply/</guid>
       <description></description>
     </item>
     
