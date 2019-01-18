@@ -6,7 +6,7 @@
     <description>Recent content in Antoine Sireyjol on Antoine Sireyjol</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>fr</language>
-    <copyright>&amp;copy; 2018</copyright>
+    <copyright>&amp;copy; 2019</copyright>
     <lastBuildDate>Sun, 15 Oct 2017 00:00:00 +0200</lastBuildDate>
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
@@ -295,125 +295,6 @@ output_base &amp;lt;- merge(weather, flights_time_hour, by = c(&amp;quot;time_ho
       
       <guid>/privacy/</guid>
       <description>&lt;p&gt;&amp;hellip;&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Astuces d&#39;optimisation pour un script R</title>
-      <link>/post/quelques-particularit%C3%A9s-de-dplyr/</link>
-      <pubDate>Thu, 18 Jan 2018 00:00:00 +0000</pubDate>
-      
-      <guid>/post/quelques-particularit%C3%A9s-de-dplyr/</guid>
-      <description>&lt;p&gt;On regroupe ici quelques astuces pour optimiser le temps d’exécution d’un code R. On en propose pour l’instant quatre, mais le post pourra être actualisé par la suite. L’idée est de regrouper des situations auxquelles chacun pourrait être confronté. Les points explorés dans cette note sont les suivants :&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Pour base R : la question de &lt;a href=&#34;#definition-dune-fonction-apply-sur-les-colonnes-dun-dataframe&#34;&gt;l’application d’une fonction apply aux colonnes d’un data.frame&lt;/a&gt;.&lt;/li&gt;
-&lt;li&gt;Pour dplyr : la &lt;a href=&#34;#ralentissement-de-la-vitesse-dexecution-pour-une-creation-de-variable-directement-a-linterieur-de-summarise&#34;&gt;création d’une variable directement à l’intérieur de summarise()&lt;/a&gt;.&lt;/li&gt;
-&lt;li&gt;Pour dplyr : le temps d’exécution d’un &lt;a href=&#34;#group_by-par-une-variable-caractere&#34;&gt;group_by par une variable caractère&lt;/a&gt;.&lt;/li&gt;
-&lt;li&gt;Pour dplyr : les &lt;a href=&#34;#ralentissement-de-la-vitesse-dexecution-pour-une-statistique-sur-une-variable-booleenne&#34;&gt;summarise() sur des booléens&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;div id=&#34;definition-dune-fonction-apply-sur-les-colonnes-dun-dataframe&#34; class=&#34;section level1&#34;&gt;
-&lt;h1&gt;Définition d’une fonction apply sur les colonnes d’un dataframe&lt;/h1&gt;
-&lt;p&gt;Imaginons que vous souhaitiez appliquer une fonction à un ensemble de variables d’un data.frame, définies dans une liste (par exemple pour faire une fonction qui appliquerait des statistiques sur un ensemble de variables choisies par l’utilisateur). On définit donc une telle liste de variables, dans la table &lt;code&gt;flights&lt;/code&gt; du package &lt;code&gt;nycflights13&lt;/code&gt;:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;var &amp;lt;- c(&amp;quot;dep_delay&amp;quot;, &amp;quot;arr_delay&amp;quot;, &amp;quot;air_time&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;On sort ensuite les moyennes de ces trois variables avec &lt;code&gt;sapply&lt;/code&gt;. En base R, cela peut s’écrire ainsi :&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Option 1&lt;/strong&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sapply(var, function(x) sum(flights[[x]], na.rm = TRUE))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## dep_delay arr_delay  air_time 
-##   4152200   2257174  49326610&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Mais aussi ainsi :&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Option 2&lt;/strong&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sapply(flights[var], function(x) sum(x, na.rm = TRUE))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## dep_delay arr_delay  air_time 
-##   4152200   2257174  49326610&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Cette dernière option pouvant se simplifier, puisqu’on n’a pas vraiment besoin de définir notre fonction à la volée dans ce cas :&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Option 2 bis&lt;/strong&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sapply(flights[var], sum, na.rm = TRUE)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## dep_delay arr_delay  air_time 
-##   4152200   2257174  49326610&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Ainsi, l’option 2 peut sembler à juste titre plus intuitive (ne serait-ce que parce qu’elle se simplifie avec l’option 2bis), pourtant l’option 1 est significativement plus rapide, comme le montre la fonction &lt;code&gt;microbenchmark&lt;/code&gt; :&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;## Unit: milliseconds
-##          expr      min       lq     mean   median       uq      max neval
-##      Option 1 1.567292 1.573550 1.603439 1.577532 1.582652 2.691987    50
-##      Option 2 1.913746 1.929675 1.960873 1.937923 1.950155 2.766511    50
-##  Option 2 bis 1.912039 1.921710 1.946457 1.935080 1.956981 2.069622    50&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;C’est bon à savoir, mais pour ce genre de traitement ça vaut le coup de s’intéresser aux méthodes &lt;code&gt;dplyr&lt;/code&gt; et &lt;code&gt;data.table&lt;/code&gt; qui offrent des solutions faciles et efficaces.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;group_by-par-une-variable-caractere&#34; class=&#34;section level1&#34;&gt;
-&lt;h1&gt;group_by par une variable caractère&lt;/h1&gt;
-&lt;p&gt;Quelque chose de très simple à faire pour optimiser ses codes en dplyr : ne pas faire de group_by sur des variables caractères mais sur des factors. On montre ici un exemple très simple sur la même base flights. Tout d’abord, faisons une moyenne des retards à l’arrivée groupée par le lieu d’origine :&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;flightstib %&amp;gt;% group_by(origin) %&amp;gt;% 
-  summarize(mean_delay = mean(arr_delay, na.rm = TRUE))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;On compare la rapidité de cette instruction, à celle-ci, qui fait la même chose sur une variable factor :&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;flightstib$originfac &amp;lt;- as.factor(flightstib$origin)
-flightstib %&amp;gt;% group_by(originfac) %&amp;gt;% 
-  summarize(mean_delay = mean(arr_delay, na.rm = TRUE))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Le résultat de la fonction &lt;code&gt;microbenchmark&lt;/code&gt; appliquée à ces deux instructions donne :&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;## Unit: milliseconds
-##                expr      min       lq     mean   median       uq      max
-##  group by character 14.64720 14.79227 16.01651 14.98427 15.52472 22.53770
-##     group by factor 11.95522 12.17993 13.61590 12.38672 13.80838 22.14972
-##  neval
-##    100
-##    100&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;La différence est de l’ordre de 20% et peut peser encore plus sur des tables plus volumineuses. Elle est attendue car le type factor est plus léger et convient parfaitement pour des statistiques groupées. Mais cela semble jouer particulièrement pour les instructions sur dplyr, comme le suggère &lt;a href=&#34;https://github.com/tidyverse/dplyr/issues/2198&#34;&gt;cette discussion sur le github de dplyr&lt;/a&gt;. À noter qu’on ne compte pas dans la comparaison le temps de transposition d’une variable caractère en factor, puisque celui-ci peut être appliqué une seule fois pour de nombreuses instructions ou être appliqué au moment de l’import des bases.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;ralentissement-de-la-vitesse-dexecution-pour-une-creation-de-variable-directement-a-linterieur-de-summarise&#34; class=&#34;section level1&#34;&gt;
-&lt;h1&gt;Ralentissement de la vitesse d’exécution pour une création de variable directement à l’intérieur de summarise()&lt;/h1&gt;
-&lt;p&gt;Si on reprend l’exemple donné dans &lt;a href=&#34;https://antoinesir.rbind.io/post/vitesses-d-agr%C3%A9gation-de-data-table-et-dplyr/&#34;&gt;le précédent post&lt;/a&gt;, vous avez pu remarquer que :&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Rappel : df &amp;lt;- data.frame(id1 = c(1:100), idgpe = sample(50), replace = TRUE)
-df %&amp;gt;% as_tibble() %&amp;gt;% mutate(var = rnorm(100)) %&amp;gt;% 
-group_by(idgpe) %&amp;gt;% summarise(var_mean = mean(var)) -&amp;gt; output_tibble&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;pouvait se réécrire de manière plus directe (comme le fait d’ailleurs la partie sur data.table) ainsi :&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;df %&amp;gt;% as_tibble() %&amp;gt;%  group_by(idgpe) %&amp;gt;% 
-  summarise(var_mean = mean(rnorm(100))) -&amp;gt; output_tibble&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;C’est-à-dire en se passant du &lt;code&gt;mutate&lt;/code&gt; pour remplacer &lt;code&gt;var&lt;/code&gt; par sa valeur dans &lt;code&gt;summarise&lt;/code&gt;.&lt;br /&gt;
-Hé bien, cette instruction n’est pas seulement présentée ainsi pour le plaisir de vous montrer la fonction &lt;code&gt;mutate&lt;/code&gt;, mais aussi parce que la première option est bien plus rapide que la seconde, comme le montre la fonction &lt;code&gt;microbenchmark&lt;/code&gt; :&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;microbenchmark::microbenchmark(times=100L, dplyr1 = {
-  df %&amp;gt;% as_tibble() %&amp;gt;% mutate(var = rnorm(100)) %&amp;gt;% 
-    group_by(idgpe) %&amp;gt;% summarise(var_mean = mean(var)) 
-}, dplyr2 = {
-  df %&amp;gt;% as_tibble() %&amp;gt;% group_by(idgpe) %&amp;gt;% 
-    summarise(var_mean = mean(rnorm(100))) 
-})&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Unit: milliseconds
-##    expr      min       lq     mean   median       uq       max neval
-##  dplyr1 1.510403 1.543967 1.723731 1.561319 1.583790 12.094596   100
-##  dplyr2 2.559435 2.624574 2.747192 2.649889 2.702227  4.637021   100&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Ca peut sembler secondaire pour cet exemple, mais sur des grosses tables la différence va vraiment peser. Regardons par exemple les différences de performance de deux instructions &lt;code&gt;dplyr&lt;/code&gt; agrégeant par heure une variable égale au pourcentage de retard à l’arrivée par rapport à la durée du vol en utilisant les données de &lt;code&gt;nycflights13&lt;/code&gt;:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;microbenchmark::microbenchmark(times=10L, dplyr_mutate = {
-flightstib %&amp;gt;% mutate(propor_delay = arr_delay / air_time) %&amp;gt;% 
-group_by(time_hour) %&amp;gt;% 
-summarise(propor_delay = mean(propor_delay)) -&amp;gt; output_dplyr 
-}, dplyr_sans_mutate = {
-flightstib %&amp;gt;% group_by(time_hour) %&amp;gt;% 
-summarise(propor_delay = mean(arr_delay / air_time)) -&amp;gt; output_dplyr 
-})&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Unit: milliseconds
-##               expr       min        lq      mean   median        uq
-##       dplyr_mutate  24.36213  24.78368  26.55025  25.4672  28.30966
-##  dplyr_sans_mutate 202.01728 206.34767 213.90782 207.4397 218.08500
-##       max neval
-##   33.1987    10
-##  238.8597    10&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Les performances changent du tout au tout. Il semblerait donc que cela soit une très mauvais pratique d’essayer de “sauter” l’étape du &lt;code&gt;mutate()&lt;/code&gt;, sans doute parce que le &lt;code&gt;group_by&lt;/code&gt; peine à traiter le regroupement d’une opération de variables pas encore regroupées. C’est une propriété de &lt;code&gt;summarise&lt;/code&gt; qu’il est important d’avoir à l’esprit.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;ralentissement-de-la-vitesse-dexecution-pour-une-statistique-sur-une-variable-booleenne&#34; class=&#34;section level1&#34;&gt;
-&lt;h1&gt;Ralentissement de la vitesse d’exécution pour une statistique sur une variable booléenne&lt;/h1&gt;
-&lt;p&gt;Imaginons maintenant que l’on crée une variable booléenne indiquant si le pourcentage de retard à l’arrivée est supérieur à 20%.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;flightstib %&amp;gt;% mutate(bool_delay = (arr_delay / air_time &amp;gt; 0.20)) &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;On peut vouloir savoir combien de vols connaisent un retard supérieur à 20% à chaque heure, en agrégeant cette première variable et en appliquant un sum() sur celle-ci.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;flightstib %&amp;gt;% mutate(bool_delay = (arr_delay / air_time &amp;gt; 0.20)) %&amp;gt;% 
-  group_by(time_hour) %&amp;gt;% summarise(delay_over_20p = sum(bool_delay)) -&amp;gt; stats&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Cette instruction tourne sans problèmes, mais lentement du fait de la difficulté de &lt;code&gt;dplyr&lt;/code&gt; à traiter une somme sur un booléen. Il vaut mieux alors définir dans &lt;code&gt;mutate&lt;/code&gt; la variable &lt;code&gt;bool_delay&lt;/code&gt; comme une variable numérique avec &lt;code&gt;as.numeric(arr_delay / air_time &amp;gt; 0.20)&lt;/code&gt; pour optimiser la rapidité du code. Le tableau suivant donne le résultat du microbenchmark de ces deux options :&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;## Unit: milliseconds
-##              expr       min        lq      mean    median        uq
-##              bool 152.80776 152.88057 157.17484 157.91980 160.09978
-##  as.numeric(bool)  25.56135  25.77469  26.40194  26.50855  26.70311
-##        max neval
-##  161.11639    10
-##   27.54962    10&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Les gains en temps d’exécution sont particulièrement importants. On ne constate pas une telle différence avec &lt;code&gt;data.table&lt;/code&gt; par exemple.&lt;/p&gt;
-&lt;/div&gt;
 </description>
     </item>
     
