@@ -1,0 +1,57 @@
+---
+title: 'Gestion des packages sur R : présentation de packrat'
+author: Antoine Sireyjol
+date: '2019-05-07'
+slug: gestion-des-packages-sur-r-présentation-de-packrat
+categories:
+  - R
+tags:
+  - packrat
+  - R
+  - packages
+  - gestion
+  - projet
+header:
+  caption: ''
+  image: ''
+---
+
+Packrat est un système de gestion de packages et de leurs versions permettant de tracer l'installation et l'utilisation de ceux-ci dans un projet R. Cet article vise à vous montrer comment l'utiliser et en quoi il peut vous être utile. Le plan de l'article est le suivant :  
+- [Packrat, ça sert à quoi?][Packrat, ça sert à quoi?]  
+- [Démarrer son projet avec packrat][Démarrer son projet avec packrat]  
+- [Utiliser packrat avec un outil de gestion de versions][Utiliser packrat avec un outil de gestion de versions]  
+- [Quelques limites][Quelques limites]
+
+
+# Packrat, ça sert à quoi?
+Packrat trace tous les packages installés pour un projet ainsi que leurs dépendances. Ce gestionnaire de packages est lui-même un package R qui peut s'installer avec l'instruction `install.packages("packrat")`. La documentation et l'aide pour l'utilisation de packrat sont disponibles [ici](https://rstudio.github.io/packrat/).
+  
+Dans une utilisation classique de R, les packages que vous installez se trouvent généralement tous dans le même dossier, au niveau du dossier d'installation de R. Avec packrat, les packages que vous installez pour votre projet vont se retrouver dans un dossier `packrat` au niveau de votre projet. Ce seul élément permet déjà de vous assurer que vous allez pouvoir identifier facilement les packages que vous avez installés pour votre projet et pour lui seul. En plus de cela, packrat va recenser à chaque installation de package que vous réalisez la version du package au moment où vous l'avez installé ainsi que les dépendances de celui-ci. Il va mettre ces informations dans un fichier *lock*. C'est ce fichier qui permet ensuite de pouvoir récupérer l'ensemble des versions des packages utilisées dans votre projet depuis n'importe quel poste.  
+
+Ces caractéristiques permettent ainsi de mettre à l'abri votre projet de mises à jours de packages non désirées, puisque la mise à jour de packages sur d'autres projets n'aura pas d'impacts sur votre projet avec packrat. [La documentation packrat](https://rstudio.github.io/packrat/) définit cela comme un projet **isolé**. La **portabilité** et la **reproducibilité** des projets réalisés avec packrat viennent du fait que le fichier *lock* assure que les packages puissent être installés de n'importe quel poste (et n'importe quel système d'exploitation) et le soient dans la même version pour tout le monde. Dit autrement, si le projet tourne sur un poste, packrat assure qu'il tournera sur n'importe quel poste. Nous allons essayer de vous montrer concrètement comment cela fonctionne.
+
+# Démarrer son projet avec packrat   
+La première chose à faire est d'installer le package `packrat` sur une session R. Il s'appuie lui-même sur les packages `tools` et `unit`. Il se peut que les droits d'administrateur sur le poste soient nécessaires. Une fois packrat installé, vous allez pouvoir lancer un projet R associé à cet outil de gestion des packages. Pour cela, soit vous utilisez RStudio et vous aurez juste à cocher `Use packrat with this project` au moment de définir le nom de votre projet, soit vous lancez `packrat::init("~/projects/nom de votre projet")`.  
+
+À ce stade, vous êtes dans un projet R classique, sauf que vous devriez voir un dossier packrat au niveau de votre projet. Ce dossier contient le fameux fichier *packrat.lock* dont nous parlions en début d'article, un fichier *packrat.opts* qui enregistre les options que vous avez définies pour packrat, un fichier *init.R* qui permet de lancer automatiquement packrat à l'ouverture de votre projet, le dossier *src* avec les versions compressées des packages et des dossiers *lib* dans lesquels seront installés les packages. En plus, si vous utilisez RStudio, vous allez voir apparaître une section *packrat library* à l'endroit où RStudio recense les packages installés.  
+
+À partir du moment où vous êtes dans un projet packrat, toutes vos instructions `install.packages()` vont installer vos packages dans la librairie définie par packrat, et toutes vos instructions `library()` vont chercher à charger les packages se trouvant dans celle-ci. Pour autant, les installations que vous réalisez ne seront enregistrées dans le fichier *lock* que lorsque vous le spécifierez (à moins de définir les options packrat pour qu'il le fasse automatiquement, mais je ne vous le recommande pas). Si vous ne savez plus où vous en êtes de vos installations par rapport à ce qui était préalablement défini dans le fichier *lock* vous devez lancer l'instruction `packrat::status()`. Elle listera les packages que vous avez installés mais qui ne sont pas enregistrés dans le fichier *lock*, mais aussi les packages que vous n'avez pas et qui sont enregistrés dans le fichier *lock*. Vous pouvez alors décider d'enregistrer vos changements dans le fichier *lock* avec `packrat::snapshot()` ou au contraire de revenir à la version du fichier *lock* avec `packrat::restore()`.   
+
+Packrat est également capable de vérifier que les librairies qu'il charge sont bien utilisées dans le projet R. Si ça n'est pas le cas, il le signale lors d'un `packrat::status()`. On peut alors les supprimer avec `packrat::clean()`. Cet outil peut s'avérer très utile, car il est difficile de vérifier si les packages installés sont bien utilisés. Mais il faut avoir en tête que tout chargement de package avec `library()` suffira à packrat pour considérer que le package est utilisé, même si aucune des fonctions des packages n'est utilisée ensuite. C'est pourquoi il peut être intéressant, notamment pour des fonctions peu utilisées dans un projet, d'utiliser la syntaxe `nomlib::nomfonction` plutôt que de charger automatiquement la librairie. Ainsi, si la fonction est supprimée, la référence à la librairie le sera également et packrat pourra vous proposer de désinstaller cette librairie non utilisée.
+
+# Utiliser packrat avec un outil de gestion de versions  
+En gestion de versions, packrat permet de s'assurer que n'importe qui téléchargeant le projet que vous partagez pourra le faire tourner avec la même distribution de packages que celle utilisée par la dernière personne ayant fait une modification sur celui-ci. Pour cela, il ne suffit de versionner que les fichiers *init.R* et *packrat.lock*. En effet, les dossiers *lib* et *src* vont dépendre du système d'exploitation utilisé et seront de toute façon créées automatiquement par packrat et le fichier *packrat.opts* doit pouvoir rester spécifique à chaque utilisateur, notamment pour pouvoir définir le dossier dans lequel R devra chercher dans les cas rares où l'utilisateur voudrait charger un package local (avec `packrat::extlib`).  
+
+Une fois le dépôt défini ainsi, chaque utilisateur qui ouvrira le projet R se verra proposer automatiquement l'installation de packrat si le package n'est pas installé sur son poste puis pourra télécharger automatiquement les packages associés au projet avec `packrat::restore()`. Vous pouvez en faire l'expérience en clônant par exemple un projet test dont le dépôt se trouve sur [ma page github](https://github.com/AntoineSir/Test_packrat/tree/master/mon_projet). En ouvrant le fichier *.Rproj*, R va chercher à installer automatiquement packrat. Une fois l'installation effectuée, vous pouvez lancer `packrat::status()` pour voir les packages associés au projet puis `packrat::restore()` pour qu'ils soient installés sur votre poste. 
+
+# Quelques limites   
+Un des inconvénients les plus notables de packrat est que l'installation des packages prend manifestement plus de temps que lors d'une instruction `install.packages`. Cela vient sans doute des processus de lecture du fichier *lock*, de création des dossiers de librairies, etc... Cela n'est cependant pas rédhibitoire dans la mesure où l'installation des packages n'est pas censé se faire souvent, à moins de changer de poste constamment.  
+
+Un autre point à signaler est que sous windows, l'installation de `data.table 1.12.0` ne fonctionnait pas avec packrat. Cela n'était pas dû à packrat mais à un défaut de `data.table`, corrigé depuis (la version sur le CRAN est la 1.12.2). Pour ceux que ça intéresse le bug est expliqué [ici](https://github.com/Rdatatable/data.table/issues/3329).   
+
+Enfin, l'utilisation de packrat pourrait être un frein si pour une raison ou pour une autre il était impossible de l'installer sur un poste ou s'il ne fonctionnait pas correctement (comme dans le cas du bug avec `data.table` par exemple). Il semble alors impossible de charger des packages. Ce problème peut cependant se contourner en téléchargeant les packages en local sur une autre session R et en utilisant `packrat::extlib()` pour les charger dans le projet défini avec packrat. Il suffit pour cela d'indiquer dans les options de packrat le dossier dans lequel packrat doit aller chercher les packages chargés en local (d'où l'intérêt de ne pas mettre dans le dépôt le fichier d'options, puisque cette option est dépendante du poste utilisé). Packrat ne tracera pas les packages chargés ainsi. 
+
+# Pour finir...  
+Packrat est donc un outil très pratique de gestion des packages, et il est gratuit. Si ces avantages sont évidents pour des projets collaboratifs, il est aussi intéressant à utiliser pour des projets personnels qu'on pourrait vouloir refaire tourner quelques années plus tard sans que l'évolution des packages ne soit un frein à cela. En l'utilisant avec un système de gestion de versions, le fait de pouvoir revenir à une installation identique à celle qui existait à un moment où le code tournait est un avantage à ne pas sous-estimer, surtout dans un langage où les packages évoluent constamment. Attention cependant : cela ne fonctionne que tant que le la version du package est encore référencée dans les archives du CRAN.
+
+ 

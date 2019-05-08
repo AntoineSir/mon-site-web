@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Homes on Antoine Sireyjol</title>
+    <title>Homes on Antoine Sireyjol - statisticien freelance</title>
     <link>/home/</link>
-    <description>Recent content in Homes on Antoine Sireyjol</description>
+    <description>Recent content in Homes on Antoine Sireyjol - statisticien freelance</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>fr</language>
     <copyright>&amp;copy; 2019</copyright>
@@ -22,6 +22,15 @@
     </item>
     
     <item>
+      <title>Le blog</title>
+      <link>/home/posts/</link>
+      <pubDate>Wed, 20 Apr 2016 00:00:00 +0200</pubDate>
+      
+      <guid>/home/posts/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Antoine Sireyjol</title>
       <link>/home/hero/</link>
       <pubDate>Sun, 15 Oct 2017 00:00:00 +0200</pubDate>
@@ -31,11 +40,11 @@
     </item>
     
     <item>
-      <title>Le blog</title>
-      <link>/home/posts/</link>
+      <title>Contact</title>
+      <link>/home/contact/</link>
       <pubDate>Wed, 20 Apr 2016 00:00:00 +0200</pubDate>
       
-      <guid>/home/posts/</guid>
+      <guid>/home/contact/</guid>
       <description></description>
     </item>
     
@@ -111,15 +120,6 @@
       <description>This is an example of using the custom widget to create your own homepage section.
 I am a teaching instructor for the following courses at University X:
  CS101: An intro to computer science CS102: An intro to computer science CS103: An intro to computer science CS104: An intro to computer science CS105: An intro to computer science CS106: An intro to computer science CS107: An intro to computer science  </description>
-    </item>
-    
-    <item>
-      <title>Contact</title>
-      <link>/home/contact/</link>
-      <pubDate>Wed, 20 Apr 2016 00:00:00 +0200</pubDate>
-      
-      <guid>/home/contact/</guid>
-      <description></description>
     </item>
     
     <item>

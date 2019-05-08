@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Posts on Antoine Sireyjol</title>
+    <title>Posts on Antoine Sireyjol - statisticien freelance</title>
     <link>/post/</link>
-    <description>Recent content in Posts on Antoine Sireyjol</description>
+    <description>Recent content in Posts on Antoine Sireyjol - statisticien freelance</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>fr</language>
     <copyright>&amp;copy; 2019</copyright>
@@ -11,6 +11,18 @@
     
 	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Gestion des packages sur R : présentation de packrat</title>
+      <link>/post/gestion-des-packages-sur-r-pr%C3%A9sentation-de-packrat/</link>
+      <pubDate>Tue, 07 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/gestion-des-packages-sur-r-pr%C3%A9sentation-de-packrat/</guid>
+      <description>Packrat est un système de gestion de packages et de leurs versions permettant de tracer l’installation et l’utilisation de ceux-ci dans un projet R. Cet article vise à vous montrer comment l’utiliser et en quoi il peut vous être utile. Le plan de l’article est le suivant :
+- Packrat, ça sert à quoi?
+- Démarrer son projet avec packrat
+- Utiliser packrat avec un outil de gestion de versions</description>
+    </item>
     
     <item>
       <title>Astuces d&#39;optimisation d&#39;un script R</title>

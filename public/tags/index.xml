@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Tags on Antoine Sireyjol</title>
+    <title>Tags on Antoine Sireyjol - statisticien freelance</title>
     <link>/tags/</link>
-    <description>Recent content in Tags on Antoine Sireyjol</description>
+    <description>Recent content in Tags on Antoine Sireyjol - statisticien freelance</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>fr</language>
     <copyright>&amp;copy; 2019</copyright>
-    <lastBuildDate>Fri, 18 Jan 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 07 May 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     
@@ -15,7 +15,7 @@
     <item>
       <title>R</title>
       <link>/tags/r/</link>
-      <pubDate>Fri, 18 Jan 2019 00:00:00 +0000</pubDate>
+      <pubDate>Tue, 07 May 2019 00:00:00 +0000</pubDate>
       
       <guid>/tags/r/</guid>
       <description></description>
@@ -67,6 +67,15 @@
     </item>
     
     <item>
+      <title>gestion</title>
+      <link>/tags/gestion/</link>
+      <pubDate>Tue, 07 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/gestion/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>microbenchmark</title>
       <link>/tags/microbenchmark/</link>
       <pubDate>Fri, 18 Jan 2019 00:00:00 +0000</pubDate>
@@ -81,6 +90,33 @@
       <pubDate>Fri, 18 Jan 2019 00:00:00 +0000</pubDate>
       
       <guid>/tags/optimisation/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>packages</title>
+      <link>/tags/packages/</link>
+      <pubDate>Tue, 07 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/packages/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>packrat</title>
+      <link>/tags/packrat/</link>
+      <pubDate>Tue, 07 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/packrat/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>projet</title>
+      <link>/tags/projet/</link>
+      <pubDate>Tue, 07 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/projet/</guid>
       <description></description>
     </item>
     

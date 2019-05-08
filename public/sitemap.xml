@@ -4,6 +4,14 @@
     
     <url>
     
+      <loc>/post/gestion-des-packages-sur-r-pr%C3%A9sentation-de-packrat/</loc>
+      <lastmod>2019-05-07T00:00:00+00:00</lastmod>
+    </url>
+    
+  
+    
+    <url>
+    
       <loc>/post/astuces-d-optimisation-d-un-script-r/</loc>
       <lastmod>2019-01-18T11:34:37+01:00</lastmod>
     </url>
@@ -78,7 +86,7 @@
     <url>
     
       <loc>/tags/r/</loc>
-      <lastmod>2019-01-18T11:34:37+01:00</lastmod>
+      <lastmod>2019-05-07T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -87,7 +95,7 @@
     <url>
     
       <loc>/categories/r/</loc>
-      <lastmod>2019-01-18T11:34:37+01:00</lastmod>
+      <lastmod>2019-05-07T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -96,7 +104,7 @@
     <url>
     
       <loc>/tags/</loc>
-      <lastmod>2019-01-18T11:34:37+01:00</lastmod>
+      <lastmod>2019-05-07T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -149,6 +157,15 @@
     
     <url>
     
+      <loc>/tags/gestion/</loc>
+      <lastmod>2019-05-07T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    <url>
+    
       <loc>/tags/microbenchmark/</loc>
       <lastmod>2019-01-18T11:34:37+01:00</lastmod>
       <priority>0</priority>
@@ -160,6 +177,33 @@
     
       <loc>/tags/optimisation/</loc>
       <lastmod>2019-01-18T11:34:37+01:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    <url>
+    
+      <loc>/tags/packages/</loc>
+      <lastmod>2019-05-07T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    <url>
+    
+      <loc>/tags/packrat/</loc>
+      <lastmod>2019-05-07T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    <url>
+    
+      <loc>/tags/projet/</loc>
+      <lastmod>2019-05-07T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
