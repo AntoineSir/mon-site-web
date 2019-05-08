@@ -7,7 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>fr</language>
     <copyright>&amp;copy; 2019</copyright>
-    <lastBuildDate>Tue, 07 May 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 09 May 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/r/index.xml" rel="self" type="application/rss+xml" />
     
@@ -15,7 +15,7 @@
     <item>
       <title>Gestion des packages sur R : présentation de packrat</title>
       <link>/post/gestion-des-packages-sur-r-pr%C3%A9sentation-de-packrat/</link>
-      <pubDate>Tue, 07 May 2019 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 09 May 2019 00:00:00 +0000</pubDate>
       
       <guid>/post/gestion-des-packages-sur-r-pr%C3%A9sentation-de-packrat/</guid>
       <description>Packrat est un système de gestion de packages et de leurs versions permettant de tracer l’installation et l’utilisation de ceux-ci dans un projet R. Cet article vise à vous montrer comment l’utiliser et en quoi il peut vous être utile. Le plan de l’article est le suivant :
