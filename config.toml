@@ -263,15 +263,15 @@ enableGitInfo = true
   # Align the main menu to the right of the page? (true/false)
   align_right = true
 
-#[[menu.main]]
-#  name = "Accueil"
-#  url = "#hero"
-#  weight = 1
+[[menu.main]]
+  name = "Accueil"
+  url = "#about"
+  weight = 1
   
 [[menu.main]]
   name = "Le blog"
   url = "#posts"
-  weight = 1
+  weight = 2
 
 #[[menu.main]]
 #  name = "Publications"
@@ -281,7 +281,7 @@ enableGitInfo = true
 [[menu.main]]
   name = "Contact"
   url = "#contact"
-  weight = 2
+  weight = 3
 
 # Link to a PDF of your resume/CV from the menu.
 # To enable, copy your resume/CV to `static/files/cv.pdf` and uncomment the lines below.

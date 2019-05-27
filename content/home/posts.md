@@ -9,7 +9,7 @@ title = "Le blog"
 subtitle = "Quelques notes sur la programmation statistique"
 
 # Order that this section will appear in.
-weight = 1
+weight = 5
 
 # Filter posts by tag.
 #  By default, show all recent posts.

@@ -22,12 +22,14 @@
     </item>
     
     <item>
-      <title>Le blog</title>
-      <link>/home/posts/</link>
+      <title></title>
+      <link>/home/about/</link>
       <pubDate>Wed, 20 Apr 2016 00:00:00 +0200</pubDate>
       
-      <guid>/home/posts/</guid>
-      <description></description>
+      <guid>/home/about/</guid>
+      <description>Statisticien indépendant depuis un an, j&amp;rsquo;accompagne mes clients dans leurs projets d&amp;rsquo;analyse des données et de programmation statistique. Mon travail a plusieurs facettes :
+ Choix du type d&amp;rsquo;analyse statistique à mettre en place : toutes les méthodes ne se valent pas et leur choix dépend toujours du type des données et de leur qualité.
+ Valorisation des résultats : transmission sous le format souhaité et valorisation grâce à des méthodes de visualisation des données.</description>
     </item>
     
     <item>
@@ -40,21 +42,23 @@
     </item>
     
     <item>
+      <title>Le blog</title>
+      <link>/home/posts/</link>
+      <pubDate>Wed, 20 Apr 2016 00:00:00 +0200</pubDate>
+      
+      <guid>/home/posts/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Contact</title>
       <link>/home/contact/</link>
       <pubDate>Wed, 20 Apr 2016 00:00:00 +0200</pubDate>
       
       <guid>/home/contact/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title></title>
-      <link>/home/about/</link>
-      <pubDate>Wed, 20 Apr 2016 00:00:00 +0200</pubDate>
-      
-      <guid>/home/about/</guid>
-      <description></description>
+      <description>Vous pouvez me contacter directement depuis le site :
+Votre nom:  Votre adresse e-mail:  Votre message:
+  Ou m&amp;rsquo;envoyer un e-mail :</description>
     </item>
     
     <item>
