@@ -37,7 +37,7 @@ weight = 1
   icon = "r-project"
   icon_pack = "fab"
   name = "Expertise R"
-  description = " Si vous avez besoin d'aide dans votre utilisation du logiciel R, je devrais pouvoir vous aider! J'utilise régulièrement ce langage et je partage déjà ce qui me semble intéressant dans [mon blog](/post/). Je participe également à des échanges avec les [utilisateurs de R de Toulouse](https://r-toulouse.netlify.com/evenements/rencontre-de-fevrier-2019/)."
+  description = " Si vous avez besoin d'aide dans votre utilisation de R, je devrais pouvoir vous aider! J'utilise régulièrement ce langage et je partage déjà ce qui me semble intéressant dans [mon blog](/post/). Je participe également à des échanges avec les [utilisateurs de R de Toulouse](https://r-toulouse.netlify.com/evenements/rencontre-de-fevrier-2019/)."
 
 +++
 # <span style="color:#8A2908">Services</span>
