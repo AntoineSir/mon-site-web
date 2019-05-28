@@ -26,7 +26,7 @@ date_format = "January 2006"
   date_start = "2019-04-01"
   date_end = "2019-05-30"
   description = """
-  Analyse des profils de consommation énergétique des résidents d'un bâtiment à énergie positive à partir de données de capteurs relevant leurs données de consommation électrique toutes les 10 minutes
+  Analyse des profils de consommation énergétique des résidents d'un bâtiment à énergie positive à partir de données de capteurs relevant leurs données de consommation électrique toutes les 10 minutes.
   """
 
 [[experience]]
@@ -51,4 +51,4 @@ date_format = "January 2006"
   Comparaison des options envisageables (en particulier les différents packages de R et Python) pour le recodage du modèle de microsimulation Ines en termes de vitesse d'exécution, lisibilité du code et facilité de prise en main. Estimation de l'investissement représenté par le recodage et proposition d'une méthode de mise en oeuvre. 
   """
 +++
-Vous pouvez également consulter mes autres expériences professionnelles dans ma [bio](/bio/).
+Vous pouvez également consulter mes [autres expériences professionnelles](/bio/).

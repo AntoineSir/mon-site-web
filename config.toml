@@ -289,7 +289,7 @@ enableGitInfo = true
   weight = 4
   
 [[menu.main]]
-  name = "Bio"
+  name = "CV & Publications"
   url = "/bio/"
   weight = 5
   

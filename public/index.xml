@@ -11,11 +11,11 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
-      <title>Skills</title>
-      <link>/bio/skills/</link>
-      <pubDate>Wed, 20 Sep 2017 00:00:00 +0200</pubDate>
+      <title>Expériences professionnelles</title>
+      <link>/bio/experience_pro/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/bio/skills/</guid>
+      <guid>/bio/experience_pro/</guid>
       <description></description>
     </item>
     
@@ -29,33 +29,11 @@
     </item>
     
     <item>
-      <title></title>
-      <link>/bio/about/</link>
+      <title>Recent Publications</title>
+      <link>/bio/publications/</link>
       <pubDate>Wed, 20 Apr 2016 00:00:00 +0200</pubDate>
       
-      <guid>/bio/about/</guid>
-      <description>&lt;p&gt;Statisticien indépendant depuis un an, j&amp;rsquo;accompagne mes clients dans leurs projets d&amp;rsquo;analyse des données et de programmation statistique. Mon travail a plusieurs facettes :&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;Choix du type d&amp;rsquo;analyse statistique à mettre en place&lt;/strong&gt; : toutes les méthodes ne se valent pas et leur choix dépend toujours du type des données et de leur qualité.&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;Valorisation des résultats&lt;/strong&gt; : transmission sous le format souhaité et valorisation grâce à des méthodes de visualisation des données.&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;Programmation statistique&lt;/strong&gt; : pour automatiser des analyses, rendre votre code lisible et reproductible, ou encore migrer d&amp;rsquo;un langage de programmation payant vers un &lt;em&gt;open-source&lt;/em&gt;.&lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Diplômé Économiste - Statisticien de l&amp;rsquo;école de l&amp;rsquo;Ensae ParisTech, j&amp;rsquo;ai travaillé pendant 4 ans au service statistique du Ministère des Solidarités et de la Santé, la &lt;a href=&#34;https://drees.solidarites-sante.gouv.fr/etudes-et-statistiques/&#34; target=&#34;_blank&#34;&gt;Drees&lt;/a&gt;. J&amp;rsquo;y ai participé au développement et à la valorisation du modèle de microsimulation &lt;a href=&#34;https://www.insee.fr/fr/information/2021951&#34; target=&#34;_blank&#34;&gt;Ines&lt;/a&gt; en tant que chargé d&amp;rsquo;étude puis responsable d&amp;rsquo;équipe.&lt;/p&gt;
-
-&lt;p&gt;Étant actuellement dans la région de Toulouse, je suis disponible pour des missions chez le client dans cette zone ou pour des missions en télétravail pour n&amp;rsquo;importe quel client en France. N&amp;rsquo;hésitez pas à me contacter pour toute demande en utilisant la rubrique contact de ce site ou sur mes comptes &lt;a href=&#34;https://twitter.com/AntoineSyr&#34; target=&#34;_blank&#34;&gt;Twitter&lt;/a&gt; et &lt;a href=&#34;https://www.linkedin.com/in/antoine-sireyjol-5224a3129/&#34; target=&#34;_blank&#34;&gt;Linkedin&lt;/a&gt;.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Experience</title>
-      <link>/bio/experience/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>/bio/experience/</guid>
+      <guid>/bio/publications/</guid>
       <description></description>
     </item>
     
@@ -387,6 +365,33 @@ output_base &amp;lt;- merge(weather, flights_time_hour, by = c(&amp;quot;time_ho
       <guid>/privacy/</guid>
       <description>&lt;p&gt;&amp;hellip;&lt;/p&gt;
 </description>
+    </item>
+    
+    <item>
+      <title>‘It’s Not That We Hate You’: Understanding Children’s Gender Attitudes and Expectancies About Peer Relationships</title>
+      <link>/publication/2011-gender-attitudes/</link>
+      <pubDate>Tue, 08 Feb 2011 00:00:00 +0000</pubDate>
+      
+      <guid>/publication/2011-gender-attitudes/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Effects of Different Attentional Cues on Responding to Joint Attention in Younger Siblings of Children with Autism Spectrum Disorders</title>
+      <link>/publication/2007-rja-in-sibs/</link>
+      <pubDate>Mon, 01 Jan 2007 00:00:00 +0000</pubDate>
+      
+      <guid>/publication/2007-rja-in-sibs/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Item-specific Processing Reduces False Memories</title>
+      <link>/publication/2004-false-memories/</link>
+      <pubDate>Wed, 01 Dec 2004 00:00:00 +0000</pubDate>
+      
+      <guid>/publication/2004-false-memories/</guid>
+      <description></description>
     </item>
     
   </channel>

@@ -25,24 +25,29 @@ weight = 2
   icon = "r-project"
   icon_pack = "fab"
   name = "R"
-  description = "90%"
-  
-[[feature]]
-  icon = "chart-line"
-  icon_pack = "fas"
-  name = "Statistics"
-  description = "90%"  
+  description = "Maîtrise du logiciel, de ses packages d'analyse (rstats, tidyverse, data.table, ...) et de ses outils de rendu (R Markdown, applications RShiny, Blogdown...)"
   
 [[feature]]
   icon = "python"
   icon_pack = "fab"
   name = "Python"
-  description = "70%"
+  description = "Bonne connaissance générale du langage et de ses libraires d'analyse de données et de machine learning (pandas, numpy, matplotlib, scikit-learn...)"  
+  
+[[feature]]
+  icon = "server"
+  icon_pack = "fas"
+  name = "SAS"
+  description = "Maîtrise complète"
 
 [[feature]]
   icon = "laptop-code"
-  icon_pack = "fab"
-  name = "SAS"
-  description = "90%"
+  icon_pack = "fas"
+  name = "Informatique"
+  description = "Pack office, Logiciels de gestion de versions (Git, Subversion), LaTex, Markdown"
 
+[[feature]]
+  icon = "globe-americas"
+  icon_pack = "fas"
+  name = "Langues"
+  description = "Anglais et Espagnol : Lus, parlés et écrits couramment."
 +++
