@@ -22,12 +22,12 @@
     </item>
     
     <item>
-      <title>Notre offre</title>
+      <title>Services</title>
       <link>/home/notre_offre/</link>
       <pubDate>Wed, 20 Sep 2017 00:00:00 +0200</pubDate>
       
       <guid>/home/notre_offre/</guid>
-      <description>Vous pouvez nous contacter pour tout type de demande en lien avec l&amp;rsquo;analyse de données, en particulier :</description>
+      <description>Vous pouvez me contacter pour tout type de demande en lien avec l&amp;rsquo;analyse de données, en particulier :</description>
     </item>
     
     <item>
@@ -37,7 +37,7 @@
       
       <guid>/home/apropos/</guid>
       <description>À propos Statisticien indépendant depuis un an, j&amp;rsquo;accompagne mes clients dans leurs projets d&amp;rsquo;analyse des données et de programmation statistique.
-Diplômé Économiste - Statisticien de l&amp;rsquo;école de l&amp;rsquo;Ensae ParisTech, j&amp;rsquo;ai travaillé pendant 4 ans au service statistique du Ministère des Solidarités et de la Santé, la Drees. J&amp;rsquo;y ai participé au développement et à la valorisation du modèle de microsimulation Ines en tant que chargé d&amp;rsquo;étude puis responsable d&amp;rsquo;équipe. Mes expériences sont détaillées dans ma bio</description>
+Diplômé Économiste - Statisticien de l&amp;rsquo;école de l&amp;rsquo;Ensae ParisTech, j&amp;rsquo;ai travaillé pendant 4 ans au service statistique du Ministère des Solidarités et de la Santé, la Drees. J&amp;rsquo;y ai participé au développement et à la valorisation du modèle de microsimulation Ines en tant que chargé d&amp;rsquo;étude puis responsable d&amp;rsquo;équipe. Mes expériences sont détaillées dans ma bio.</description>
     </item>
     
     <item>
@@ -112,6 +112,15 @@ Votre nom:  Votre adresse e-mail:  Votre message:
       
       <guid>/home/projects/</guid>
       <description></description>
+    </item>
+    
+    <item>
+      <title>Missions réalisées</title>
+      <link>/home/missions/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/home/missions/</guid>
+      <description>Vous pouvez également consulter mes autres expériences professionnelles dans ma bio.</description>
     </item>
     
     <item>

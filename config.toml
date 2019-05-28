@@ -56,7 +56,7 @@ enableGitInfo = true
 
   # Organizations/Affiliations.
   #   Separate multiple entries with a comma, using the form: `[ {name="Org1", url=""}, {name="Org2", url=""} ]`.
-  organizations = [ ]
+  organizations = [{name="Toulouse, France", url=""} ]
 
   gravatar = false  # Get your avatar from Gravatar.com? (true/false)
   avatar = "portrait.jpg"  # Specify an avatar image (in `static/img/` folder) or delete value to disable avatar.
@@ -279,13 +279,13 @@ enableGitInfo = true
 #  weight = 3
 
 [[menu.main]]
-  name = "Nous contacter"
+  name = "Me contacter"
   url = "#contact"
   weight = 3
   
 [[menu.main]]
   name = "Missions réalisées"
-  url = "/prev_mission/"
+  url = "#missions"
   weight = 4
   
 [[menu.main]]
