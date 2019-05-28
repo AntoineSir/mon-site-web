@@ -6,7 +6,7 @@ date = 2017-09-20T00:00:00
 # Activate this widget? true/false
 active = true
 
-title = "Services"
+title = ""
 subtitle = ""
 
 # Order that this section will appear in.
@@ -25,7 +25,7 @@ weight = 1
   icon = "chart-line"
   icon_pack = "fas"
   name = "Analyse des données"
-  description = "Tous les modèles statistiques ne se valent pas et leur choix dépend toujours du type des données et de leur qualité. Je peux vous accompagner pour calibrer vos analyses en fonction de vos besoins. Je vous transmets ensuite les résultats au format qui vous convient. En particulier, je vous aide à les valoriser grâce à des méthodes de visualisation des données."
+  description = "Le choix d'un modèle statistique dépend toujours du type des données et de leur qualité. Je peux vous accompagner pour calibrer vos analyses en fonction de vos besoins et diffuser les résultats au format qui vous convient avec les méthodes de visualisation de données adaptées."
   
 [[feature]]
   icon = "laptop-code"
@@ -37,9 +37,10 @@ weight = 1
   icon = "r-project"
   icon_pack = "fab"
   name = "Expertise R"
-  description = " Si vos besoins ne rentrent pas exactement dans une des précédentes problématiques mais que vous avez besoin d'aide dans votre utilisation du logiciel R, je devrais pouvoir vous aider! J'utilise régulièrement ce langage et je partage déjà ce qui me semble intéressant dans [mon blog](/post/). Je participe également à des échanges avec les [utilisateurs de R de Toulouse](https://r-toulouse.netlify.com/evenements/rencontre-de-fevrier-2019/)."
+  description = " Si vous avez besoin d'aide dans votre utilisation du logiciel R, je devrais pouvoir vous aider! J'utilise régulièrement ce langage et je partage déjà ce qui me semble intéressant dans [mon blog](/post/). Je participe également à des échanges avec les [utilisateurs de R de Toulouse](https://r-toulouse.netlify.com/evenements/rencontre-de-fevrier-2019/)."
 
 +++
+# <span style="color:#8A2908">Services</span>
 
 Vous pouvez [me contacter](#contact) pour tout type de demande en lien avec l'analyse de données, en particulier : 
 

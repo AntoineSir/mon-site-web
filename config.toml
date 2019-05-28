@@ -98,13 +98,13 @@ enableGitInfo = true
 
   # Font style.
   #   Choose from `default`, `classic`, or `playfair`.
-  font = "playfair"
+  font = "classic"
 
   # Description for social sharing and search engines. If undefined, author role is used in place.
-  description = ""
+  description = "Missions freelance en statistiques"
   
   # Default image for social sharing and search engines. Place image in `static/img/` folder and specify image name here.
-  sharing_image = ""
+  sharing_image = "accueil.jpg"
 
   # Twitter username (without @). Used when a vistor shares your site on Twitter.
   twitter = "AntoineSyr"
@@ -246,6 +246,11 @@ enableGitInfo = true
     icon = "twitter"
     icon_pack = "fab"
     link = "https://twitter.com/AntoineSyr"
+  
+    [[params.social]]
+    icon = "paper-plane"
+    icon_pack = "fas"
+    link = "mailto:antoine.sireyjol@gmail.com"
 
     
   # Link to a PDF of your resume/CV from the About widget.
