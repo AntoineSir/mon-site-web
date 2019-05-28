@@ -52,7 +52,7 @@ date_format = "January 2006"
   """
   
 [[experience]]
-  title = "Développement d’un modèle des dépenses de retraites"
+  title = "Développement d’un modèle de dépenses de retraites"
   company = "Ministère de l’Économie et des Finances, DGT"
   company_url = "https://www.tresor.economie.gouv.fr/"
   location = "Paris"
