@@ -1,23 +1,8 @@
 +++
 title = "Overview"
-
-date = 2018-09-09T00:00:00
-# lastmod = 2018-09-09T00:00:00
-
-draft = false  # Is this a draft? true/false
-toc = true  # Show table of contents? true/false
-type = "docs"  # Do not modify.
-
-# Add menu entry to sidebar.
-[menu.tutorial]
-  name = "Overview"
-  weight = 1
-
-# Featured image.
-# Uncomment below lines to use.
-# [header]
-# image = "headers/getting-started.png"
-# caption = "Image credit: [**Academic**](https://github.com/gcushen/hugo-academic/)"
+date = 2017-01-01T00:00:00  # Add today's date.
+widgets = true  # Page type is a Widget Page.
+summary = ""  # Add a page description.
 +++
 
 This feature can be used for publishing content such as:

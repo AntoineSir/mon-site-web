@@ -265,7 +265,7 @@ enableGitInfo = true
 
 [[menu.main]]
   name = "Accueil"
-  url = "#about"
+  url = "#notre_offre"
   weight = 1
   
 [[menu.main]]
@@ -279,10 +279,20 @@ enableGitInfo = true
 #  weight = 3
 
 [[menu.main]]
-  name = "Contact"
+  name = "Nous contacter"
   url = "#contact"
   weight = 3
-
+  
+[[menu.main]]
+  name = "Missions réalisées"
+  url = "/prev_mission/"
+  weight = 4
+  
+[[menu.main]]
+  name = "Bio"
+  url = "/bio/"
+  weight = 5
+  
 # Link to a PDF of your resume/CV from the menu.
 # To enable, copy your resume/CV to `static/files/cv.pdf` and uncomment the lines below.
 # [[menu.main]]
