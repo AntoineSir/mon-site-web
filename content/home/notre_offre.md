@@ -24,7 +24,7 @@ weight = 1
 [[feature]]
   icon = "chart-line"
   icon_pack = "fas"
-  name = "Analyse des données"
+  name = "Analyse et valorisation des résultats"
   description = "Le choix d'un modèle statistique dépend toujours du type des données et de leur qualité. Je peux vous accompagner pour calibrer vos analyses en fonction de vos besoins et diffuser les résultats au format qui vous convient avec les méthodes de visualisation de données adaptées."
   
 [[feature]]
