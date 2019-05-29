@@ -31,7 +31,7 @@ weight = 1
   icon = "laptop-code"
   icon_pack = "fas"
   name = "Programmation statistique"
-  description = "Je peux vous aider à automatiser des analyses, rendre votre code lisible et reproductible, ou encore migrer de SAS ou Stata vers un langage *open-source*. J'utilise en général le langage R mais je connais également Python."
+  description = "Je peux vous aider à automatiser des analyses, rendre votre code lisible et reproductible, ou encore migrer de SAS ou Stata vers un langage *open-source*, R ou Python."
   
 [[feature]]
   icon = "r-project"
