@@ -11,9 +11,6 @@ baseurl = "https://antoinesir.rbind.io/"
 # Title of your site
 title = "Antoine Sireyjol - statisticien freelance"
 
-# enable robots.txt file
-enableRobotsTXT = true
-
 # Your copyright notice - appears in site footer.
 # To display a copyright symbol, type `&copy;`.
 copyright = "&copy; 2019"
