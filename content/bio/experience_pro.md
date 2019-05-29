@@ -30,7 +30,7 @@ date_format = "January 2006"
   
 [[experience]]
   title = "Responsable du pôle microsimulation"
-  company = "Drees"
+  company = "Drees, Ministère des Solidarités et de la Santé"
   company_url = "https://drees.solidarites-sante.gouv.fr/etudes-et-statistiques/"
   location = "Paris"
   date_start = "2017-09-01"
@@ -42,7 +42,7 @@ date_format = "January 2006"
 
 [[experience]]
   title = "Chargé d’études sur la redistribution du modèle sociofiscal"
-  company = "Drees"
+  company = "Drees, Ministère des Solidarités et de la Santé"
   company_url = "https://drees.solidarites-sante.gouv.fr/etudes-et-statistiques/"
   location = "Paris"
   date_start = "2014-09-01"

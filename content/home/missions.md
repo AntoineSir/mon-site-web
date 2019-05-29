@@ -42,7 +42,7 @@ date_format = "January 2006"
   
 [[experience]]
   title = "Analyse des possibilités de recodage du modèle Ines de SAS vers un langage open-source"
-  company = "Drees"
+  company = "Drees, Ministère des Solidarités et de la Santé"
   company_url = "https://drees.solidarites-sante.gouv.fr/etudes-et-statistiques/"
   location = "Paris"
   date_start = "2018-09-01"
