@@ -37,7 +37,7 @@ date_format = "January 2006"
   date_start = "2019-04-01"
   date_end = "2019-05-30"
   description = """
-  Étude sur l'impact d'un nouveau système de signalisation des voitures lors d'une marche arrière sur le danger ressenti par les usagers de la route (piétons, cycliste et conducteurs).
+  Étude de l'impact d'un nouveau système de signalisation des voitures lors d'une marche arrière sur le danger ressenti par les usagers de la route (piétons, cycliste et conducteurs).
   """
   
 [[experience]]
