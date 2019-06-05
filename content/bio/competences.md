@@ -31,7 +31,7 @@ weight = 2
   icon = "python"
   icon_pack = "fab"
   name = "Python"
-  description = "Bonne connaissance générale du langage et de ses libraires d'analyse de données et de machine learning (pandas, numpy, matplotlib, scikit-learn...)"  
+  description = "Bonne connaissance générale du langage et de ses librairies d'analyse de données et de machine learning (pandas, numpy, matplotlib, scikit-learn...)"  
   
 [[feature]]
   icon = "server"
