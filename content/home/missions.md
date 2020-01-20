@@ -17,7 +17,29 @@ date_format = "January 2006"
 #   Add/remove as many `[[experience]]` blocks below as you like.
 #   Required fields are `title`, `company`, and `date_start`.
 #   Leave `date_end` empty if it's your current employer.
-#   Begin/end multi-line descriptions with 3 quotes `"""`.
+#   Begin/end multi-line descriptions with 3 quotes `"""`.  
+
+[[experience]]
+  title = "Formateur Développeur·se Data IA pour Simplon Biarritz et Microsoft"
+  company = "Simplon"
+  company_url = "https://simplon.co/formation/ecole-ia-microsoft/23"
+  location = "Biarritz"
+  date_start = "2020-01-01"
+  date_end = ""
+  description = """
+  Co-formateur pour la promotion 2019 - 2020 de Biarritz en R, Python, méthodes de régression, classifications, clusterings, machine learning et intelligence artificielle. 
+  """
+  
+[[experience]]
+  title = "Recodage du modèle de microsimulation Ines de SAS vers R"
+  company = "Drees, Ministère des Solidarités et de la Santé"
+  company_url = "https://drees.solidarites-sante.gouv.fr/etudes-et-statistiques/"
+  location = "Paris"
+  date_start = "2019-07-01"
+  date_end = ""
+  description = """
+  Recodage d'Ines en R en lien avec les équipes gestionnaires du modèle.
+  """
 [[experience]]
   title = "Analyse des profils de consommation énergétique des ménages"
   company = "Yumaneed"

@@ -27,6 +27,18 @@ date_format = "January 2006"
   date_start = "2018-09-01"
   date_end = ""
   description = """ [Cliquez ici pour voir les missions réalisées](../#missions) """
+
+[[experience]]
+  title = "Ingénieur de Recherche data scientist"
+  company = "Inserm - IFERISS"
+  company_url = "http://www.iferiss.org/index.php/fr/"
+  location = "Toulouse"
+  date_start = "2019-10-01"
+  date_end = "2019-12-31"
+  description = """
+  Études du lien entre niveau de défavorisation et recours aux soins de santé à partir
+  des bases de données de l'Assurance Maladie en Occitanie.
+  """
   
 [[experience]]
   title = "Responsable du pôle microsimulation"
