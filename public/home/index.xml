@@ -36,8 +36,8 @@
       <pubDate>Wed, 20 Apr 2016 00:00:00 +0200</pubDate>
       
       <guid>/home/apropos/</guid>
-      <description>À propos Statisticien indépendant depuis un an, j&amp;rsquo;accompagne mes clients dans leurs projets d&amp;rsquo;analyse des données et de programmation statistique.
-Diplômé Économiste - Statisticien de l&amp;rsquo;école de l&amp;rsquo;Ensae ParisTech, j&amp;rsquo;ai travaillé pendant 4 ans au service statistique du Ministère des Solidarités et de la Santé, la Drees. J&amp;rsquo;y ai participé au développement et à la valorisation du modèle de microsimulation Ines en tant que chargé d&amp;rsquo;étude puis responsable d&amp;rsquo;équipe. Mes expériences professionnelles sont détaillées dans la section CV.</description>
+      <description>À propos Statisticien indépendant depuis bientôt 2 ans, j&amp;rsquo;accompagne mes clients dans leurs projets d&amp;rsquo;analyse des données et de programmation statistique.
+Diplômé Économiste - Statisticien de l&amp;rsquo;Ensae ParisTech, j&amp;rsquo;ai travaillé pendant 4 ans au service statistique du Ministère des Solidarités et de la Santé, la Drees. J&amp;rsquo;y ai participé au développement et à la valorisation du modèle de microsimulation Ines en tant que chargé d&amp;rsquo;étude puis responsable d&amp;rsquo;équipe. Mes expériences professionnelles sont détaillées dans la section CV.</description>
     </item>
     
     <item>
@@ -150,15 +150,6 @@ I am a teaching instructor for the following courses at University X:
       
       <guid>/home/tags/</guid>
       <description></description>
-    </item>
-    
-    <item>
-      <title></title>
-      <link>/home/missions/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>/home/missions/</guid>
-      <description>code{white-space: pre;}pre:not([class]) {background-color: white;}if (window.hljs) {hljs.configure({languages: []});hljs.initHighlightingOnLoad();if (document.readyState &amp;&amp; document.readyState === &#34;complete&#34;) {window.setTimeout(function() { hljs.initHighlighting(); }, 0);}}h1 {font-size: 34px;}h1.title {font-size: 38px;}h2 {font-size: 30px;}h3 {font-size: 24px;}h4 {font-size: 18px;}h5 {font-size: 16px;}h6 {font-size: 12px;}.</description>
     </item>
     
   </channel>

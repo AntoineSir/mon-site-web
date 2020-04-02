@@ -27,7 +27,7 @@ date_format = "January 2006"
   date_start = "2020-01-01"
   date_end = ""
   description = """
-  Co-formateur pour la promotion 2019 - 2020 de Biarritz en R, Python, méthodes de régression, classifications, clusterings, machine learning et intelligence artificielle. 
+  Co-formateur pour la promotion 2019 - 2020 de Biarritz en R, Python, méthodes de régression, classifications, clusterings, machine learning... 
   """
   
 [[experience]]
