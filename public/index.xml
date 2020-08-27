@@ -59,7 +59,7 @@
 - &lt;a href=&#34;#quelques-limites&#34;&gt;Quelques limites&lt;/a&gt;&lt;/p&gt;
 &lt;div id=&#34;edit-2020&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;Edit 2020&lt;/h1&gt;
-&lt;p&gt;&lt;em&gt;Pour la gestion de packages, &lt;code&gt;renv&lt;/code&gt; vise désormais à remplacer &lt;code&gt;packrat&lt;/code&gt;. Pour l’utilisateur, le fonctionnement est très semblable mais &lt;code&gt;renv&lt;/code&gt; est plus performant, et corrige notamment certains défauts évoqués dans cet article. Vous pouvez découvrir ce package sur le &lt;a href=&#34;https://rstudio.github.io/renv/articles/renv.html&#34;&gt;site de RStudio&lt;/a&gt;. Il est notamment possible de migrer un projet &lt;code&gt;packrat&lt;/code&gt; vers un projet &lt;code&gt;renv&lt;/code&gt; avec l’instruction &lt;code&gt;renv::migrate()&lt;/code&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Pour la gestion de packages, &lt;code&gt;renv&lt;/code&gt; vise désormais à remplacer &lt;code&gt;packrat&lt;/code&gt;. Pour l’utilisateur, le fonctionnement est très semblable mais &lt;code&gt;renv&lt;/code&gt; est plus performant, et corrige notamment certains défauts évoqués dans cet article. Vous pouvez découvrir ce package sur le &lt;a href=&#34;https://rstudio.github.io/renv/articles/renv.html&#34;&gt;site de RStudio&lt;/a&gt;. Il est notamment possible de migrer un projet &lt;code&gt;packrat&lt;/code&gt; vers un projet &lt;code&gt;renv&lt;/code&gt; avec l’instruction &lt;code&gt;renv::migrate()&lt;/code&gt;.&lt;/em&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;packrat-ça-sert-à-quoi&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;Packrat, ça sert à quoi?&lt;/h1&gt;
