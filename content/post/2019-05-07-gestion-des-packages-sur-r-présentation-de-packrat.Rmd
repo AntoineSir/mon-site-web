@@ -22,6 +22,8 @@ Packrat est un système de gestion de packages et de leurs versions permettant d
 - [Utiliser packrat avec un outil de gestion de versions][Utiliser packrat avec un outil de gestion de versions]  
 - [Quelques limites][Quelques limites]
 
+# Edit 2020  
+_Pour la gestion de packages, `renv` vise désormais à remplacer `packrat`. Pour l'utilisateur, le fonctionnement est très semblable mais il est plus performant, et corrige notamment certains défauts évoqués dans cet article. Vous pouvez découvrir ce package sur le [site de RStudio](https://rstudio.github.io/renv/articles/renv.html)._  
 
 # Packrat, ça sert à quoi?
 Packrat trace tous les packages installés pour un projet ainsi que leurs dépendances. Ce gestionnaire de packages est lui-même un package R qui peut s'installer avec l'instruction `install.packages("packrat")`. La documentation et l'aide pour l'utilisation de packrat sont disponibles [ici](https://rstudio.github.io/packrat/).
