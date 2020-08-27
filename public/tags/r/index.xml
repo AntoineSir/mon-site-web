@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>fr</language>
     <copyright>&amp;copy; 2019</copyright>
-    <lastBuildDate>Thu, 09 May 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 27 Aug 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/r/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Fonctionnement de across() dans dplyr</title>
+      <link>/post/fonctionnement-de-across-dans-dplyr/</link>
+      <pubDate>Thu, 27 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/fonctionnement-de-across-dans-dplyr/</guid>
+      <description>Vous avez dû voir passer cette information : une mise à jour majeure de dplyr (version 1.0.0) est sortie il y a quelques mois! L’occasion de faire une nouvelle petite note sur un élément très important de cette nouvelle version : across(), un nouveau verbe pour réaliser des opérations sur plusieurs colonnes. On va le présenter rapidement et regarder ensuite ses performances en termes de vitesse d’exécution par rapport aux anciennes méthodes.</description>
+    </item>
     
     <item>
       <title>Gestion des packages sur R : présentation de packrat</title>

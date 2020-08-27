@@ -1,0 +1,141 @@
+---
+title: Fonctionnement de across() dans dplyr
+author: Antoine Sireyjol
+date: '2020-08-27'
+slug: fonctionnement-de-across-dans-dplyr
+categories: []
+tags:
+  - dplyr
+  - across
+  - benchmark
+  - rstats
+  - R
+  - tidyverse
+authors: []
+header:
+  caption: ''
+  image: ''
+  preview: yes
+---
+
+
+
+<p>Vous avez dû voir passer cette information : une mise à jour majeure de <code>dplyr</code> (version 1.0.0) est sortie il y a quelques mois! L’occasion de faire une nouvelle petite note sur un élément très important de cette nouvelle version : <code>across()</code>, un nouveau verbe pour réaliser des opérations sur plusieurs colonnes. On va le présenter rapidement et regarder ensuite ses performances en termes de vitesse d’exécution par rapport aux anciennes méthodes. On utilise la version <code>1.0.2</code> de dplyr, celle sur le CRAN à ce jour, et qui a justement été optimisée par rapport à la version <code>1.0.0</code>. Cette note est organisée en deux parties :<br />
+- <a href="#across-ça-marche-comment"><code>across()</code>, ça marche comment?</a>, où l’on présente les bases de <code>across()</code>.<br />
+- <a href="#across-ça-tourne-comment"><code>across()</code>, ça tourne comment?</a>, où l’on évalue la vitesse d’exécution par rapport aux anciennes méthodes.</p>
+<p>Si vous voulez balayer plus largement les différents éléments de la mise à jour de <code>dplyr</code>, vous pouvez vous rendre sur <a href="https://www.tidyverse.org/blog/2020/06/dplyr-1-0-0/">le site du tidyverse</a> (en anglais) ou sur <a href="https://thinkr.fr/hey-quoi-de-neuf-dplyr-le-point-sur-la-v1/#La_fonction_de_calcul_avec_conditions_sur_les_variables_across()">cet article du blog de ThinkR</a> (en français) qui en présentent les changements majeurs.</p>
+<div id="across-ça-marche-comment" class="section level1">
+<h1><code>across()</code>, ça marche comment?</h1>
+<div id="syntaxe-de-base" class="section level2">
+<h2>Syntaxe de base</h2>
+<p>Le verbe <code>across()</code> vise à remplacer toutes les fonctions suffixées par <code>_if</code>, <code>_at</code> et <code>_all</code>. Il regroupe ces méthodes dans une seule et permet ainsi de les associer, ce qui n’était pas possible avant. Il s’utilise dans <code>mutate</code> et <code>summarise</code>. La syntaxe associée à ce verbe est la suivante :</p>
+<pre class="r"><code>across(.cols, .fns)</code></pre>
+<p>Dans laquelle :<br />
+- Les colonnes <code>.cols</code> peuvent être sélectionnées en utilisant la même syntaxe que pour la méthode <code>vars()</code> (nom des variables, <code>starts_with</code>, <code>end_with</code>, <code>contains</code>,…), mais aussi avec des conditions rentrées dans <code>where()</code> qui sélectionneront de la même manière que le faisaient les fonctions suffixées par <code>_if</code>.<br />
+- La fonction <code>.fns</code> est définie comme auparavant (le nom de la fonction ou sa définition “à la volée” avec <code>~ my_fun(.)</code>).</p>
+</div>
+<div id="quelques-exemples" class="section level2">
+<h2>Quelques exemples</h2>
+<p>Pour changer, on utilise pour ces petits exemples la table <code>palmerpenguins</code> promue par <a href="https://github.com/allisonhorst/palmerpenguins">Allison Horst</a> pour remplacer l’usage de la table iris. Vous pouvez la télécharger avec <code>install.packages(&quot;palmerpenguins&quot;)</code>. À partir de cette table, l’instruction visant à sortir la moyenne de toutes les variables numériques s’écrivait auparavant :</p>
+<pre class="r"><code>penguins %&gt;% summarise_if(is.numeric, mean, na.rm = TRUE)
+## # A tibble: 1 x 5
+##   bill_length_mm bill_depth_mm flipper_length_mm body_mass_g  year
+##            &lt;dbl&gt;         &lt;dbl&gt;             &lt;dbl&gt;       &lt;dbl&gt; &lt;dbl&gt;
+## 1           43.9          17.2              201.       4202. 2008.</code></pre>
+<p>Elle se réécrit avec <code>across()</code> en utilisant <code>where()</code> :</p>
+<pre class="r"><code>penguins %&gt;% summarise(across(where(is.numeric), mean, na.rm = TRUE))
+## # A tibble: 1 x 5
+##   bill_length_mm bill_depth_mm flipper_length_mm body_mass_g  year
+##            &lt;dbl&gt;         &lt;dbl&gt;             &lt;dbl&gt;       &lt;dbl&gt; &lt;dbl&gt;
+## 1           43.9          17.2              201.       4202. 2008.</code></pre>
+<p>Si l’on souhaite sélectionner à partir du nom des variables, la nouvelle syntaxe est la suivante :</p>
+<pre class="r"><code># Ancienne version
+penguins %&gt;% summarise_at(vars(matches(&quot;bill*|flipper*&quot;)), mean, na.rm = TRUE)
+## # A tibble: 1 x 3
+##   bill_length_mm bill_depth_mm flipper_length_mm
+##            &lt;dbl&gt;         &lt;dbl&gt;             &lt;dbl&gt;
+## 1           43.9          17.2              201.
+
+# Avec across()
+penguins %&gt;% summarise(across(matches(&quot;bill*|flipper*&quot;), mean, na.rm = TRUE))
+## # A tibble: 1 x 3
+##   bill_length_mm bill_depth_mm flipper_length_mm
+##            &lt;dbl&gt;         &lt;dbl&gt;             &lt;dbl&gt;
+## 1           43.9          17.2              201.</code></pre>
+<p>On note également qu’on peut combiner dorénavant les sélections sur les types des colonnes et sur leur nom dans une seule instruction <code>across()</code>, ce qui n’était pas possible avant. Pour enlever les années des moyennes numériques, on peut par exemple écrire :</p>
+<pre class="r"><code>penguins %&gt;% summarise(across(where(is.numeric) &amp; -contains(&quot;year&quot;), mean, na.rm = TRUE))
+## # A tibble: 1 x 4
+##   bill_length_mm bill_depth_mm flipper_length_mm body_mass_g
+##            &lt;dbl&gt;         &lt;dbl&gt;             &lt;dbl&gt;       &lt;dbl&gt;
+## 1           43.9          17.2              201.       4202.</code></pre>
+<p>Enfin, le paramètre <code>.names</code> de <code>across()</code> est également très pratique et permet notamment dans une instruction <code>mutate()</code> de créer de nouvelles colonnes nommées à partir des anciennes auxquelles on peut se référer avec <code>.col</code>. Par exemple, si je veux créer deux nouvelles colonnes passant les informations sur le bec en pouces mais en conservant les anciennes colonnes, je peux écrire :</p>
+<pre class="r"><code>penguins %&gt;% 
+  mutate(across(starts_with(&quot;bill&quot;), ~ . * 0.04, .names = &quot;pouces_{.col}&quot;)) %&gt;% 
+  select(contains(&quot;bill&quot;)) %&gt;% head(5)
+## # A tibble: 5 x 4
+##   bill_length_mm bill_depth_mm pouces_bill_length_mm pouces_bill_depth_mm
+##            &lt;dbl&gt;         &lt;dbl&gt;                 &lt;dbl&gt;                &lt;dbl&gt;
+## 1           39.1          18.7                  1.56                0.748
+## 2           39.5          17.4                  1.58                0.696
+## 3           40.3          18                    1.61                0.72 
+## 4           NA            NA                   NA                  NA    
+## 5           36.7          19.3                  1.47                0.772</code></pre>
+</div>
+</div>
+<div id="across-ça-tourne-comment" class="section level1">
+<h1><code>across()</code>, ça tourne comment?</h1>
+<p>À la sortie de la mise à jour de <code>dplyr</code>, il avait été signalé que la méthode <code>across()</code> impliquerait peut-être de légères pertes en termes de vitesse d’exécution par rapport aux anciennes méthodes <code>_at</code>, <code>_if</code> et <code>_all</code>. Une partie de ce retard a été apparemment rattrapé dans les dernières mises à jour et donc dans la version <code>1.0.2</code> que l’on utilise dans cet article. Sur le modèle de ce que l’on a proposé dans un <a href="https://antoinesir.rbind.io/post/vitesses-d-agr%C3%A9gation-de-data-table-et-dplyr/">article précédent</a>, on va comparer les instructions <code>_if</code> et <code>_at</code> d’un summarise groupé avec leurs équivalents dans <code>across()</code> pour différentes tailles d’échantillons et de groupes.</p>
+<p>Le tibble utilisé a le format suivant, ici pour 100 lignes et deux groupes :</p>
+<pre class="r"><code>nbrow &lt;- 100
+nbgpe &lt;- 2
+as_tibble(data.frame(x1 = rnorm(nbrow), x2 =  rnorm(nbrow), 
+                     x3 = runif(nbrow), x4 = runif(nbrow),
+                     y = as.factor(sample(floor(nbgpe), replace = TRUE))
+                               ))
+## # A tibble: 100 x 5
+##         x1      x2     x3     x4 y    
+##      &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;fct&gt;
+##  1  1.30   -0.131  0.756  0.939  1    
+##  2 -0.581   0.503  0.190  0.690  1    
+##  3 -0.938  -1.49   0.553  0.0348 1    
+##  4  1.16    0.404  0.113  0.173  1    
+##  5 -0.440   0.590  0.832  0.379  1    
+##  6  0.0230  0.0860 0.264  0.0788 1    
+##  7  0.570  -0.552  0.429  0.0663 1    
+##  8  0.344   1.61   0.901  0.333  1    
+##  9 -1.55    0.231  0.318  0.279  1    
+## 10 -0.503   0.678  0.0712 0.229  1    
+## # ... with 90 more rows</code></pre>
+<p>Les différentes instructions testées sont les suivantes :</p>
+<pre class="r"><code># summarise_if  
+data %&gt;% group_by(y) %&gt;% summarise_if(is.numeric, mean) 
+
+# across + where()  
+data %&gt;% group_by(y) %&gt;% summarise(across(where(is.numeric), mean))  
+
+# summarise_at  
+data %&gt;% group_by(y) %&gt;% summarise_at(vars(starts_with(&quot;x&quot;)), mean) 
+
+# across + starts_with()  
+data %&gt;% group_by(y) %&gt;% summarise(across(starts_with(&quot;x&quot;), mean))</code></pre>
+<p>Les résultats du <code>microbenchmark()</code> pour les différentes combinaisons de nombres de groupes et de lignes sont présentés dans un graphique qui représente la distribution du temps d’exécution des 10 occurences testées pour chaque méthode :</p>
+<!-- ```{r echo=FALSE, message=FALSE, warning=FALSE} -->
+<!-- x <- 1000 -->
+<!-- y <- 1 -->
+<!-- for (i in seq(1, 3)){ -->
+<!--   x <- x * 10 -->
+<!--   y <- y * 10 -->
+<!--   assign(paste0("plot", i, sep = ""), test_group_by(x, y)) -->
+<!-- } -->
+<!-- x <- 1000 -->
+<!-- y <- 500 -->
+<!-- for (i in seq(4, 6)){ -->
+<!--   x <- x * 10 -->
+<!--   y <- y * 10 -->
+<!--   assign(paste0("plot", i, sep = ""), test_group_by(x, y)) -->
+<!-- } -->
+<!-- library(gridExtra) -->
+<!-- grid.arrange(plot1, plot4, plot2, plot5, plot3, plot6, ncol = 2, heights = c(8, 8, 8)) -->
+<!-- ``` -->
+<p>On constate en effet une moins bonne performance en termes de vitesse d’exécution des instructions utilisant le verbe <code>across()</code>. Les différences sont surtout marquées dans le cas où il y a beaucoup de groupes par rapport au nombre de lignes (colonne de droite) et ce quelque soit le nombre de lignes. Elles sont peu importantes dans le cas où il y a peu de groupes par rapport au nombre de lignes (colonne de gauche).</p>
+</div>
