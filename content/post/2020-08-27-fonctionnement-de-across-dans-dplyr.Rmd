@@ -47,7 +47,7 @@ across(.cols, .fns)
  
 ## Quelques exemples  
 
-Pour changer, on utilise pour ces petits exemples la table `penguins` promue par [Allison Horst](https://github.com/allisonhorst/palmerpenguins) pour remplacer l'usage de la table iris. Vous pouvez l'a télécharger'obtenir depuis le package `palmerpenguins` sur le CRAN. À partir de cette table, l'instruction visant à sortir la moyenne de toutes les variables numériques s'écrivait auparavant :  
+Pour changer, on utilise pour ces petits exemples la table `penguins` promue par [Allison Horst](https://github.com/allisonhorst/palmerpenguins) pour remplacer l'usage de la table iris. Vous pouvez l'obtenir depuis le package `palmerpenguins` sur le CRAN. À partir de cette table, l'instruction visant à sortir la moyenne de toutes les variables numériques s'écrivait auparavant :  
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE, paged.print=FALSE}
 penguins %>% summarise_if(is.numeric, mean, na.rm = TRUE)

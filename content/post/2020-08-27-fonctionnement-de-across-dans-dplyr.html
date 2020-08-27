@@ -36,7 +36,7 @@ header:
 </div>
 <div id="quelques-exemples" class="section level2">
 <h2>Quelques exemples</h2>
-<p>Pour changer, on utilise pour ces petits exemples la table <code>palmerpenguins</code> promue par <a href="https://github.com/allisonhorst/palmerpenguins">Allison Horst</a> pour remplacer l’usage de la table iris. Vous pouvez la télécharger avec <code>install.packages(&quot;palmerpenguins&quot;)</code>. À partir de cette table, l’instruction visant à sortir la moyenne de toutes les variables numériques s’écrivait auparavant :</p>
+<p>Pour changer, on utilise pour ces petits exemples la table <code>penguins</code> promue par <a href="https://github.com/allisonhorst/palmerpenguins">Allison Horst</a> pour remplacer l’usage de la table iris. Vous pouvez l’a télécharger’obtenir depuis le package <code>palmerpenguins</code> sur le CRAN. À partir de cette table, l’instruction visant à sortir la moyenne de toutes les variables numériques s’écrivait auparavant :</p>
 <pre class="r"><code>penguins %&gt;% summarise_if(is.numeric, mean, na.rm = TRUE)
 ## # A tibble: 1 x 5
 ##   bill_length_mm bill_depth_mm flipper_length_mm body_mass_g  year
@@ -93,18 +93,18 @@ as_tibble(data.frame(x1 = rnorm(nbrow), x2 =  rnorm(nbrow),
                      y = as.factor(sample(floor(nbgpe), replace = TRUE))
                                ))
 ## # A tibble: 100 x 5
-##         x1      x2     x3     x4 y    
-##      &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;fct&gt;
-##  1  1.30   -0.131  0.756  0.939  1    
-##  2 -0.581   0.503  0.190  0.690  1    
-##  3 -0.938  -1.49   0.553  0.0348 1    
-##  4  1.16    0.404  0.113  0.173  1    
-##  5 -0.440   0.590  0.832  0.379  1    
-##  6  0.0230  0.0860 0.264  0.0788 1    
-##  7  0.570  -0.552  0.429  0.0663 1    
-##  8  0.344   1.61   0.901  0.333  1    
-##  9 -1.55    0.231  0.318  0.279  1    
-## 10 -0.503   0.678  0.0712 0.229  1    
+##         x1      x2    x3     x4 y    
+##      &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;fct&gt;
+##  1 -0.0845 -1.06   0.460 0.643  1    
+##  2 -0.0399 -0.119  0.553 0.0692 2    
+##  3 -0.822   1.22   0.569 0.733  1    
+##  4 -1.94   -0.0148 0.452 0.189  2    
+##  5  1.64   -0.906  0.542 0.857  1    
+##  6 -0.809  -0.0556 0.720 0.944  2    
+##  7 -1.82    0.614  0.204 0.780  1    
+##  8  1.25    1.29   0.832 0.487  2    
+##  9 -0.406   0.496  0.171 0.254  1    
+## 10 -1.05   -1.33   0.222 0.813  2    
 ## # ... with 90 more rows</code></pre>
 <p>Les différentes instructions testées sont les suivantes :</p>
 <pre class="r"><code># summarise_if  
@@ -119,23 +119,6 @@ data %&gt;% group_by(y) %&gt;% summarise_at(vars(starts_with(&quot;x&quot;)), me
 # across + starts_with()  
 data %&gt;% group_by(y) %&gt;% summarise(across(starts_with(&quot;x&quot;), mean))</code></pre>
 <p>Les résultats du <code>microbenchmark()</code> pour les différentes combinaisons de nombres de groupes et de lignes sont présentés dans un graphique qui représente la distribution du temps d’exécution des 10 occurences testées pour chaque méthode :</p>
-<!-- ```{r echo=FALSE, message=FALSE, warning=FALSE} -->
-<!-- x <- 1000 -->
-<!-- y <- 1 -->
-<!-- for (i in seq(1, 3)){ -->
-<!--   x <- x * 10 -->
-<!--   y <- y * 10 -->
-<!--   assign(paste0("plot", i, sep = ""), test_group_by(x, y)) -->
-<!-- } -->
-<!-- x <- 1000 -->
-<!-- y <- 500 -->
-<!-- for (i in seq(4, 6)){ -->
-<!--   x <- x * 10 -->
-<!--   y <- y * 10 -->
-<!--   assign(paste0("plot", i, sep = ""), test_group_by(x, y)) -->
-<!-- } -->
-<!-- library(gridExtra) -->
-<!-- grid.arrange(plot1, plot4, plot2, plot5, plot3, plot6, ncol = 2, heights = c(8, 8, 8)) -->
-<!-- ``` -->
+<p><img src="/post/2020-08-27-fonctionnement-de-across-dans-dplyr_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 <p>On constate en effet une moins bonne performance en termes de vitesse d’exécution des instructions utilisant le verbe <code>across()</code>. Les différences sont surtout marquées dans le cas où il y a beaucoup de groupes par rapport au nombre de lignes (colonne de droite) et ce quelque soit le nombre de lignes. Elles sont peu importantes dans le cas où il y a peu de groupes par rapport au nombre de lignes (colonne de gauche).</p>
 </div>
