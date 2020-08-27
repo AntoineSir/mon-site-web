@@ -59,7 +59,7 @@
 &lt;/div&gt;
 &lt;div id=&#34;quelques-exemples&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Quelques exemples&lt;/h2&gt;
-&lt;p&gt;Pour changer, on utilise pour ces petits exemples la table &lt;code&gt;penguins&lt;/code&gt; promue par &lt;a href=&#34;https://github.com/allisonhorst/palmerpenguins&#34;&gt;Allison Horst&lt;/a&gt; pour remplacer l’usage de la table iris. Vous pouvez l’a télécharger’obtenir depuis le package &lt;code&gt;palmerpenguins&lt;/code&gt; sur le CRAN. À partir de cette table, l’instruction visant à sortir la moyenne de toutes les variables numériques s’écrivait auparavant :&lt;/p&gt;
+&lt;p&gt;Pour changer, on utilise pour ces petits exemples la table &lt;code&gt;penguins&lt;/code&gt; promue par &lt;a href=&#34;https://github.com/allisonhorst/palmerpenguins&#34;&gt;Allison Horst&lt;/a&gt; pour remplacer l’usage de la table iris. Vous pouvez l’obtenir depuis le package &lt;code&gt;palmerpenguins&lt;/code&gt; sur le CRAN. À partir de cette table, l’instruction visant à sortir la moyenne de toutes les variables numériques s’écrivait auparavant :&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;penguins %&amp;gt;% summarise_if(is.numeric, mean, na.rm = TRUE)
 ## # A tibble: 1 x 5
 ##   bill_length_mm bill_depth_mm flipper_length_mm body_mass_g  year
@@ -114,20 +114,21 @@ nbgpe &amp;lt;- 2
 as_tibble(data.frame(x1 = rnorm(nbrow), x2 =  rnorm(nbrow), 
                      x3 = runif(nbrow), x4 = runif(nbrow),
                      y = as.factor(sample(floor(nbgpe), replace = TRUE))
-                               ))
+                               )) %&amp;gt;% 
+  arrange(x1)
 ## # A tibble: 100 x 5
-##         x1      x2    x3     x4 y    
-##      &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt; &amp;lt;fct&amp;gt;
-##  1 -0.0845 -1.06   0.460 0.643  1    
-##  2 -0.0399 -0.119  0.553 0.0692 2    
-##  3 -0.822   1.22   0.569 0.733  1    
-##  4 -1.94   -0.0148 0.452 0.189  2    
-##  5  1.64   -0.906  0.542 0.857  1    
-##  6 -0.809  -0.0556 0.720 0.944  2    
-##  7 -1.82    0.614  0.204 0.780  1    
-##  8  1.25    1.29   0.832 0.487  2    
-##  9 -0.406   0.496  0.171 0.254  1    
-## 10 -1.05   -1.33   0.222 0.813  2    
+##       x1     x2     x3     x4 y    
+##    &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt; &amp;lt;fct&amp;gt;
+##  1 -2.02  2.78  0.163  0.0784 1    
+##  2 -1.95  1.53  0.0402 0.950  2    
+##  3 -1.95 -0.217 0.710  0.566  2    
+##  4 -1.87 -0.731 0.181  0.247  1    
+##  5 -1.75  2.90  0.621  0.983  2    
+##  6 -1.65  1.25  0.503  0.746  2    
+##  7 -1.60  1.47  0.884  0.486  1    
+##  8 -1.56  0.583 0.270  0.821  2    
+##  9 -1.37  1.29  0.662  0.392  1    
+## 10 -1.25  0.956 0.358  0.389  1    
 ## # ... with 90 more rows&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Les différentes instructions testées sont les suivantes :&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# summarise_if  
@@ -143,7 +144,7 @@ data %&amp;gt;% group_by(y) %&amp;gt;% summarise_at(vars(starts_with(&amp;quot;x
 data %&amp;gt;% group_by(y) %&amp;gt;% summarise(across(starts_with(&amp;quot;x&amp;quot;), mean))&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Les résultats du &lt;code&gt;microbenchmark()&lt;/code&gt; pour les différentes combinaisons de nombres de groupes et de lignes sont présentés dans un graphique qui représente la distribution du temps d’exécution des 10 occurences testées pour chaque méthode :&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;/post/2020-08-27-fonctionnement-de-across-dans-dplyr_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;On constate en effet une moins bonne performance en termes de vitesse d’exécution des instructions utilisant le verbe &lt;code&gt;across()&lt;/code&gt;. Les différences sont surtout marquées dans le cas où il y a beaucoup de groupes par rapport au nombre de lignes (colonne de droite) et ce quelque soit le nombre de lignes. Elles sont peu importantes dans le cas où il y a peu de groupes par rapport au nombre de lignes (colonne de gauche).&lt;/p&gt;
+&lt;p&gt;On constate en effet une moins bonne performance en termes de vitesse d’exécution des instructions utilisant le verbe &lt;code&gt;across()&lt;/code&gt;. Les différences sont surtout marquées dans le cas où il y a beaucoup de groupes par rapport au nombre de lignes (colonne de droite) et ce quelque soit le nombre de lignes. Elles sont moins importantes dans le cas où il y a peu de groupes par rapport au nombre de lignes (colonne de gauche).&lt;/p&gt;
 &lt;/div&gt;
 </description>
     </item>
