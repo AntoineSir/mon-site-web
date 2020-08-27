@@ -11,6 +11,7 @@ tags:
   - packages
   - gestion
   - projet
+  - renv
 header:
   caption: ''
   image: ''
@@ -23,7 +24,7 @@ Packrat est un système de gestion de packages et de leurs versions permettant d
 - [Quelques limites][Quelques limites]
 
 # Edit 2020  
-_Pour la gestion de packages, `renv` vise désormais à remplacer `packrat`. Pour l'utilisateur, le fonctionnement est très semblable mais il est plus performant, et corrige notamment certains défauts évoqués dans cet article. Vous pouvez découvrir ce package sur le [site de RStudio](https://rstudio.github.io/renv/articles/renv.html)._  
+_Pour la gestion de packages, `renv` vise désormais à remplacer `packrat`. Pour l'utilisateur, le fonctionnement est très semblable mais `renv` est plus performant, et corrige notamment certains défauts évoqués dans cet article. Vous pouvez découvrir ce package sur le [site de RStudio](https://rstudio.github.io/renv/articles/renv.html). Il est notamment possible de migrer un projet `packrat` vers un projet `renv` avec l'instruction `renv::migrate()`_  
 
 # Packrat, ça sert à quoi?
 Packrat trace tous les packages installés pour un projet ainsi que leurs dépendances. Ce gestionnaire de packages est lui-même un package R qui peut s'installer avec l'instruction `install.packages("packrat")`. La documentation et l'aide pour l'utilisation de packrat sont disponibles [ici](https://rstudio.github.io/packrat/).
