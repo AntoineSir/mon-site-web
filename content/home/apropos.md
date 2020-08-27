@@ -12,7 +12,7 @@ title = "À propos"
 
 # À propos
 
-Statisticien indépendant depuis bientôt 2 ans, j'accompagne [mes clients](#missions) dans leurs projets d'analyse des données et de programmation statistique. 
+Statisticien indépendant depuis l'été 2018, j'accompagne [mes clients](#missions) dans leurs projets d'analyse des données et de programmation statistique. 
   
 Diplômé Économiste - Statisticien de l'Ensae ParisTech, j'ai travaillé pendant 4 ans au service statistique du Ministère des Solidarités et de la Santé, la [Drees](https://drees.solidarites-sante.gouv.fr/etudes-et-statistiques/). J'y ai participé au développement et à la valorisation du modèle de microsimulation [Ines](https://www.insee.fr/fr/information/2021951) en tant que chargé d'étude puis responsable d'équipe. Mes expériences professionnelles sont détaillées dans la section [CV](/bio/).
   

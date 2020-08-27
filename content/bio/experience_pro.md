@@ -26,8 +26,19 @@ date_format = "January 2006"
   location = "Toulouse"
   date_start = "2018-09-01"
   date_end = ""
-  description = """ [Cliquez ici pour voir les missions réalisées](../#missions) """
-
+  description = """ [Cliquez ici pour voir les missions réalisées](../#missions) """  
+  
+[[experience]]
+  title = "Ingénieur de Recherche Statisticien"
+  company = "Inserm - SAPRIS"
+  company_url = "https://presse.inserm.fr/une-grande-enquete-nationale-pour-etudier-la-sante-et-les-enjeux-sociaux-de-la-pandemie-de-covid-19-et-du-confinement/39099/"
+  location = "Paris"
+  date_start = "2020-06-01"
+  date_end = "2021-06-01"
+  description = """
+  Études sur les enjeux sociaux du confinement et de l'épidémie de Covid-19 en France.
+  """
+  
 [[experience]]
   title = "Ingénieur de Recherche data scientist"
   company = "Inserm - IFERISS"
