@@ -62,7 +62,7 @@ enableGitInfo = false
   avatar = "portrait.jpg"  # Specify an avatar image (in `static/img/` folder) or delete value to disable avatar.
   
   # Details for the Contact Widget
-  email = "antoine.sireyjol@gmail.com"
+  email = "contact@statoscop.fr"
   address = "Toulouse, France"
 
   # Discussion link (e.g. link to a forum, mailing list, or chat).
