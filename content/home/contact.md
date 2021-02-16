@@ -17,7 +17,7 @@ autolink = true
 
 Vous pouvez me contacter directement depuis le site :  
 
-<form action="https://formspree.io/f/xzbkqgdy" method="POST">
+<form action="https://formspree.io/contact@statoscop.fr" method="POST">
   <label for="name">Votre nom: </label>
   <input type="text" name="name" required="required" placeholder=""><br>
   <label for="email">Votre adresse e-mail: </label>
