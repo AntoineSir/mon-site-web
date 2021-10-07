@@ -26,9 +26,13 @@ library(dplyr)
 library(palmerpenguins)
 ```
 
+
 Vous avez dû voir passer cette information : une mise à jour majeure de `dplyr` (version 1.0.0) est sortie il y a quelques mois! L'occasion de faire une nouvelle petite note sur un élément très important de cette nouvelle version : `across()`, un nouveau verbe pour réaliser des opérations sur plusieurs colonnes. On va le présenter rapidement et regarder ensuite ses performances en termes de vitesse d'exécution par rapport aux anciennes méthodes. On utilise la version `1.0.2` de dplyr, celle sur le CRAN à ce jour, et qui a justement été optimisée par rapport à la version `1.0.0`. Cette note est organisée en deux parties :  
 - [`across()`, ça marche comment?][`across()`, ça marche comment?], où l'on présente les bases de `across()`.    
 - [`across()`, ça tourne comment?][`across()`, ça tourne comment?], où l'on évalue la vitesse d'exécution par rapport aux anciennes méthodes.  
+
+# Edit 2021  
+_Cet article a été mis à jour [sur le blog de Statoscop](https://blog.statoscop.fr/fonctionnement-et-performances-dacross-dans-dplyr.html) avec la dernière version de dplyr qui corrige fortement les problèmes évoqués ci-dessous._   
 
 Si vous voulez balayer plus largement les différents éléments de la mise à jour de `dplyr`, vous pouvez vous rendre sur [le site du tidyverse](https://www.tidyverse.org/blog/2020/06/dplyr-1-0-0/) (en anglais) ou sur [cet article du blog de ThinkR](https://thinkr.fr/hey-quoi-de-neuf-dplyr-le-point-sur-la-v1/#La_fonction_de_calcul_avec_conditions_sur_les_variables_across()) (en français) qui en présentent les changements majeurs. 
 
