@@ -12,8 +12,7 @@ title = "À propos"
 
 # À propos
 
-> Depuis mars 2021, je me suis associé avec [Louis Kuhn](https://www.linkedin.com/in/louis-kuhn-b1aa10102/) au sein de > [Statoscop](https://www.statoscop.fr). C'est donc via cette structure que j'aurai le plaisir de répondre à vos 
-> sollicitations!  
+> Depuis mars 2021, je me suis associé avec [Louis Kuhn](https://www.linkedin.com/in/louis-kuhn-b1aa10102/) au sein de [Statoscop](https://www.statoscop.fr). C'est donc via cette structure que j'aurai le plaisir de répondre à vos sollicitations!  
 
 Statisticien indépendant depuis l'été 2018, j'accompagne [mes clients](#missions) dans leurs projets d'analyse des données et de programmation statistique. 
   
