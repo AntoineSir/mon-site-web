@@ -42,5 +42,5 @@ weight = 1
 +++
 # <span style="color:#8A2908">Services</span>
 
-Vous pouvez [me contacter](#contact) pour tout type de demande en lien avec l'analyse de données, en particulier : 
+RETROUVEZ LES SERVICES QUE J'OFFRAIS EN FREELANCE AU SEIN DE LA COOPÉRATIVE [STATOSCOP](https://statoscop.fr) ! 
 
