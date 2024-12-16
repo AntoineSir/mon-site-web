@@ -42,7 +42,7 @@ weight = 1
 +++
 # <span style="color:#8A2908">RETROUVEZ LES SERVICES QUE J'OFFRAIS EN FREELANCE AU SEIN DE LA COOPÉRATIVE [STATOSCOP](https://statoscop.fr) !</span>  
 
--> [VISITER LE SITE](https://statoscop.fr) <-
+[VISITER LE SITE](https://statoscop.fr)
 
 
 
